@@ -7,6 +7,16 @@
 //    d = 3,405 pour l'argon
 // r    : distance inter-atomique
 
+// b_x  : dimension de la boîte de modélisation selon x
+// b_y  : dimension de la boîte de modélisation selon y
+// b_z  : dimension de la boîte de modélisation selon z
+
+// r_c      : côté de la cellule
+// r_cut    : rayon de coupure
+// r_v      : rayon de verlet
+// delta_r  : rayon de verlet - rayon de coupure
+// r_max    : déplacement maximal
+
 // f_i= - (dE_i(r)/dr(t+dt)) : force d’interaction
 // sum_i_n(f_i)              : sommes des forces d'interaction
 // i                         : interaction interatomique
@@ -21,7 +31,7 @@
 // VERSIONS :
 // Version 1 : pas de cellule
 // Version 2 : décomposition du domaine en cellules
-// Version 3 : cellues + rayon de Verlet pour ne pas avoir à construire une liste de voisin à chaque itération
+// Version 3 : cellules + rayon de Verlet pour ne pas avoir à construire une liste de voisin à chaque itération
 
 // ENTREE ET SORTIE
 // lecture et écriture de fichier type XYZ généré avec le logiciel atomsk
@@ -31,7 +41,7 @@
 #include <random>
 #include "types.h"
 
-#define n 10000
+#define N 10000
 #define E_0 119.8*1.380649*pow(10,-23)
 #define d 3.405
 
@@ -39,7 +49,7 @@ int main(){
       double r = 1; // (à revoir) valeur arbitraire juste pour entrer la formule
       double E_paire = 4*E_0*(pow(d/r,12.0)-pow(d/r,6.0));
 
-      printf("nombre d'atomes en interaction avec l'atome = %d atomes \n",n);
+      printf("nombre d'atomes en interaction avec l'atome = %d atomes \n",N);
       printf("profondeur du puit de potentiel : E_0 = -%e J \n",E_0);
       printf("distance d'annulation du potentiel : d = %e A \n",d);
       printf("énergie potentielle pour un atome à 1,000 m : E_paire = %e J \n",E_paire);
