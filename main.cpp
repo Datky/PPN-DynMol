@@ -36,14 +36,17 @@
 // ENTREE ET SORTIE
 // lecture et écriture de fichier type XYZ généré avec le logiciel atomsk
 
+#include <iostream>
 #include <cstdio>
 #include <cmath>
 #include <random>
 #include "types.h"
+#include "constantes.h"
+#include "SoA/particule.h"
 
-#define N 10000
-#define E_0 119.8*1.380649*pow(10,-23)
-#define d 3.405
+// Protoypes de fonctions
+int verify_particule_allocation(Particules*);
+
 
 int main(){
       double r = 1; // (à revoir) valeur arbitraire juste pour entrer la formule
@@ -53,4 +56,40 @@ int main(){
       printf("profondeur du puit de potentiel : E_0 = -%e J \n",E_0);
       printf("distance d'annulation du potentiel : d = %e A \n",d);
       printf("énergie potentielle pour un atome à 1,000 m : E_paire = %e J \n",E_paire);
+
+
+
+      struct Particules particules;
+      struct Particules *ptc_ptr = &particules;
+
+      // Vérification de la bonne création des particules
+      int memory_error = verify_particule_allocation(ptc_ptr);
+
+      if (memory_error > 0) {
+            std::cout << "\nErreur de création des particules, fin du programme.\n" << std::endl;
+            return 1;
+      }
+
+      std::cout << "\nBonne création des particules.\n" << std::endl;
+
+}
+
+
+int verify_particule_allocation(Particules* part) { // Vérifie la bonne allocation des particules
+      int memory_error = 0;
+
+    if (part->pos == nullptr) {
+        std::cout << "Erreur d'allocation des positions." << std::endl;
+        memory_error++;
+    }
+    if (part->vit == nullptr) {
+        std::cout << "Erreur d'allocation des vitesses." << std::endl;
+        memory_error++;
+      }
+    if (part->pos == nullptr) {
+        std::cout << "Erreur d'allocation des accélérations." << std::endl;
+        memory_error++;
+      }
+
+      return memory_error;
 }
