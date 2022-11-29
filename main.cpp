@@ -89,13 +89,12 @@ int main() {
       std::cout << "\nBonne création des particules.\n" << std::endl;
 
 
-
       return 0;
 }
 
 
 void vectors_allocation(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Alloue les vecteurs en mémoire
-
+      /*
       int size = sizeof(f64);
       for (int i = 0; i < size*N; i += size) {
             *(pos->X + i) = i;
@@ -118,6 +117,32 @@ void vectors_allocation(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct V
             std::cout << (acc->Y + i) << ": " << *(acc->Y + i) << std::endl;
             *(acc->Z + i) = i;
             std::cout << (acc->Z + i) << ": " << *(acc->Z + i) << std::endl;
+      }
+      */
+
+      for (int i = 0; i < N; i++) {
+            pos->X[i] = i;
+            std::cout << &pos->X[i] << ": posX = " <<pos->X[i] << std::endl;
+            pos->Y[i] = i;
+            std::cout << &pos->Y[i] << ": posY = " <<pos->Y[i] << std::endl;
+            pos->Z[i] = i;
+            std::cout << &pos->Z[i] << ": posZ = " <<pos->Z[i] << std::endl;
+
+            vit->X[i] = i;
+            std::cout << &vit->X[i] << ": vitX = " <<vit->X[i] << std::endl;
+            vit->Y[i] = i;
+            std::cout << &vit->Y[i] << ": vitY = " <<vit->Y[i] << std::endl;
+            vit->Z[i] = i;
+            std::cout << &vit->Z[i] << ": vitZ = " <<vit->Z[i] << std::endl;
+
+            acc->X[i] = i;
+            std::cout << &acc->X[i] << ": accX = " <<acc->X[i] << std::endl;
+            acc->Y[i] = i;
+            std::cout << &acc->Y[i] << ": accY = " <<acc->Y[i] << std::endl;
+            acc->Z[i] = i;
+            std::cout << &acc->Z[i] << ": accZ = " <<acc->Z[i] << std::endl;
+
+            std::cout << "\n" << std::endl;
       }
 
 }
