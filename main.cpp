@@ -45,7 +45,7 @@
 #include "SoA/particule.h"
 
 // Protoypes de fonctions
-void vectors_allocation(struct Vecteur_3D*, struct Vecteur_3D*, struct Vecteur_3D*);
+void vectors_fill(struct Vecteur_3D*, struct Vecteur_3D*, struct Vecteur_3D*);
 
 int main() {
       double r = 1; // (à revoir) valeur arbitraire juste pour entrer la formule
@@ -84,7 +84,7 @@ int main() {
       struct Vecteur_3D *__restrict vitesses = particules.vit;
       struct Vecteur_3D *__restrict accelerations = particules.acc;
 
-      vectors_allocation(positions, vitesses, accelerations);
+      vectors_fill(positions, vitesses, accelerations);
 
       std::cout << "\nBonne création des particules.\n" << std::endl;
 
@@ -93,34 +93,9 @@ int main() {
 }
 
 
-void vectors_allocation(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Alloue les vecteurs en mémoire
-      /*
-      int size = sizeof(f64);
-      for (int i = 0; i < size*N; i += size) {
-            *(pos->X + i) = i;
-            std::cout << (pos->X + i) << ": " << *(pos->X + i) << std::endl;
-            *(pos->Y + i) = i;
-            std::cout << (pos->Y + i) << ": " << *(pos->Y + i) << std::endl;
-            *(pos->Z + i) = i;
-            std::cout << (pos->Z + i) << ": " << *(pos->Z + i) << std::endl;
+void vectors_fill(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données
 
-            *(vit->X + i) = i;
-            std::cout << (vit->X + i) << ": " << *(vit->X + i) << std::endl;
-            *(vit->Y + i) = i;
-            std::cout << (vit->Y + i) << ": " << *(vit->Y + i) << std::endl;
-            *(vit->Z + i) = i;
-            std::cout << (vit->Z + i) << ": " << *(vit->Z + i) << std::endl;
-
-            *(acc->X + i) = i;
-            std::cout << (acc->X + i) << ": " << *(acc->X + i) << std::endl;
-            *(acc->Y + i) = i;
-            std::cout << (acc->Y + i) << ": " << *(acc->Y + i) << std::endl;
-            *(acc->Z + i) = i;
-            std::cout << (acc->Z + i) << ": " << *(acc->Z + i) << std::endl;
-      }
-      */
-
-      for (int i = 0; i < N; i++) {
+      for (u64 i = 0; i < N; i++) {
             pos->X[i] = i;
             std::cout << &pos->X[i] << ": posX = " <<pos->X[i] << std::endl;
             pos->Y[i] = i;
