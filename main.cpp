@@ -36,21 +36,43 @@
 // ENTREE ET SORTIE
 // lecture et écriture de fichier type XYZ généré avec le logiciel atomsk
 
-#include <cstdio>
-#include <cmath>
-#include <random>
-#include "types.h"
 
-#define N 10000
+#define N 1000
 #define E_0 119.8*1.380649*pow(10,-23)
 #define d 3.405
 
-int main(){
-      double r = 1; // (à revoir) valeur arbitraire juste pour entrer la formule
-      double E_paire = 4*E_0*(pow(d/r,12.0)-pow(d/r,6.0));
+#include <cstdio>
+#include <cmath>
+#include <random>
+#include "interaction.cpp"
+#include "potentiel.cpp"
+#include "XYZ.cpp"
 
-      printf("nombre d'atomes en interaction avec l'atome = %d atomes \n",N);
-      printf("profondeur du puit de potentiel : E_0 = -%e J \n",E_0);
-      printf("distance d'annulation du potentiel : d = %e A \n",d);
-      printf("énergie potentielle pour un atome à 1,000 m : E_paire = %e J \n",E_paire);
+#include "types.h"
+#include "atome.hpp"
+
+
+int main(){
+      u32 nb_PasDeTemps =15;
+      f64 dt = 0.1, h = 0.1, r_cut = 0.1;
+      Atomes at{};
+
+      at.p=lireXYZ("test.xyz");
+      ecrireXYZ(at.p, "test_simuation.xyz");
+      u32 n = at.p.x.size();
+
+      for (u32 i = 0; i < n; i++){
+            at.m[i] = 5;
+      
+            at.v.x[i] = rand();
+            at.v.y[i] = rand();
+            at.v.z[i] = rand();
+      }
+    
+      for (u32 i = 0; i < nb_PasDeTemps; i++){
+            //Verlet(at, dt, h, r_cut);
+            ecrireXYZ(at.p, "test_simuation.xyz");
+      }
+
+      return 0;
 }
