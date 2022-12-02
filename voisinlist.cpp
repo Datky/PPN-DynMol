@@ -29,7 +29,7 @@ float getArea(const double* a, const double* b)
 */
 
 
-void findCell( const double* box, const double* thickness, const double* r, const int* numCells, int* cell)
+void findCell( const double* box, const double* r, const int* numCells, int* cell)
 {
   double s[3]; 
   
