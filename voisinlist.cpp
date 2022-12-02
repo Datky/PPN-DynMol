@@ -16,9 +16,9 @@ Number of cells in each cell vector direction?
 
 float getArea(const double* a, const double* b)
 {
-  const double s1 = a[1] * b[2] - a[2] * b[1];
-  const double s2 = a[2] * b[0] - a[0] * b[2];
-  const double s3 = a[0] * b[1] - a[1] * b[0];
+  const double s1 = ....;
+  const double s2 = ....;
+  const double s3 = ....;
   return sqrt(s1 * s1 + s2 * s2 + s3 * s3);
 }
 
