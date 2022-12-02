@@ -36,16 +36,18 @@
 // ENTREE ET SORTIE
 // lecture et écriture de fichier type XYZ généré avec le logiciel atomsk
 
+#include <iostream>
 #include <cstdio>
 #include <cmath>
 #include <random>
 #include "types.h"
+#include "constantes.h"
+#include "SoA/particule.h"
 
-#define N 10000
-#define E_0 119.8*1.380649*pow(10,-23)
-#define d 3.405
+// Protoypes de fonctions
+void vectors_allocation(struct Vecteur_3D*, struct Vecteur_3D*, struct Vecteur_3D*);
 
-int main(){
+int main() {
       double r = 1; // (à revoir) valeur arbitraire juste pour entrer la formule
       double E_paire = 4*E_0*(pow(d/r,12.0)-pow(d/r,6.0));
 
@@ -53,4 +55,94 @@ int main(){
       printf("profondeur du puit de potentiel : E_0 = -%e J \n",E_0);
       printf("distance d'annulation du potentiel : d = %e A \n",d);
       printf("énergie potentielle pour un atome à 1,000 m : E_paire = %e J \n",E_paire);
+
+
+ 
+
+      // Création et allocation des particules
+      struct Particules particules;
+      
+
+      particules.pos = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
+      particules.vit = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
+      particules.acc = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
+
+
+      particules.pos->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      particules.pos->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      particules.pos->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+
+      particules.vit->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      particules.vit->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      particules.vit->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+
+      particules.acc->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      particules.acc->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      particules.acc->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+
+      struct Vecteur_3D *__restrict positions = particules.pos;
+      struct Vecteur_3D *__restrict vitesses = particules.vit;
+      struct Vecteur_3D *__restrict accelerations = particules.acc;
+
+      vectors_allocation(positions, vitesses, accelerations);
+
+      std::cout << "\nBonne création des particules.\n" << std::endl;
+
+
+      return 0;
+}
+
+
+void vectors_allocation(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Alloue les vecteurs en mémoire
+      /*
+      int size = sizeof(f64);
+      for (int i = 0; i < size*N; i += size) {
+            *(pos->X + i) = i;
+            std::cout << (pos->X + i) << ": " << *(pos->X + i) << std::endl;
+            *(pos->Y + i) = i;
+            std::cout << (pos->Y + i) << ": " << *(pos->Y + i) << std::endl;
+            *(pos->Z + i) = i;
+            std::cout << (pos->Z + i) << ": " << *(pos->Z + i) << std::endl;
+
+            *(vit->X + i) = i;
+            std::cout << (vit->X + i) << ": " << *(vit->X + i) << std::endl;
+            *(vit->Y + i) = i;
+            std::cout << (vit->Y + i) << ": " << *(vit->Y + i) << std::endl;
+            *(vit->Z + i) = i;
+            std::cout << (vit->Z + i) << ": " << *(vit->Z + i) << std::endl;
+
+            *(acc->X + i) = i;
+            std::cout << (acc->X + i) << ": " << *(acc->X + i) << std::endl;
+            *(acc->Y + i) = i;
+            std::cout << (acc->Y + i) << ": " << *(acc->Y + i) << std::endl;
+            *(acc->Z + i) = i;
+            std::cout << (acc->Z + i) << ": " << *(acc->Z + i) << std::endl;
+      }
+      */
+
+      for (int i = 0; i < N; i++) {
+            pos->X[i] = i;
+            std::cout << &pos->X[i] << ": posX = " <<pos->X[i] << std::endl;
+            pos->Y[i] = i;
+            std::cout << &pos->Y[i] << ": posY = " <<pos->Y[i] << std::endl;
+            pos->Z[i] = i;
+            std::cout << &pos->Z[i] << ": posZ = " <<pos->Z[i] << std::endl;
+
+            vit->X[i] = i;
+            std::cout << &vit->X[i] << ": vitX = " <<vit->X[i] << std::endl;
+            vit->Y[i] = i;
+            std::cout << &vit->Y[i] << ": vitY = " <<vit->Y[i] << std::endl;
+            vit->Z[i] = i;
+            std::cout << &vit->Z[i] << ": vitZ = " <<vit->Z[i] << std::endl;
+
+            acc->X[i] = i;
+            std::cout << &acc->X[i] << ": accX = " <<acc->X[i] << std::endl;
+            acc->Y[i] = i;
+            std::cout << &acc->Y[i] << ": accY = " <<acc->Y[i] << std::endl;
+            acc->Z[i] = i;
+            std::cout << &acc->Z[i] << ": accZ = " <<acc->Z[i] << std::endl;
+
+            std::cout << "\n" << std::endl;
+      }
+
 }
