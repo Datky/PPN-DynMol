@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdlib>
-#include "../constantes.h"
 #include "../types.h"
 
 /** @fichier
