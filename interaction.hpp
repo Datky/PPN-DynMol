@@ -5,20 +5,14 @@
 #ifndef INTERACTION_H
 #define INTERACTION_H
 
-#include <cmath>
-#include "atome.hpp"
-
-/* Enrgie des atomes
- * @param [int/out] at tablaeu des atome dans la boîte de modélisation
- * @param [out] E tablaeu des énergies d'interaction
- * @param [int] rayon de coupure
- **/
-//void energie_atome(Atomes & at, std::vector<f64> & E, f64 const& r_cut);
+#include "SoA/particule.h"
 
 /* Verlet : Pour trouver la nouvelle position d'un atom
  * @param [int/out] at tablaeu des les atome dans la boîte de modélisation
  * @param [int] dt pas de temps
+ * @param [int] r_cut distance de coupure
+ * @param [int] m la masse
  **/
-void Verlet(Atomes & at, f64 const& dt, f64 const& h, f64 const& r_cut); //f64 & r_max
+void Verlet(Particules & at, f64 const& dt, f64 const& r_cut, f64 const& m); //f64 & r_max
 
 #endif //INTERACTION_H

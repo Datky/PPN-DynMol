@@ -49,28 +49,29 @@
 #include "XYZ.cpp"
 
 #include "types.h"
-#include "atome.hpp"
+#include "SoA/particule.h"
 
 
 int main(){
       u32 nb_PasDeTemps =15;
-      f64 dt = 0.1, h = 0.1, r_cut = 0.1;
-      Atomes at{};
+      f64 dt = 0.1;
+      f64 r_cut = 0.1;
+      Particules at{};
 
-      at.p=lireXYZ("test.xyz");
-      ecrireXYZ(at.p, "test_simuation.xyz");
-      u32 n = at.p.x.size();
+      at.pos = lireXYZ("test.xyz");
+      ecrireXYZ(at.pos, "test_simuation.xyz");
+      u32 n = at.pos.x.size();
 
       for (u32 i = 0; i < n; i++){
             at.m[i] = 5;
       
-            at.v.x[i] = rand();
-            at.v.y[i] = rand();
-            at.v.z[i] = rand();
+            at.vit.x[i] = rand();
+            at.vit.y[i] = rand();
+            at.vit.z[i] = rand();
       }
     
       for (u32 i = 0; i < nb_PasDeTemps; i++){
-            //Verlet(at, dt, h, r_cut);
+            Verlet(at, dt, r_cut);
             ecrireXYZ(at.p, "test_simuation.xyz");
       }
 

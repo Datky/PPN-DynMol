@@ -38,18 +38,19 @@
 #include <fstream>
 #include <iomanip>
 #include "types.h"
-#include "atome.hpp"
+#include "SoA/particule.h"
 
 /** Lit un fichier au format .xyz , retourne les atomes de la premier iteration
  * @param source vers un fichier .xyz
  * @param source vers un fichier .xyz
  * @return position des atomes
  **/
-Vector_3D lireXYZ(std::string source);
+Vecteur_3D lireXYZ(std::string source);
 
 /**  Écrit un fichier au format .xyz
- * @param p position des atomes, cible le nom d'un fichier .xyz
+ * @param p position des atomes
+ * @param cible le nom d'un fichier .xyz
  **/
-void  ecrireXYZ(Vector_3D const &p, std::string cible);
+void  ecrireXYZ(Vecteur_3D const &p, std::string cible);
 
 #endif //XYZ_H

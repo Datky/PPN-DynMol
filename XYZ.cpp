@@ -6,7 +6,8 @@
 
 
 //
-Vector_3D lireXYZ(std::string source){
+Vecteur_3D lireXYZ(std::string source){
+
       std::ifstream fichier;
       fichier.open(source);
 
@@ -14,10 +15,10 @@ Vector_3D lireXYZ(std::string source){
 
       u32 nbAtome;
       fichier >> nbAtome;                           //Récupération du <Nombre d'atomes>
-      Vector_3D p;
-      p.x.reserve(nbAtome);                         //capacity=nbAtome
-      p.y.reserve(nbAtome);
-      p.z.reserve(nbAtome);
+      Vecteur_3D p;
+      p.X.reserve(nbAtome);                         //capacity=nbAtome
+      p.Y.reserve(nbAtome);
+      p.Z.reserve(nbAtome);
 
       std::string s;
       fichier >> s;
@@ -27,9 +28,9 @@ Vector_3D lireXYZ(std::string source){
 
       for (u32 i=0; i < nbAtome; ++i) {
             fichier >> s >> p_x >> p_y >> p_z;      //Récupération des <Élément i> <x(i)> <y(i)> <z(i)>
-            p.x.push_back(p_x);
-            p.y.push_back(p_y);
-            p.z.push_back(p_z);
+            p.X.push_back(p_x);
+            p.Y.push_back(p_y);
+            p.Z.push_back(p_z);
       }
       
       fichier.close();
@@ -37,22 +38,25 @@ Vector_3D lireXYZ(std::string source){
 }
 
 //
-void  ecrireXYZ(Vector_3D const &p, std::string cible){
-      std::ofstream fichier;
-      fichier.open(cible);
+void  ecrireXYZ(Vecteur_3D const &p, std::string cible){
 
-      fichier << p.x.size() << std::endl;                              //Ecriture du <Nombre d'atomes> 
+      std::ofstream fichier;
+      fichier.open(cible, std::ios_base::app);
+
+      u32 size = p.X.size()
+
+      fichier << size << std::endl;                              //Ecriture du <Nombre d'atomes> 
  
 
       fichier << "Commentaire : - " << std::endl;                      //Ecriture de la ligne de commentaire
  
       f64 p_x, p_y, p_z;
-      std::string s = "É";
+      std::string s = "Ar";
 
-      for (u32 i=0; i < p.x.size(); ++i) {
-            p_x = p.x[i];
-            p_y = p.y[i];
-            p_z = p.z[i];
+      for (u32 i=0; i < size; ++i) {
+            p_x = p.X[i];
+            p_y = p.Y[i];
+            p_z = p.Z[i];
             fichier << s <<"   "<< std::fixed << std::setprecision(5) << p_x <<"   "
                                << std::fixed << std::setprecision(5) << p_y <<"   "
                                << std::fixed << std::setprecision(5) << p_z;       //Ecriture des <Élément i> <x(i)> <y(i)> <z(i)>
