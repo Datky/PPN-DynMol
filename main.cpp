@@ -58,21 +58,21 @@ int main(){
       f64 r_cut = 0.1;
       Particules at{};
 
-      at.pos = lireXYZ("test.xyz");
-      ecrireXYZ(at.pos, "test_simuation.xyz");
+      at.pos = lireXYZ("100.xyz");
+      ecrireXYZ(at.pos, "100_simuation.xyz");
       u32 n = at.pos.x.size();
 
       for (u32 i = 0; i < n; i++){
-            at.m[i] = 5;
+            m = 5;
       
-            at.vit.x[i] = rand();
-            at.vit.y[i] = rand();
-            at.vit.z[i] = rand();
+            at.vit->X[i] = rand();
+            at.vit->Y[i] = rand();
+            at.vit->Z[i] = rand();
       }
     
       for (u32 i = 0; i < nb_PasDeTemps; i++){
-            Verlet(at, dt, r_cut);
-            ecrireXYZ(at.p, "test_simuation.xyz");
+            Verlet(at, dt, r_cut, m);
+            ecrireXYZ(at.pos, "100_simuation.xyz");
       }
 
       return 0;
