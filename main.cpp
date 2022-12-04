@@ -43,6 +43,7 @@
 #include "types.h"
 #include "constantes.h"
 #include "SoA/particule.h"
+include "XYZ.hpp"
 
 // Protoypes de fonctions
 void vectors_fill(struct Vecteur_3D*, struct Vecteur_3D*, struct Vecteur_3D*);

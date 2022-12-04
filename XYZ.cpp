@@ -6,20 +6,18 @@
 #include <iostream>
 #include <fstream>
 #include "XYZ.hpp"
+#include "SoA/particule.h"
 
 //
-Position lireXYZ(std::string source){
+void lireXYZ(std::string source, struct Vecteur_3D* pos){
       std::ifstream fichier;
       fichier.open(source);
 
       if (not fichier){ throw std::runtime_error("Fichier non trouve : "+source); }
 
-      u32 nbAtome;
+      u64 nbAtome;
       fichier >> nbAtome;                           //Récupération du <Nombre d'atomes>
-      Position p;
-      p.x.reserve(nbAtome);                         //capacity=nbAtome
-      p.y.reserve(nbAtome);
-      p.z.reserve(nbAtome);
+
 
       std::string s;
       std::getline(fichier, s);                      //Récupère et saute la ligne de commentaire
@@ -28,13 +26,12 @@ Position lireXYZ(std::string source){
 
       for (int i = 0; i < nbAtome; ++i) {
             fichier >> s >> p_x >> p_y >> p_z;     //Récupération des <Élément i> <x(i)> <y(i)> <z(i)>
-            p.x.push_back(p_x);
-            p.y.push_back(p_y);
-            p.z.push_back(p_z);
+            pos->X[i] = p_x;
+            pos->Y[i] = p_y;
+            pos->Z[i] = p_z;
       }
       
       fichier.close();
-      return p;
 }
 
 //

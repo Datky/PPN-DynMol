@@ -25,7 +25,7 @@
  * @param source vers un fichier .xyz
  * @return position des atomes
  **/
-Position lireXYZ(std::string source);
+Position lireXYZ(std::string source, struct Vecteur_3D*);
 
 /**  Écrit un fichier au format .xyz
  * @param p position des atomes, cible le nom d'un fichier .xyz
