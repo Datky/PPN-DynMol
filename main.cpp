@@ -43,7 +43,7 @@
 #include "types.h"
 #include "constantes.h"
 #include "SoA/particule.h"
-include "XYZ.hpp"
+#include "XYZ.cpp"
 
 // Protoypes de fonctions
 void vectors_fill(struct Vecteur_3D*, struct Vecteur_3D*, struct Vecteur_3D*);
@@ -85,10 +85,14 @@ int main() {
       struct Vecteur_3D *__restrict vitesses = particules.vit;
       struct Vecteur_3D *__restrict accelerations = particules.acc;
 
+
+      lireXYZ("source10000.xyz", positions);
       vectors_fill(positions, vitesses, accelerations);
 
       std::cout << "\nBonne création des particules.\n" << std::endl;
 
+
+      std::cout << &positions->Y[3] << ": posX = " <<positions->Y[3] << std::endl;
 
       return 0;
 }
@@ -97,11 +101,9 @@ int main() {
 void vectors_fill(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données
 
       for (u64 i = 0; i < N; i++) {
-            pos->X[i] = i;
+            
             std::cout << &pos->X[i] << ": posX = " <<pos->X[i] << std::endl;
-            pos->Y[i] = i;
             std::cout << &pos->Y[i] << ": posY = " <<pos->Y[i] << std::endl;
-            pos->Z[i] = i;
             std::cout << &pos->Z[i] << ": posZ = " <<pos->Z[i] << std::endl;
 
             vit->X[i] = i;
@@ -111,11 +113,11 @@ void vectors_fill(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur
             vit->Z[i] = i;
             std::cout << &vit->Z[i] << ": vitZ = " <<vit->Z[i] << std::endl;
 
-            acc->X[i] = i;
+            acc->X[i] = 0.0;
             std::cout << &acc->X[i] << ": accX = " <<acc->X[i] << std::endl;
-            acc->Y[i] = i;
+            acc->Y[i] = 0.0;
             std::cout << &acc->Y[i] << ": accY = " <<acc->Y[i] << std::endl;
-            acc->Z[i] = i;
+            acc->Z[i] = 0.0;
             std::cout << &acc->Z[i] << ": accZ = " <<acc->Z[i] << std::endl;
 
             std::cout << "\n" << std::endl;
