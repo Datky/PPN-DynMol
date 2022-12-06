@@ -33,7 +33,7 @@ Position lireXYZ(std::string source){
             p.z.push_back(p_z);
       }
       
-      fichier.close();*/
+      fichier.close();
       return p;
 }
 
