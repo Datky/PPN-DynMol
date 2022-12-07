@@ -46,6 +46,8 @@
 
 // Protoypes de fonctions
 void vectors_fill(struct Vecteur_3D*, struct Vecteur_3D*, struct Vecteur_3D*);
+void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit);
+void accelerations_initiales_nulles(struct Vecteur_3D* acc);
 
 int main() {
       double r = 1; // (à revoir) valeur arbitraire juste pour entrer la formule
@@ -84,15 +86,20 @@ int main() {
       struct Vecteur_3D *__restrict vitesses = particules.vit;
       struct Vecteur_3D *__restrict accelerations = particules.acc;
 
-      vectors_fill(positions, vitesses, accelerations);
+      vectors_fill(positions, vitesses, accelerations); // !!! A REMPLACER PAR LECTURE DU FICHIER .XYZ
 
       std::cout << "\nBonne création des particules.\n" << std::endl;
 
+      generation_gaussienne_des_vitesses(vitesses);
+
+      std::cout << "\nBonne affectation gaussienne des vitesses.\n" << std::endl;
+
+      accelerations_initiales_nulles(accelerations);
 
       return 0;
 }
 
-
+// !!! A REMPLACER PAR LECTURE DU FICHIER .XYZ
 void vectors_fill(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données
 
       for (u64 i = 0; i < N; i++) {
@@ -103,6 +110,7 @@ void vectors_fill(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur
             pos->Z[i] = i;
             std::cout << &pos->Z[i] << ": posZ = " <<pos->Z[i] << std::endl;
 
+/*
             vit->X[i] = i;
             std::cout << &vit->X[i] << ": vitX = " <<vit->X[i] << std::endl;
             vit->Y[i] = i;
@@ -116,8 +124,38 @@ void vectors_fill(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur
             std::cout << &acc->Y[i] << ": accY = " <<acc->Y[i] << std::endl;
             acc->Z[i] = i;
             std::cout << &acc->Z[i] << ": accZ = " <<acc->Z[i] << std::endl;
-
+*/
             std::cout << "\n" << std::endl;
       }
+}
+
+void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit){
+
+  std::random_device rd; // Génération d'une graine.
+  std::mt19937 gen(rd()); // Génération par "gen" d'un entier non signé par l'algo de Mersenne en fonction de la graine.
+  std::normal_distribution<> d_v_x{0.0,1.0}; // Moyenne des vitesses : 0 ; écart-type (moyenne quadratique des écarts à la moyenne) : 1 Å/s.
+  std::normal_distribution<> d_v_y{0.0,1.0}; // Moyenne des vitesses : 0 ; écart-type (moyenne quadratique des écarts à la moyenne) : 1 Å/s.
+  std::normal_distribution<> d_v_z{0.0,1.0}; // Moyenne des vitesses : 0 ; écart-type (moyenne quadratique des écarts à la moyenne) : 1 Å/s.
+
+// Pour chaque appel de d_v_x(gen), d_v_y(gen) et d_v_z(gen) : transformation de l'entier généré par gen en un nouveau double aléatoire (gaussien) autour de 0.
+  for(u64 i = 0; i < N; i++){
+    vit->X[i] = d_v_x(gen);
+    std::cout << &vit->X[i] << ": vit_Gauss_X = " <<vit->X[i] << std::endl;
+    vit->Y[i] = d_v_y(gen);
+    std::cout << &vit->Y[i] << ": vit_Gauss_Y = " <<vit->Y[i] << std::endl;
+    vit->Z[i] = d_v_z(gen);
+    std::cout << &vit->Z[i] << ": vit_Gauss_Z = " <<vit->Z[i] << std::endl;
+  }
+}
+
+void accelerations_initiales_nulles(struct Vecteur_3D* acc){
+  for(u64 i = 0; i < N; i++){
+    acc->X[i] = 0.0;
+    std::cout << &acc->X[i] << ": accX = " <<acc->X[i] << std::endl;
+    acc->Y[i] = 0.0;
+    std::cout << &acc->Y[i] << ": accY = " <<acc->Y[i] << std::endl;
+    acc->Z[i] = 0.0;
+    std::cout << &acc->Z[i] << ": accZ = " <<acc->Z[i] << std::endl;
+  }
 
 }
