@@ -13,6 +13,24 @@ Number of cells in each cell vector direction?
 
 */
 
+/*
+  for (int i = 0; i < atom.number - 1; ++i) {
+    const double x1 = atom.x[i];
+    const double y1 = atom.y[i];
+    const double z1 = atom.z[i];
+    for (int j = i + 1; j < atom.number; ++j) {
+      double xij = atom.x[j] - x1;
+      double yij = atom.y[j] - y1;
+      double zij = atom.z[j] - z1;
+      
+      ——————> xij * xij + yij * yij + zij * zij;
+      
+      if ()
+      ———————>atom.NL[i * atom.MN + atom.NN[i]++] = j;
+      
+        if (atom.NN[i] > atom.MN) {
+          */
+
 
 float getArea(const double* a, const double* b)
 {
