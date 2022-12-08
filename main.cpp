@@ -90,7 +90,11 @@ int main() {
 
 
       remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.
-      //ecrireXYZ(positions, "test.xyz");
+      /*
+      ecrireXYZ(positions, "test.xyz");
+      positions->X[0] = 69.42069;
+      ecrireXYZ(positions, "test.xyz");
+      */
 
       return 0;
 }
