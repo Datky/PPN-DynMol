@@ -8,35 +8,33 @@
 #include "XYZ.hpp"
 
 //
-Position lireXYZ(std::string source){
-      std::ifstream fichier;
-      fichier.open(source);
+void lireXYZ(std::string source, struct Vecteur_3D* pos){
+      std::ifstream fichier(source);
 
       if (not fichier){ throw std::runtime_error("Fichier non trouve : "+source); }
 
-      u32 nbAtome;
-      fichier >> nbAtome;                           //Récupération du <Nombre d'atomes>
-      Position p;
-      p.x.reserve(nbAtome);                         //capacity=nbAtome
-      p.y.reserve(nbAtome);
-      p.z.reserve(nbAtome);
 
+      // Récupère et saute les deux premières lignes inutiles.
       std::string s;
-      std::getline(fichier, s);                      //Récupère et saute la ligne de commentaire
+      std::getline(fichier, s);                      
+      std::getline(fichier, s);
 
       f64 p_x, p_y, p_z;
 
-      for (int i = 0; i < nbAtome; ++i) {
-            fichier >> s >> p_x >> p_y >> p_z;     //Récupération des <Élément i> <x(i)> <y(i)> <z(i)>
-            p.x.push_back(p_x);
-            p.y.push_back(p_y);
-            p.z.push_back(p_z);
+      u64 i = 0;
+
+      while (fichier >> s >> p_x >> p_y >> p_z) { //Récupération des <Élément i> <x(i)> <y(i)> <z(i)>
+            pos->X[i] = p_x;
+            pos->Y[i] = p_y;
+            pos->Z[i] = p_z;
+            ++i;
       }
-      
+
+
       fichier.close();
-      return p;
 }
 
+/*
 //
 void  ecrireXYZ(Position const &p, std::string cible){
       std::ofstream fichier;
@@ -61,4 +59,4 @@ void  ecrireXYZ(Position const &p, std::string cible){
       fichier.close();
 }
 
-int main(){ return 0; }
+*/

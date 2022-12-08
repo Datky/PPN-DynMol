@@ -19,17 +19,17 @@
 #define XYZ_H
 
 #include "types.h"
-#include "atome.hpp"
+//#include "atome.hpp"
 
 /** Lit un fichier au format .xyz , retourne des atomes
  * @param source vers un fichier .xyz
  * @return position des atomes
  **/
-Position lireXYZ(std::string source);
+void lireXYZ(std::string source, struct Vecteur_3D*);
 
 /**  Écrit un fichier au format .xyz
  * @param p position des atomes, cible le nom d'un fichier .xyz
  **/
-void  ecrireXYZ(Position const &p, std::string cible);
+//void  ecrireXYZ(Position const &p, std::string cible);
 
 #endif //XYZ_H

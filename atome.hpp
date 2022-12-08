@@ -1,7 +1,7 @@
 #include <vector>
 #include <random>
 
-#include "type.h"
+#include "types.h"
 /** @fichier
  * Structures de données pour représenter les atomes
  **/

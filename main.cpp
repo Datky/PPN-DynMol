@@ -43,9 +43,10 @@
 #include "types.h"
 #include "constantes.h"
 #include "SoA/particule.h"
+#include "XYZ.cpp"
 
 // Protoypes de fonctions
-void vectors_fill(struct Vecteur_3D*, struct Vecteur_3D*, struct Vecteur_3D*);
+void remplissage_vecteurs(struct Vecteur_3D*, struct Vecteur_3D*, struct Vecteur_3D*);
 void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit);
 void accelerations_initiales_nulles(struct Vecteur_3D* acc);
 
@@ -86,47 +87,33 @@ int main() {
       struct Vecteur_3D *__restrict vitesses = particules.vit;
       struct Vecteur_3D *__restrict accelerations = particules.acc;
 
-      vectors_fill(positions, vitesses, accelerations); // !!! A REMPLACER PAR LECTURE DU FICHIER .XYZ
 
-      std::cout << "\nBonne création des particules.\n" << std::endl;
 
-      generation_gaussienne_des_vitesses(vitesses);
+      remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.
 
-      std::cout << "\nBonne affectation gaussienne des vitesses.\n" << std::endl;
 
-      accelerations_initiales_nulles(accelerations);
+
 
       return 0;
 }
 
 // !!! A REMPLACER PAR LECTURE DU FICHIER .XYZ
-void vectors_fill(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données
+void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données
 
-      for (u64 i = 0; i < N; i++) {
-            pos->X[i] = i;
-            std::cout << &pos->X[i] << ": posX = " <<pos->X[i] << std::endl;
-            pos->Y[i] = i;
-            std::cout << &pos->Y[i] << ": posY = " <<pos->Y[i] << std::endl;
-            pos->Z[i] = i;
-            std::cout << &pos->Z[i] << ": posZ = " <<pos->Z[i] << std::endl;
+  // Peut être optimisé avec une seule boucle au lieu de 3
 
-/*
-            vit->X[i] = i;
-            std::cout << &vit->X[i] << ": vitX = " <<vit->X[i] << std::endl;
-            vit->Y[i] = i;
-            std::cout << &vit->Y[i] << ": vitY = " <<vit->Y[i] << std::endl;
-            vit->Z[i] = i;
-            std::cout << &vit->Z[i] << ": vitZ = " <<vit->Z[i] << std::endl;
 
-            acc->X[i] = i;
-            std::cout << &acc->X[i] << ": accX = " <<acc->X[i] << std::endl;
-            acc->Y[i] = i;
-            std::cout << &acc->Y[i] << ": accY = " <<acc->Y[i] << std::endl;
-            acc->Z[i] = i;
-            std::cout << &acc->Z[i] << ": accZ = " <<acc->Z[i] << std::endl;
-*/
-            std::cout << "\n" << std::endl;
-      }
+  lireXYZ("source10000.xyz", pos);
+
+  std::cout << "\nBonne lecture du fichier des positions.\n" << std::endl;
+
+  generation_gaussienne_des_vitesses(vit);
+
+  std::cout << "\nBonne affectation gaussienne des vitesses.\n" << std::endl;
+
+  accelerations_initiales_nulles(acc);
+
+  std::cout << "\nBonne affectation des accélérations.\n" << std::endl;
 }
 
 void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit){
