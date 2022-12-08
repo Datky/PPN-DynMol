@@ -5,7 +5,9 @@
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
+#include <iomanip> // Nécessaire pour bonne précision en lecture/écriture
 #include "XYZ.hpp"
+#include "constantes.h"
 
 //
 void lireXYZ(std::string source, struct Vecteur_3D* pos){
@@ -23,7 +25,7 @@ void lireXYZ(std::string source, struct Vecteur_3D* pos){
 
       u64 i = 0;
 
-      while (fichier >> s >> p_x >> p_y >> p_z) { //Récupération des <Élément i> <x(i)> <y(i)> <z(i)>
+      while (fichier >> std::setprecision(11) >> s >> p_x >> p_y >> p_z) { //Récupération des <Élément i> <x(i)> <y(i)> <z(i)>
             pos->X[i] = p_x;
             pos->Y[i] = p_y;
             pos->Z[i] = p_z;
@@ -34,29 +36,27 @@ void lireXYZ(std::string source, struct Vecteur_3D* pos){
       fichier.close();
 }
 
-/*
+
 //
-void  ecrireXYZ(Position const &p, std::string cible){
+void  ecrireXYZ(struct Vecteur_3D* pos, std::string cible){
       std::ofstream fichier;
       fichier.open(cible);
 
-      fichier << p.x.size() << std::endl;                              //Ecriture du <Nombre d'atomes> 
+      fichier << N << std::endl;                              //Ecriture du <Nombre d'atomes> 
  
 
       fichier << "Commentaire : " << std::endl;                        //Ecriture de la ligne de commentaire
  
-      f64 p_x, p_y, p_z;
+      
       std::string s = "Élément";
 
-      for (int i = 0; i < p.x.size(); ++i) {
-            p_x = p.x[i];
-            p_y = p.y[i];
-            p_z = p.z[i];
-            fichier << s <<' '<< p_x <<' '<<' '<< p_y <<' '<< p_z;     //Ecriture des <Élément i> <x(i)> <y(i)> <z(i)>
+      for (int i = 0; i < N; ++i) {
+            fichier << std::setprecision(11)<< s <<' '<< pos->X[i] <<' '<<' '<< pos->Y[i] <<' '<< pos->Z[i];     //Ecriture des <Élément i> <x(i)> <y(i)> <z(i)>
             fichier << std::endl;
       }
       
       fichier.close();
+      std::cout << "Bonne écriture sur le fichier." << std::endl;
 }
 
-*/
+
