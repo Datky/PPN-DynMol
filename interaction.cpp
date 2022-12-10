@@ -2,32 +2,13 @@
  * 
  **/
 #include <cmath>
-#include "interaction.hpp"
-#include "potentiel.hpp"
+#include "interaction.h"
+#include "potentiel.cpp"
 
 //Pseudo code //
-void Verlet(Particules & at, f64 const& dt, f64 const& r_cut, f64 const& m){
+void Verlet(Particules & at, Vecteur_3D* r_tmp, Vecteur_3D* r, Vecteur_3D* F, f64 const& dt, f64 const& r_cut){
 
       f64 r_globale;
-      struct Vecteur_3D *__restrict r_tmp;
-      struct Vecteur_3D *__restrict r;
-      struct Vecteur_3D *__restrict F;
-
-      r_tmp = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-      r = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-      F = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-
-      r_tmp->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      r_tmp->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      r_tmp->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-
-      r->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      r->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      r->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-
-      F->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      F->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      F->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
 
       for(u32 i=0; i<N; ++i){
 

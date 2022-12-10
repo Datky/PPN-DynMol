@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip> // Nécessaire pour bonne précision en lecture/écriture
-#include "XYZ.hpp"
+#include "XYZ.h"
 #include "constantes.h"
 
 //

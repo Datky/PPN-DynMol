@@ -6,6 +6,7 @@
  * Structures de données pour représenter les atomes
  **/
 
+/*
 #ifndef STRUCT_H
 #define STRUCT_H
 
@@ -28,10 +29,11 @@ struct Atome {
       bool atome;   //Si contin un atome true, sinon false
 };*/
 
-#endif //STRUCT_H
+//#endif //STRUCT_H
 
 #ifndef ATOM_FUNC_H
 #define ATOM_FUNC_H
+
 
 struct Vec3d
 {

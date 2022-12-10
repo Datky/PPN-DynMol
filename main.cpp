@@ -38,11 +38,11 @@
 
 #include <iostream>
 #include <cstdio>
-#include <cmath>
 #include <random>
 #include "types.h"
 #include "constantes.h"
 #include "SoA/particule.h"
+#include "interaction.cpp"
 #include "XYZ.cpp"
 
 // Protoypes de fonctions
@@ -51,6 +51,7 @@ void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit);
 void accelerations_initiales_nulles(struct Vecteur_3D* acc);
 
 int main() {
+      /*
       double r = 1; // (à revoir) valeur arbitraire juste pour entrer la formule
       double E_paire = 4*E_0*(pow(d/r,12.0)-pow(d/r,6.0));
 
@@ -58,7 +59,7 @@ int main() {
       printf("profondeur du puit de potentiel : E_0 = -%e J \n",E_0);
       printf("distance d'annulation du potentiel : d = %e A \n",d);
       printf("énergie potentielle pour un atome à 1,000 m : E_paire = %e J \n",E_paire);
-
+      */
 
  
 
@@ -89,11 +90,44 @@ int main() {
 
 
 
-      remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.
+      remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.      
+
+
+      struct Vecteur_3D *__restrict r_tmp;
+      struct Vecteur_3D *__restrict r;
+      struct Vecteur_3D *__restrict F;
+
+      r_tmp = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
+      r = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
+      F = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
+
+      r_tmp->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      r_tmp->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      r_tmp->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+
+      r->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      r->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      r->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+
+      F->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      F->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+      F->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+
+
+      std::string str_N = std::__cxx11::to_string(N);
+      //ecrireXYZ(positions, "simuation"+str_N+".xyz");
+
+      for (u32 i = 0; i < nb_iteration; i++){
+            Verlet(particules, r_tmp, r, F, dt, d);          // Le potentiel s'annule quand r = d, donc r_cut = d.
+            ecrireXYZ(positions, "simuation"+str_N+".xyz");
+      }
+
       /*
-      ecrireXYZ(positions, "test.xyz");
-      positions->X[0] = 69.42069;
-      ecrireXYZ(positions, "test.xyz");
+      for (u32 i = 0; i < nb_iteration; i++){
+            Verlet(particules, r_tmp, r, F, dt, d); 
+            std::string fichier_i = std::__cxx11::to_string(i);
+            ecrireXYZ(positions, "simuation"+str_N+"_iteration"+fichier_i+".xyz");
+      }
       */
 
       return 0;
@@ -104,8 +138,8 @@ void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct
 
   // Peut être optimisé avec une seule boucle au lieu de 3
 
-
-  lireXYZ("source10000.xyz", pos);
+  std::string str_N = std::__cxx11::to_string(N);
+  lireXYZ("source"+str_N+".xyz", pos);
 
   std::cout << "\nBonne lecture du fichier des positions.\n" << std::endl;
 
