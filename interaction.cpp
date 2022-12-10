@@ -9,11 +9,14 @@
 void Verlet(Particules & at, Vecteur_3D* r_tmp, Vecteur_3D* r, Vecteur_3D* F, f64 const& dt, f64 const& r_cut){
 
       f64 r_globale;
+      f64 h = pow(10,-9);
 
       for(u32 i=0; i<N; ++i){
 
-            //Mise à zéro de la force
-            F->X = F->Y = F->Z = 0;
+            //Mise à zéro des distance inter-atomique précédente et actuelle et la force
+            r_tmp->X[i] = r_tmp->Y[i] = r_tmp->Z[i] = 0;
+            r->X[i] = r->Y[i] = r->Z[i] = 0;
+            F->X[i] = F->Y[i] = F->Z[i] = 0;
 
             for(u32 j=0; j<N; ++j){
 
@@ -45,14 +48,19 @@ void Verlet(Particules & at, Vecteur_3D* r_tmp, Vecteur_3D* r, Vecteur_3D* F, f6
                         continue;
                   } 
                   else {
+                        /*
                         F->X[i] += -(Lennard_Jones(r_tmp->X[i]) - Lennard_Jones(r->X[i])) / (r_tmp->X[i] - r->X[i]);
                         F->Y[i] += -(Lennard_Jones(r_tmp->Y[i]) - Lennard_Jones(r->Y[i])) / (r_tmp->Y[i] - r->Y[i]);
                         F->Z[i] += -(Lennard_Jones(r_tmp->Z[i]) - Lennard_Jones(r->Z[i])) / (r_tmp->Z[i] - r->Z[i]);
+                        */
+                        F->X[i] += -(Lennard_Jones(r->X[i]+h) - Lennard_Jones(h)) / h;
+                        F->Y[i] += -(Lennard_Jones(r->Y[i]+h) - Lennard_Jones(h)) / h;
+                        F->Z[i] += -(Lennard_Jones(r->Z[i]+h) - Lennard_Jones(h)) / h;
                   }
 
 
                   //Stocker plus grand déplacement dans ce pas de temps. f64 r_max
-                  //if(r_max<r_globale) r_max=r;
+                  //if(r_max<r_globale) r_max=r_globale;
 
             }
 

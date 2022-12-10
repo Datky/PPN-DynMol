@@ -113,7 +113,6 @@ int main() {
       F->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
       F->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
 
-
       std::string str_N = std::__cxx11::to_string(N);
       //ecrireXYZ(positions, "simuation"+str_N+".xyz");
 
