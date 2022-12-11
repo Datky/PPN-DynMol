@@ -2,7 +2,7 @@
 // E_paire(r) = 4 * E_0 * [ (d/r)^12 - (d/r)^6 ] : énergie potentielle de paire de type Lennard-Jones de l'intéraction
 // E_0  : profondeur du puit de potentiel (paramètre ajustable)
 //    E_0 = 119,8 * k_b pour l'argon
-// k_b  : constante de Boltzman
+// k_b  : constante de Boltzman 8.617343e-5
 // d    : distance d'annulation du potentiel (paramètre ajustable)
 //    d = 3,405 pour l'argon
 // r    : distance inter-atomique
