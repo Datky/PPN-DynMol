@@ -1,22 +1,6 @@
 #include <cmath>
 #include <iostream> 
 #include <string>  
-#include <vector>  
-
-const int Ns = 100;             
-const double K_B = 8.617343e-5; // Boltzmann's constant in natural unit
-
-struct Atom {
-  int number;
-  int numUpdates = 0;
-  int neighbor_flag = 2;
-  const int MN = 1000;
-  double cutoffNeighbor = 10.0;
-  double box[18];
-  double pe;
-  std::vector<int> NN, NL;
-  std::vector<double> mass, x0, y0, z0, x, y, z, vx, vy, vz, fx, fy, fz;
-};
 
 double getDet(const double* box)
 {
