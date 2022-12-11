@@ -2,11 +2,6 @@
 
 ###### M1 CHPS - PPN - DYNAMIQUE MOLECULAIRE ######
 
-make
-./simulation
-rm simulation
-
-
 #### Création d'un fichier d'entrée avec positions de points aléatoire ####
 
 # Unités
@@ -46,4 +41,14 @@ rm simulation
 atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 initial10000.cfg
 atomsk initial10000.cfg -add-atom Ar random 10000 source10000.cfg
 atomsk source10000.cfg xyz
+
+
+#### Exécution du makefile, exécution du programme ####
+
+make
+./simulation
+
+#### Nettoyage ####
+
+rm simulation initial10000.cfg source10000.cfg source10000.xyz
 
