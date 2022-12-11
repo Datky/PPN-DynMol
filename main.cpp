@@ -2,7 +2,6 @@
 // E_paire(r) = 4 * E_0 * [ (d/r)^12 - (d/r)^6 ] : énergie potentielle de paire de type Lennard-Jones de l'intéraction
 // E_0  : profondeur du puit de potentiel (paramètre ajustable)
 //    E_0 = 119,8 * k_b pour l'argon
-// k_b  : constante de Boltzman
 // d    : distance d'annulation du potentiel (paramètre ajustable)
 //    d = 3,405 pour l'argon
 // r    : distance inter-atomique
@@ -114,18 +113,18 @@ int main() {
       F->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
 
       std::string str_N = std::__cxx11::to_string(N);
-      //ecrireXYZ(positions, "simuation"+str_N+".xyz");
+      //ecrireXYZ(positions, "simulation"+str_N+".xyz");
 
       for (u32 i = 0; i < nb_iteration; i++){
             Verlet(particules, r_tmp, r, F, dt, d);          // Le potentiel s'annule quand r = d, donc r_cut = d.
-            ecrireXYZ(positions, "simuation"+str_N+".xyz");
+            ecrireXYZ(positions, "simulation"+str_N+".xyz");
       }
 
       /*
       for (u32 i = 0; i < nb_iteration; i++){
             Verlet(particules, r_tmp, r, F, dt, d); 
             std::string fichier_i = std::__cxx11::to_string(i);
-            ecrireXYZ(positions, "simuation"+str_N+"_iteration"+fichier_i+".xyz");
+            ecrireXYZ(positions, "simulation"+str_N+"_iteration"+fichier_i+".xyz");
       }
       */
 
@@ -159,25 +158,60 @@ void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit){
   std::normal_distribution<> d_v_y{0.0,1.0}; // Moyenne des vitesses : 0 ; écart-type (moyenne quadratique des écarts à la moyenne) : 1 Å/s.
   std::normal_distribution<> d_v_z{0.0,1.0}; // Moyenne des vitesses : 0 ; écart-type (moyenne quadratique des écarts à la moyenne) : 1 Å/s.
 
+f64 qdm_systeme_x = 0 ;
+f64 qdm_systeme_y = 0 ;
+f64 qdm_systeme_z = 0 ;
+
 // Pour chaque appel de d_v_x(gen), d_v_y(gen) et d_v_z(gen) : transformation de l'entier généré par gen en un nouveau double aléatoire (gaussien) autour de 0.
-  for(u64 i = 0; i < N; i++){
-    vit->X[i] = d_v_x(gen);
-    std::cout << &vit->X[i] << ": vit_Gauss_X = " <<vit->X[i] << std::endl;
-    vit->Y[i] = d_v_y(gen);
-    std::cout << &vit->Y[i] << ": vit_Gauss_Y = " <<vit->Y[i] << std::endl;
-    vit->Z[i] = d_v_z(gen);
-    std::cout << &vit->Z[i] << ": vit_Gauss_Z = " <<vit->Z[i] << std::endl;
-  }
+// Calcul de la composante selon x, y et z du vecteur quantité de mouvement total du système.
+    for(u64 i = 0; i < N; i++){
+        vit->X[i] = d_v_x(gen);
+        qdm_systeme_x = qdm_systeme_x + m*(vit->X[i]);
+        vit->Y[i] = d_v_y(gen);
+        qdm_systeme_y = qdm_systeme_y + m*(vit->X[i]);
+        vit->Z[i] = d_v_z(gen);
+        qdm_systeme_z = qdm_systeme_z + m*(vit->X[i]);
+    }
+
+    std::cout << "Quantité de mouvement du système selon x avant ajustement" << qdm_systeme_x << std::endl;
+    std::cout << "Quantité de mouvement du système selon y avant ajustement" << qdm_systeme_y << std::endl;
+    std::cout << "Quantité de mouvement du système selon z avant ajustement" << qdm_systeme_z << std::endl;
+
+// Ajustement de qdm_systeme à 0, ie m*vit->X[i] = m*vit->X[i] - qdm_systeme_x, ETC. !!! Vérifier (du point de vue physique)
+    for(u64 i = 0; i < N; i++){
+        vit->X[i] = vit->X[i] - qdm_systeme_x/m;
+        vit->Y[i] = vit->Y[i] - qdm_systeme_y/m;
+        vit->Z[i] = vit->Z[i] - qdm_systeme_z/m;
+//        std::cout << &vit->X[i] << ": vit_Gauss_après_qdm_syst_nulle_X = " <<vit->X[i] << std::endl;
+//        std::cout << &vit->Y[i] << ": vit_Gauss_après_qdm_syst_nulle_Y = " <<vit->Y[i] << std::endl;
+//        std::cout << &vit->Z[i] << ": vit_Gauss_après_qdm_syst_nulle_Z = " <<vit->Z[i] << std::endl;
+    }
+
+// Calcul de la température en fonction de la norme du vecteur vitesse. !!! Vérifier (du point de vue physique)
+    f64 temperature = 0;
+    for(u64 i = 0; i < N; i++){
+        temperature = temperature + 1/(3*k_b*N)*m*(pow(vit->X[i],2.0)+pow(vit->Y[i],2.0)+pow(vit->X[i],2.0));
+    }
+
+// Calcul de la vitesse selon initialisation à temperature_cible; !!! Vérifier (du point de vue physique)
+    for(u64 i = 0; i < N; i++){
+        vit->X[i] = (vit->X[i])*sqrt(temperature_cible/temperature);
+        std::cout << &vit->X[i] << ": vit_Gauss_après_ajustement_Tcible_X = " <<vit->X[i] << std::endl;
+        vit->Y[i] = (vit->Y[i])*sqrt(temperature_cible/temperature);
+        std::cout << &vit->Y[i] << ": vit_Gauss_après_ajustement_Tcible_Y = " <<vit->Y[i] << std::endl;
+        vit->Z[i] = (vit->Z[i])*sqrt(temperature_cible/temperature);
+        std::cout << &vit->Z[i] << ": vit_Gauss_après_ajustement_Tcible_Z = " <<vit->Z[i] << std::endl;
+    }
 }
 
 void accelerations_initiales_nulles(struct Vecteur_3D* acc){
-  for(u64 i = 0; i < N; i++){
-    acc->X[i] = 0.0;
-    std::cout << &acc->X[i] << ": accX = " <<acc->X[i] << std::endl;
-    acc->Y[i] = 0.0;
-    std::cout << &acc->Y[i] << ": accY = " <<acc->Y[i] << std::endl;
-    acc->Z[i] = 0.0;
-    std::cout << &acc->Z[i] << ": accZ = " <<acc->Z[i] << std::endl;
-  }
+    for(u64 i = 0; i < N; i++){
+        acc->X[i] = 0.0;
+//      std::cout << &acc->X[i] << ": accX = " <<acc->X[i] << std::endl;
+        acc->Y[i] = 0.0;
+//      std::cout << &acc->Y[i] << ": accY = " <<acc->Y[i] << std::endl;
+        acc->Z[i] = 0.0;
+//      std::cout << &acc->Z[i] << ": accZ = " <<acc->Z[i] << std::endl;
+    }
 
 }
