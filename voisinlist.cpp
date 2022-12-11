@@ -13,6 +13,7 @@ Number of cells in each cell vector direction?
 
 */
 
+
 /*
   for (int i = 0; i < atom.number - 1; ++i) {
     const double x1 = atom.x[i];
