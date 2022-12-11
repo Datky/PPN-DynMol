@@ -1,20 +1,73 @@
-/*
+#include <cmath>
+#include <iostream> 
+#include <string>  
+#include <vector>  
 
-Number of nearest neighbors per atom
+const int Ns = 100;             
+const double K_B = 8.617343e-5; // Boltzmann's constant in natural unit
 
-The whole box is divided into a number of cells.
-The edge length of each cell is not less than the cutoff distance of the vosin table.
+struct Atom {
+  int number;
+  int numUpdates = 0;
+  int neighbor_flag = 2;
+  const int MN = 1000;
+  double cutoffNeighbor = 10.0;
+  double box[18];
+  double pe;
+  std::vector<int> NN, NL;
+  std::vector<double> mass, x0, y0, z0, x, y, z, vx, vy, vz, fx, fy, fz;
+};
 
-How many cells are divided into? 
+double getDet(const double* box)
+{
+  return box[0] * (box[4] * box[8] - box[5] * box[7]) +
+         box[1] * (box[5] * box[6] - box[3] * box[8]) +
+         box[2] * (box[3] * box[7] - box[4] * box[6]);
+}
 
-Number of cells in each cell vector direction?
+void getInverseBox(double* box)
+{
+  box[9] = box[4] * box[8] - box[5] * box[7];
+  box[10] = box[2] * box[7] - box[1] * box[8];
+  box[11] = box[1] * box[5] - box[2] * box[4];
+  box[12] = box[5] * box[6] - box[3] * box[8];
+  box[13] = box[0] * box[8] - box[2] * box[6];
+  box[14] = box[2] * box[3] - box[0] * box[5];
+  box[15] = box[3] * box[7] - box[4] * box[6];
+  box[16] = box[1] * box[6] - box[0] * box[7];
+  box[17] = box[0] * box[4] - box[1] * box[3];
+  double det = getDet(box);
+  for (int n = 9; n < 18; ++n) {
+    box[n] /= det;
+  }
+}
 
+void applyMicOne(double& x12)
+{
+  if (x12 < -0.5)
+    x12 += 1.0;
+  else if (x12 > +0.5)
+    x12 -= 1.0;
+}
 
+void applyMic(const double* box, double& x12, double& y12, double& z12)
+{
+  double sx12 = box[9] * x12 + box[10] * y12 + box[11] * z12;
+  double sy12 = box[12] * x12 + box[13] * y12 + box[14] * z12;
+  double sz12 = box[15] * x12 + box[16] * y12 + box[17] * z12;
+  applyMicOne(sx12);
+  applyMicOne(sy12);
+  applyMicOne(sz12);
+  x12 = box[0] * sx12 + box[1] * sy12 + box[2] * sz12;
+  y12 = box[3] * sx12 + box[4] * sy12 + box[5] * sz12;
+  z12 = box[6] * sx12 + box[7] * sy12 + box[8] * sz12;
+}
 
-*/
+void findNeighbor(Atom& atom)
+{
+  const double cutoffSquare = atom.cutoffNeighbor * atom.cutoffNeighbor;
+  std::fill(atom.NN.begin(), atom.NN.end(), 0);   //Number of neighbors of each atom set to zero
 
-
-/*
   for (int i = 0; i < atom.number - 1; ++i) {
     const double x1 = atom.x[i];
     const double y1 = atom.y[i];
@@ -23,50 +76,18 @@ Number of cells in each cell vector direction?
       double xij = atom.x[j] - x1;
       double yij = atom.y[j] - y1;
       double zij = atom.z[j] - z1;
-      
-      ——————> xij * xij + yij * yij + zij * zij;
-      
-      if ()
-      ———————>atom.NL[i * atom.MN + atom.NN[i]++] = j;
-      
+      applyMic(atom.box, xij, yij, zij);
+      const double distanceSquare = xij * xij + yij * yij + zij * zij;
+      if (distanceSquare < cutoffSquare) {
+        atom.NL[i * atom.MN + atom.NN[i]] = j;
+        atom.NN[i]++;
         if (atom.NN[i] > atom.MN) {
-          */
-
-
-float getArea(const double* a, const double* b)
-{
-  const double s1 = ....;
-  const double s2 = ....;
-  const double s3 = ....;
-  return sqrt(s1 * s1 + s2 * s2 + s3 * s3);
-}
-
-/*
-
-....
-
-*/
-
-
-void findCell( const double* box, const double* r, const int* numCells, int* cell)
-{
-  double s[3]; 
-  
-  //Three vector directions
- 
-  ...
-    
-  for (int d = 0; d < 3; ++d) {
-    cell[d] = ....;
-    
-    if (cell[d] < 0)
-      cell[d] += numCells[d];
-    
-    if (cell[d] >= numCells[d])
-      cell[d] -= numCells[d];
+          std::cout << "Error: number of neighbors for atom " << i
+                    << " exceeds " << atom.MN << std::endl;
+          exit(1);
+        }
+      }
+    }
   }
-  cell[3] = cell[0] + numCells[0] * (cell[1] + numCells[1] * cell[2]);
 }
-
-
 
