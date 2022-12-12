@@ -1,6 +1,4 @@
-#include <cmath>
-#include <iostream> 
-#include <string>  
+#include "voisinlist.h" 
 
 double getDet(const double* box)
 {
