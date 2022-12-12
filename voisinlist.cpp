@@ -45,32 +45,6 @@ void applyMic(const double* box, double& x12, double& y12, double& z12)
   z12 = box[6] * sx12 + box[7] * sy12 + box[8] * sz12;
 }
 
-void findNeighbor(Atom& atom)
-{
-  const double cutoffSquare = atom.cutoffNeighbor * atom.cutoffNeighbor;
-  std::fill(atom.NN.begin(), atom.NN.end(), 0);   //Number of neighbors of each atom set to zero
 
-  for (int i = 0; i < atom.number - 1; ++i) {
-    const double x1 = atom.x[i];
-    const double y1 = atom.y[i];
-    const double z1 = atom.z[i];
-    for (int j = i + 1; j < atom.number; ++j) {
-      double xij = atom.x[j] - x1;
-      double yij = atom.y[j] - y1;
-      double zij = atom.z[j] - z1;
-      applyMic(atom.box, xij, yij, zij);
-      const double distanceSquare = xij * xij + yij * yij + zij * zij;
-      if (distanceSquare < cutoffSquare) {
-        atom.NL[i * atom.MN + atom.NN[i]] = j;
-        atom.NN[i]++;
-        if (atom.NN[i] > atom.MN) {
-          std::cout << "Error: number of neighbors for atom " << i
-                    << " exceeds " << atom.MN << std::endl;
-          exit(1);
-        }
-      }
-    }
-  }
-}
 
 
