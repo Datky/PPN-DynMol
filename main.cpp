@@ -113,20 +113,20 @@ int main() {
       F->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
 
       std::string str_N = std::__cxx11::to_string(N);
-      //ecrireXYZ(positions, "simulation"+str_N+".xyz");
+      ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration0.xyz");
 
+      /*
       for (u32 i = 0; i < nb_iteration; i++){
             Verlet(particules, r_tmp, r, F, dt, d);          // Le potentiel s'annule quand r = d, donc r_cut = d.
             ecrireXYZ(positions, "simulation"+str_N+".xyz");
       }
+      */
 
-      /*
       for (u32 i = 0; i < nb_iteration; i++){
             Verlet(particules, r_tmp, r, F, dt, d); 
             std::string fichier_i = std::__cxx11::to_string(i);
-            ecrireXYZ(positions, "simulation"+str_N+"_iteration"+fichier_i+".xyz");
+            ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration"+fichier_i+".xyz");
       }
-      */
 
       return 0;
 }

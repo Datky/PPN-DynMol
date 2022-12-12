@@ -44,10 +44,8 @@ void Verlet(Particules & at, Vecteur_3D* r_tmp, Vecteur_3D* r, Vecteur_3D* F, f6
                   r->Z[i] = at.pos->Z[i] - at.pos->Z[j];
                   r_globale = sqrt( pow(r->X[i],2.0) + pow(r->Y[i],2.0) + pow(r->Z[i],2.0) );
 
-                  if(r_globale>r_cut) {
-                        continue;
-                  } 
-                  else {
+                  //Calcule la force si la distance inter-atomique globale est inferieur au rayon de coupure
+                  if (r_globale<r_cut) {
                         /*
                         F->X[i] += -(Lennard_Jones(r_tmp->X[i]) - Lennard_Jones(r->X[i])) / (r_tmp->X[i] - r->X[i]);
                         F->Y[i] += -(Lennard_Jones(r_tmp->Y[i]) - Lennard_Jones(r->Y[i])) / (r_tmp->Y[i] - r->Y[i]);
@@ -73,6 +71,24 @@ void Verlet(Particules & at, Vecteur_3D* r_tmp, Vecteur_3D* r, Vecteur_3D* F, f6
             at.vit->X[i] += 0.5*at.acc->X[i]*dt;
             at.vit->Y[i] += 0.5*at.acc->Y[i]*dt;
             at.vit->Z[i] += 0.5*at.acc->Z[i]*dt;
+
+            if (at.pos->X[i]<0) {
+                  at.pos->X[i] = b_x;
+            } else if (at.pos->X[i]>b_x) {
+                  at.pos->X[i] = 0;
+            }
+
+            if (at.pos->Y[i]<0) {
+                  at.pos->Y[i] = b_y;
+            } else if (at.pos->Y[i]>b_y) {
+                  at.pos->Y[i] = 0;
+            }
+
+            if (at.pos->Z[i]<0) {
+                  at.pos->Z[i] = b_z;
+            } else if (at.pos->Z[i]>b_z) {
+                  at.pos->Z[i] = 0;
+            }
 
       }
       
