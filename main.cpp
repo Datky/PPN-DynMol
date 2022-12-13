@@ -92,38 +92,18 @@ int main() {
       remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.      
 
 
-      struct Vecteur_3D *__restrict r_tmp;
-      struct Vecteur_3D *__restrict r;
-      struct Vecteur_3D *__restrict F;
-
-      r_tmp = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-      r = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-      F = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-
-      r_tmp->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      r_tmp->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      r_tmp->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-
-      r->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      r->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      r->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-
-      F->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      F->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      F->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-
       std::string str_N = std::__cxx11::to_string(N);
       ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration0.xyz");
 
       /*
       for (u32 i = 0; i < nb_iteration; i++){
-            Verlet(particules, r_tmp, r, F, dt, d);          // Le potentiel s'annule quand r = d, donc r_cut = d.
+            Verlet(particules, dt, 2.5*d);          // Le potentiel est n'egligable r_cut = 2.5*d.
             ecrireXYZ(positions, "simulation"+str_N+".xyz");
       }
       */
 
       for (u32 i = 0; i < nb_iteration; i++){
-            Verlet(particules, r_tmp, r, F, dt, d); 
+            Verlet(particules, dt, 2.5*d);           // Le potentiel est n'egligable r_cut = 2.5*d.
             std::string fichier_i = std::__cxx11::to_string(i);
             ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration"+fichier_i+".xyz");
       }
@@ -168,9 +148,9 @@ f64 qdm_systeme_z = 0 ;
         vit->X[i] = d_v_x(gen);
         qdm_systeme_x = qdm_systeme_x + m*(vit->X[i]);
         vit->Y[i] = d_v_y(gen);
-        qdm_systeme_y = qdm_systeme_y + m*(vit->X[i]);
+        qdm_systeme_y = qdm_systeme_y + m*(vit->Y[i]);
         vit->Z[i] = d_v_z(gen);
-        qdm_systeme_z = qdm_systeme_z + m*(vit->X[i]);
+        qdm_systeme_z = qdm_systeme_z + m*(vit->Z[i]);
     }
 
     std::cout << "Quantité de mouvement du système selon x avant ajustement" << qdm_systeme_x << std::endl;
@@ -190,7 +170,7 @@ f64 qdm_systeme_z = 0 ;
 // Calcul de la température en fonction de la norme du vecteur vitesse. !!! Vérifier (du point de vue physique)
     f64 temperature = 0;
     for(u64 i = 0; i < N; i++){
-        temperature = temperature + 1/(3*k_b*N)*m*(pow(vit->X[i],2.0)+pow(vit->Y[i],2.0)+pow(vit->X[i],2.0));
+        temperature = temperature + 1/(3*k_b*N)*m*(pow(vit->X[i],2.0)+pow(vit->Y[i],2.0)+pow(vit->Z[i],2.0));
     }
 
 // Calcul de la vitesse selon initialisation à temperature_cible; !!! Vérifier (du point de vue physique)
