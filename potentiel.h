@@ -8,4 +8,11 @@
  **/
 f64 Lennard_Jones(f64 const& r);
 
+/* La force de Lennard-Jones : 
+ * force qui est calculée par la dérive de l'énergie potentielle.  
+ * @param r distanse entre 2 atomes
+ * @return force entre 2 atomes
+ **/
+f64 F_Lennard_Jones(f64 const& r);
+
 #endif //POTENTIEL_H

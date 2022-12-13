@@ -5,14 +5,11 @@
 #ifndef INTERACTION_H
 #define INTERACTION_H
 
-/* Verlet : Pour trouver la nouvelle position d'un atom
+/* Verlet : Pour trouver la nouvelle position d'un atom. avec des limites spatial périodiques
  * @param [int/out] at tablaeu des les atome dans la boîte de modélisation
- * @param [int/out] r_tmp la distance inter-atomique de l'iteration précédente
- * @param [int/out] r distance inter-atomique de l'iteration actuelle 
- * @param [int/out] F les forces
  * @param [int] dt pas de temps
  * @param [int] r_cut distance de coupure
  **/
-void Verlet(Particules & at, Vecteur_3D* r_tmp, Vecteur_3D* r, Vecteur_3D* F, f64 const& dt, f64 const& r_cut); //f64 & r_max
+void Verlet(Particules & at, f64 const& dt, f64 const& r_cut); //f64 & r_max
 
 #endif //INTERACTION_H

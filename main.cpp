@@ -98,11 +98,11 @@ int main() {
       /*
       for (u32 i = 0; i < nb_iteration; i++){
             Verlet(particules, dt, 2.5*d);          // Le potentiel est n'egligable r_cut = 2.5*d.
-            ecrireXYZ(positions, "simulation"+str_N+".xyz");
+            ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
       }
       */
 
-      for (u32 i = 0; i < nb_iteration; i++){
+      for (u32 i = 1; i < nb_iteration; i++){
             Verlet(particules, dt, 2.5*d);           // Le potentiel est n'egligable r_cut = 2.5*d.
             std::string fichier_i = std::__cxx11::to_string(i);
             ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration"+fichier_i+".xyz");
