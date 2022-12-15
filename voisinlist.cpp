@@ -11,14 +11,14 @@ struct ParticulePair {
 
 // Function to create the nearest neighbor table
 
-std::vector<ParticulePair> makeNearestNeighborTable(const Particules& particules) {
+std::vector<ParticulePair> makeNearestNeighborTable(struct Particules& particules) {
   
 
 // Get pointers to the particle positions, velocities, and accelerations
   
-  const Vecteur3D* __restrict positions = particules.pos;
-  const Vecteur3D* __restrict velocities = particules.vit;
-  const Vecteur3D* __restrict accelerations = particules.acc;
+  struct Vecteur_3D* __restrict positions = particules.pos;
+  struct Vecteur_3D* __restrict velocities = particules.vit;
+  struct Vecteur_3D* __restrict accelerations = particules.acc;
 
 
 // Create an empty vector to hold the nearest neighbor table
@@ -40,8 +40,7 @@ std::vector<ParticulePair> makeNearestNeighborTable(const Particules& particules
 
 // Add the particle pair to the nearest neighbor table
       
-      nearestNeigh 
-        bors.push_back({i, j, distance}); } }
+      nearestNeighbors.push_back({i, j, distance}); } }
 
 
 // Sort the nearest neighbor table in ascending order of distance    
