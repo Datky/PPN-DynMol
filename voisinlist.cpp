@@ -5,20 +5,21 @@
 // Struct to represent a pair of particle indices and their distance
 
 struct ParticulePair {
-  int i, j;
-  double distance;
+	int i, j;
+	double distance;
 };
 
 // Function to create the nearest neighbor table
 
-std::vector<ParticulePair> makeNearestNeighborTable(struct Particules& particules) {
+std::vector<ParticulePair> makeNearestNeighborTable(Particules & particules) {
   
 
 // Get pointers to the particle positions, velocities, and accelerations
   
-  struct Vecteur_3D* __restrict positions = particules.pos;
-  struct Vecteur_3D* __restrict velocities = particules.vit;
-  struct Vecteur_3D* __restrict accelerations = particules.acc;
+  
+	struct Vecteur_3D *__restrict positions = particules.pos;
+	struct Vecteur_3D *__restrict velocities = particules.vit;
+	struct Vecteur_3D *__restrict accelerations = particules.acc;
 
 
 // Create an empty vector to hold the nearest neighbor table
@@ -27,20 +28,23 @@ std::vector<ParticulePair> makeNearestNeighborTable(struct Particules& particule
 
 // Loop over all pairs of particles
   
-  for (int i = 0; i < N; ++i) {
-    for (int j = i + 1; j < N; ++j) {
+ for (int i = 0; i < N; ++i) {
+		for (int j = i + 1; j < N; ++j){
+				
 
 // Calculate the distance between the two particles
       
       const double dx = positions->X[i] - positions->X[j];
-      const double dy = positions->Y[i] - positions->Y[j];
-      const double dz = positions->Z[i] - positions->Z[j];
-      const double distance = std::sqrt(dx * dx + dy * dy + dz * dz);
-
-
+				const double dy = positions->Y[i] - positions->Y[j];
+				const double dz = positions->Z[i] - positions->Z[j];
+				const double distance = std::sqrt(dx * dx + dy * dy + dz * dz);
+				
 // Add the particle pair to the nearest neighbor table
       
-      nearestNeighbors.push_back({i, j, distance}); } }
+      nnearestNeighbors.push_back({i, j, distance}); 
+    }
+ }
+  
 
 
 // Sort the nearest neighbor table in ascending order of distance    
