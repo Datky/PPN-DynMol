@@ -1,5 +1,5 @@
-#include "voisinlist.h" 
 
+#include "voisinlist.h" 
 
 
 // Struct to represent a pair of particle indices and their distance
@@ -30,26 +30,21 @@ std::vector<ParticulePair> makeNearestNeighborTable(Particules & particules) {
   
  for (int i = 0; i < N; ++i) {
 		for (int j = i + 1; j < N; ++j){
+            
+  // Calculate the distance between the two particles          
+            const double dx = positions->X[i] - positions->X[j];
+            const double dy = positions->Y[i] - positions->Y[j];
+            const double dz = positions->Z[i] - positions->Z[j];
+            const double distance = std::sqrt(dx * dx + dy * dy + dz * dz);
+            
+ // Add the particle pair to the nearest neighbor table           
+            
+            nnearestNeighbors.push_back({i, j, distance}); }}
 				
-
-// Calculate the distance between the two particles
-      
-      const double dx = positions->X[i] - positions->X[j];
-				const double dy = positions->Y[i] - positions->Y[j];
-				const double dz = positions->Z[i] - positions->Z[j];
-				const double distance = std::sqrt(dx * dx + dy * dy + dz * dz);
-				
-// Add the particle pair to the nearest neighbor table
-      
-      nnearestNeighbors.push_back({i, j, distance}); 
-    }
- }
-  
 
 
 // Sort the nearest neighbor table in ascending order of distance    
 // std::sort(nearestNeighbors.begin(), nearestNeighbors.end(), [](const ParticulePair& a, const ParticulePair& b) { return a.distance < b.distance; });
 // Return the nearest neighbor table return nearestNeighbors; }
-  
   
   
