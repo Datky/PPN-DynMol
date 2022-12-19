@@ -43,7 +43,7 @@ std::vector<ParticulePair> makeNearestNeighborTable(Particules & particules) {
 	
 	// Sort the nearest neighbor table in ascending order of distance
 	
-	std::sort(nearestNeighbors.begin(), nearestNeighbors.end(), [](const ParticlePair& a, const ParticlePair& b) { 
+	std::sort(nearestNeighbors.begin(), nearestNeighbors.end(), [](const ParticulePair& a, const ParticulePair& b) { 
 		
 		return a.distance < b.distance; });
 	
