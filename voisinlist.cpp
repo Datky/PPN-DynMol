@@ -32,14 +32,26 @@ std::vector<ParticulePair> makeNearestNeighborTable(Particules & particules) {
 		for (int j = i + 1; j < N; ++j){
             
   // Calculate the distance between the two particles          
-            const double dx = positions->X[i] - positions->X[j];
-            const double dy = positions->Y[i] - positions->Y[j];
-            const double dz = positions->Z[i] - positions->Z[j];
+            const double dx = pos->X[i] - pos->X[j];
+            const double dy = pos->Y[i] - pos->Y[j];
+            const double dz = pos->Z[i] - pos->Z[j];
             const double distance = std::sqrt(dx * dx + dy * dy + dz * dz);
             
  // Add the particle pair to the nearest neighbor table           
             
             nnearestNeighbors.push_back({i, j, distance}); }}
+	
+	// Sort the nearest neighbor table in ascending order of distance
+	
+	std::sort(nearestNeighbors.begin(), nearestNeighbors.end(), [](const ParticlePair& a, const ParticlePair& b) { 
+		
+		return a.distance < b.distance; });
+	
+	// Return the nearest neighbor table
+	
+	return nearestNeighbors;
+}
+
 				
 
 
