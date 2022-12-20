@@ -22,7 +22,8 @@ void Verlet(Particules & at, f64 const& dt, f64 const& r_cut){
              at.pos->Y[i] += at.vit->Y[i]*dt + 0.5*at.acc->Y[i]*pow(dt,2.0);
              at.pos->Z[i] += at.vit->Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
 
-             //Limites spatial periodique 
+/*
+             ////Limites spatiales periodiques avec origine en (b_x/2,b_y/2,b_z/2)
              while (at.pos->X[i]<-b_x/2) {
                   at.pos->X[i] += b_x/2;
              } 
@@ -43,9 +44,51 @@ void Verlet(Particules & at, f64 const& dt, f64 const& r_cut){
              while (at.pos->Z[i]>b_z/2) {
                   at.pos->Z[i] -= b_z/2;
              }
+*/
+/*
+             //Limites spatiales periodiques avec origine en (0,0,0) et nouvelle périodicité à 2,5*d des bords
+             while (at.pos->X[i]<(0+2.5*d) {
+                  at.pos->X[i] += b_x;
+             }
 
+             while (at.pos->X[i]>(b_x-2.5*d)) {
+                  at.pos->X[i] -= b_x;
+             } 
 
-             //1er calcule des vitesses : v_i(t+dt/2)
+             while (at.pos->Y[i]<(0+2.5*d)) {
+                  at.pos->Y[i] += b_y;
+             }
+             while (at.pos->Y[i]>(b_y-2.5*d)) {
+                  at.pos->Y[i] -= b_y;
+             }              
+             while (at.pos->Z[i]<(0+2.5*d)) {
+                  at.pos->Z[i] += b_z;
+             }
+             while (at.pos->Z[i]>(b_z-2.5*d)) {
+                  at.pos->Z[i] -= b_z;
+             } 
+*/
+
+             //Limites spatiales periodiques avec origine en (0,0,0) et nouvelle périodicité à 2,5*d des bords
+             if (at.pos->X[i]<(0+2.5*d)) {
+                  at.pos->X[i] += b_x;
+             } else if (at.pos->X[i]>(b_x-2.5*d)) {
+                  at.pos->X[i] -= b_x;
+             } 
+
+             if (at.pos->Y[i]<(0+2.5*d)) {
+                  at.pos->Y[i] += b_y;
+             } else if (at.pos->Y[i]>(b_y-2.5*d)) {
+                  at.pos->Y[i] -= b_y;
+             } 
+             
+             if (at.pos->Z[i]<(0+2.5*d)) {
+                  at.pos->Z[i] += b_z;
+             } else if (at.pos->Z[i]>(b_z-2.5*d)) {
+                  at.pos->Z[i] -= b_z;
+             } 
+
+             //1er calcul des vitesses : v_i(t+dt/2)
              at.vit->X[i] += 0.5*at.acc->X[i]*dt;
              at.vit->Y[i] += 0.5*at.acc->Y[i]*dt;
              at.vit->Z[i] += 0.5*at.acc->Z[i]*dt;
@@ -60,9 +103,8 @@ void Verlet(Particules & at, f64 const& dt, f64 const& r_cut){
                   //f64 r_globale2 = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
                   f64 r_globale = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
-                  //Calcule la force si la distance inter-atomique globale est inferieur au rayon de coupure
+                  //Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure
                   if (r_globale<r_cut) {
-
                         F_x += F_Lennard_Jones(r_x);
                         F_y += F_Lennard_Jones(r_y);
                         F_z += F_Lennard_Jones(r_z);
@@ -70,18 +112,17 @@ void Verlet(Particules & at, f64 const& dt, f64 const& r_cut){
                         //Stocker dans la liste de voisin
                         //at.liste[i].append(j)
                   }
-
                   //Stocker plus grand déplacement dans ce pas de temps. f64 r_max
                   //if(r_max<r_globale) r_max=r_globale;
 
              }
 
-             //Calcul des acceélération : a_i(t+dt)
+             //Calcul des accélérations : a_i(t+dt)
              at.acc->X[i] = F_x/m;
              at.acc->Y[i] = F_y/m;
              at.acc->Z[i] = F_z/m;
 
-             //2ième calcul de des vitesses : v_i(t+dt)
+             //2ième calcul des vitesses : v_i(t+dt)
              at.vit->X[i] += 0.5*at.acc->X[i]*dt;
              at.vit->Y[i] += 0.5*at.acc->Y[i]*dt;
              at.vit->Z[i] += 0.5*at.acc->Z[i]*dt;
