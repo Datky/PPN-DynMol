@@ -44,7 +44,7 @@
 #include "interaction.cpp"
 #include "XYZ.cpp"
 
-// Protoypes de fonctions
+// Prototypes de fonctions
 void remplissage_vecteurs(struct Vecteur_3D*, struct Vecteur_3D*, struct Vecteur_3D*);
 void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit);
 void accelerations_initiales_nulles(struct Vecteur_3D* acc);
@@ -111,7 +111,6 @@ int main() {
       return 0;
 }
 
-// !!! A REMPLACER PAR LECTURE DU FICHIER .XYZ
 void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données
 
   // Peut être optimisé avec une seule boucle au lieu de 3
@@ -157,7 +156,7 @@ f64 qdm_systeme_z = 0 ;
     std::cout << "Quantité de mouvement du système selon y avant ajustement" << qdm_systeme_y << std::endl;
     std::cout << "Quantité de mouvement du système selon z avant ajustement" << qdm_systeme_z << std::endl;
 
-// Ajustement de qdm_systeme à 0, ie m*vit->X[i] = m*vit->X[i] - qdm_systeme_x, ETC. !!! Vérifier (du point de vue physique)
+// Ajustement de qdm_systeme à 0, ie m*vit->X[i] = m*vit->X[i] - qdm_systeme_x, ETC.
     for(u64 i = 0; i < N; i++){
         vit->X[i] = vit->X[i] - qdm_systeme_x/m;
         vit->Y[i] = vit->Y[i] - qdm_systeme_y/m;
@@ -167,13 +166,13 @@ f64 qdm_systeme_z = 0 ;
 //        std::cout << &vit->Z[i] << ": vit_Gauss_après_qdm_syst_nulle_Z = " <<vit->Z[i] << std::endl;
     }
 
-// Calcul de la température en fonction de la norme du vecteur vitesse. !!! Vérifier (du point de vue physique)
+// Calcul de la température en fonction de la norme du vecteur vitesse.
     f64 temperature = 0;
     for(u64 i = 0; i < N; i++){
         temperature = temperature + 1/(3*k_b*N)*m*(pow(vit->X[i],2.0)+pow(vit->Y[i],2.0)+pow(vit->Z[i],2.0));
     }
 
-// Calcul de la vitesse selon initialisation à temperature_cible; !!! Vérifier (du point de vue physique)
+// Calcul de la vitesse selon initialisation à temperature_cible;
     for(u64 i = 0; i < N; i++){
         vit->X[i] = (vit->X[i])*sqrt(temperature_cible/temperature);
         std::cout << &vit->X[i] << ": vit_Gauss_après_ajustement_Tcible_X = " <<vit->X[i] << std::endl;
