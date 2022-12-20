@@ -63,83 +63,83 @@ int main() {
  
 
       // Création et allocation des particules
-      struct Particules particules;
+    struct Particules particules;
       
 
-      particules.pos = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-      particules.vit = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-      particules.acc = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
+    particules.pos = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
+    particules.vit = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
+    particules.acc = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
 
 
-      particules.pos->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      particules.pos->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      particules.pos->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    particules.pos->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    particules.pos->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    particules.pos->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
 
-      particules.vit->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      particules.vit->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      particules.vit->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    particules.vit->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    particules.vit->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    particules.vit->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
 
-      particules.acc->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      particules.acc->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-      particules.acc->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    particules.acc->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    particules.acc->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    particules.acc->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
 
-      struct Vecteur_3D *__restrict positions = particules.pos;
-      struct Vecteur_3D *__restrict vitesses = particules.vit;
-      struct Vecteur_3D *__restrict accelerations = particules.acc;
-
-
-
-      remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.      
+    struct Vecteur_3D *__restrict positions = particules.pos;
+    struct Vecteur_3D *__restrict vitesses = particules.vit;
+    struct Vecteur_3D *__restrict accelerations = particules.acc;
 
 
-      std::string str_N = std::__cxx11::to_string(N);
-      ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration0.xyz");
+
+    remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.      
+
+
+    std::string str_N = std::__cxx11::to_string(N);
+    ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration0.xyz");
 
       /*
-      for (u32 i = 0; i < nb_iteration; i++){
-            Verlet(particules, dt, 2.5*d);          // Le potentiel est n'egligable r_cut = 2.5*d.
-            ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
-      }
+    for (u64 i = 0; i < nb_iteration; i++){
+        Verlet(particules, dt, 2.5*d);          // Le potentiel est négligable r_cut = 2.5*d.
+        ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
+    }
       */
 
-      for (u32 i = 1; i < nb_iteration; i++){
-            Verlet(particules, dt, 2.5*d);           // Le potentiel est n'egligable r_cut = 2.5*d.
-            std::string fichier_i = std::__cxx11::to_string(i);
-            ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration"+fichier_i+".xyz");
-      }
+    for (u64 i = 1; i < nb_iteration; i++) {
+        Verlet(particules, dt, 2.5*d);           // Le potentiel est éegligable r_cut = 2.5*d.
+        std::string fichier_i = std::__cxx11::to_string(i);
+        ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration"+fichier_i+".xyz");
+    }
 
-      return 0;
+    return 0;
 }
 
 void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données
 
-  // Peut être optimisé avec une seule boucle au lieu de 3
+    // Peut être optimisé avec une seule boucle au lieu de 3
 
-  std::string str_N = std::__cxx11::to_string(N);
-  lireXYZ("source"+str_N+".xyz", pos);
+    std::string str_N = std::__cxx11::to_string(N);
+    lireXYZ("source"+str_N+".xyz", pos);
 
-  std::cout << "\nBonne lecture du fichier des positions.\n" << std::endl;
+    std::cout << "\nBonne lecture du fichier des positions.\n" << std::endl;
 
-  generation_gaussienne_des_vitesses(vit);
+    generation_gaussienne_des_vitesses(vit);
 
-  std::cout << "\nBonne affectation gaussienne des vitesses.\n" << std::endl;
+    std::cout << "\nBonne affectation gaussienne des vitesses.\n" << std::endl;
 
-  accelerations_initiales_nulles(acc);
+    accelerations_initiales_nulles(acc);
 
-  std::cout << "\nBonne affectation des accélérations.\n" << std::endl;
+    std::cout << "\nBonne affectation des accélérations.\n" << std::endl;
 }
 
 void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit){
 
-  std::random_device rd; // Génération d'une graine.
-  std::mt19937 gen(rd()); // Génération par "gen" d'un entier non signé par l'algo de Mersenne en fonction de la graine.
-  std::normal_distribution<> d_v_x{0.0,1.0}; // Moyenne des vitesses : 0 ; écart-type (moyenne quadratique des écarts à la moyenne) : 1 Å/s.
-  std::normal_distribution<> d_v_y{0.0,1.0}; // Moyenne des vitesses : 0 ; écart-type (moyenne quadratique des écarts à la moyenne) : 1 Å/s.
-  std::normal_distribution<> d_v_z{0.0,1.0}; // Moyenne des vitesses : 0 ; écart-type (moyenne quadratique des écarts à la moyenne) : 1 Å/s.
+    std::random_device rd; // Génération d'une graine.
+    std::mt19937 gen(rd()); // Génération par "gen" d'un entier non signé par l'algo de Mersenne en fonction de la graine.
+    std::normal_distribution<> d_v_x{0.0,1.0}; // Moyenne des vitesses : 0 ; écart-type (moyenne quadratique des écarts à la moyenne) : 1 Å/s.
+    std::normal_distribution<> d_v_y{0.0,1.0}; // Moyenne des vitesses : 0 ; écart-type (moyenne quadratique des écarts à la moyenne) : 1 Å/s.
+    std::normal_distribution<> d_v_z{0.0,1.0}; // Moyenne des vitesses : 0 ; écart-type (moyenne quadratique des écarts à la moyenne) : 1 Å/s.
 
-f64 qdm_systeme_x = 0 ;
-f64 qdm_systeme_y = 0 ;
-f64 qdm_systeme_z = 0 ;
+    f64 qdm_systeme_x = 0 ;
+    f64 qdm_systeme_y = 0 ;
+    f64 qdm_systeme_z = 0 ;
 
 // Pour chaque appel de d_v_x(gen), d_v_y(gen) et d_v_z(gen) : transformation de l'entier généré par gen en un nouveau double aléatoire (gaussien) autour de 0.
 // Calcul de la composante selon x, y et z du vecteur quantité de mouvement total du système.
