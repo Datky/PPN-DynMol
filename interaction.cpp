@@ -4,6 +4,7 @@
 #include <cmath>
 #include "interaction.h"
 #include "potentiel.cpp"
+//#include "voisinlist.cpp"
 
 //Pseudo code //
 void Verlet(Particules & at, f64 const& dt, f64 const& r_cut){
@@ -110,9 +111,14 @@ void Verlet(Particules & at, f64 const& dt, f64 const& r_cut){
                         F_z += F_Lennard_Jones(r_z);
 
                         //Stocker dans la liste de voisin
+                        
+                        //nearestVoisin();
+                        
                         //at.liste[i].append(j)
                   }
                   //Stocker plus grand déplacement dans ce pas de temps. f64 r_max
+                   
+                   
                   //if(r_max<r_globale) r_max=r_globale;
 
              }
