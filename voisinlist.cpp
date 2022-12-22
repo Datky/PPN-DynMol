@@ -4,14 +4,14 @@
 
 // Struct to represent a pair of particle indices and their distance
 
-struct ParticulePair {
+struct Verlet {
 	int i, j;
 	double r_globale;
 };
 
 // Function to create the nearest neighbor table
 
-std::vector<ParticulePair> makeVoisinlist(Particules & particules) {
+std::vector<Verlet> makeVoisinlist(Particules & particules) {
   
 
 // Get pointers to the particle positions, velocities, and accelerations
@@ -24,7 +24,7 @@ std::vector<ParticulePair> makeVoisinlist(Particules & particules) {
 
 // Create an empty vector to hold the nearest neighbor table
   
-  std::vector<ParticulePair> nearestVoisin;
+  std::vector<Verlet> nearestVoisin;
 
 // Loop over all pairs of particles
   
@@ -44,7 +44,7 @@ std::vector<ParticulePair> makeVoisinlist(Particules & particules) {
 	
 	// Sort the nearest neighbor table in ascending order of distance
 	
-	std::sort(nearestVoisin.begin(), nearestVoisin.end(), [](const ParticulePair& a, const ParticulePair& b) { 
+	std::sort(nearestVoisin.begin(), nearestVoisin.end(), [](const Verlet& a, const Verlet& b) { 
 		
 		return a.r_globale < b.r_globale; });
 	
