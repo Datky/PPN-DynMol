@@ -93,21 +93,28 @@ int main() {
 
 
     std::string str_N = std::__cxx11::to_string(N);
-    ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration0.xyz");
+    ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
 
-      /*
+    //f64 r_max = 0;
+    //f64 sum_r_max = 0;
+    //fair la 1er liste des liste de voisin//
+
+      
     for (u64 i = 0; i < nb_iteration; i++){
         Verlet(particules, dt, 2.5*d);          // Le potentiel est négligable r_cut = 2.5*d.
+        //sum_r_max += _r_max;
+        //if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
         ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
     }
-      */
-
+      /*
     for (u64 i = 1; i < nb_iteration; i++) {
         Verlet(particules, dt, 2.5*d);           // Le potentiel est éegligable r_cut = 2.5*d.
+        //sum_r_max += _r_max;
+        //if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
         std::string fichier_i = std::__cxx11::to_string(i);
         ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration"+fichier_i+".xyz");
     }
-
+      */
     return 0;
 }
 

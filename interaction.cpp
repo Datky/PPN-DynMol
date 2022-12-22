@@ -24,68 +24,45 @@ void Verlet(Particules & at, f64 const& dt, f64 const& r_cut){
              at.pos->Z[i] += at.vit->Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
 
 /*
-             ////Limites spatiales periodiques avec origine en (b_x/2,b_y/2,b_z/2)
-             while (at.pos->X[i]<-b_x/2) {
-                  at.pos->X[i] += b_x/2;
-             } 
-             while (at.pos->X[i]>b_x/2) {
-                  at.pos->X[i] -= b_x/2;
-             }
-
-             while (at.pos->Y[i]<-b_y/2) {
-                  at.pos->Y[i] += b_y/2;
-             } 
-             while (at.pos->Y[i] > b_y/2) {
-                  at.pos->Y[i] -= b_y/2;
-             }
-            
-             while (at.pos->Z[i]<-b_z/2) {
-                  at.pos->Z[i] += b_z/2;
-             } 
-             while (at.pos->Z[i]>b_z/2) {
-                  at.pos->Z[i] -= b_z/2;
-             }
-*/
-/*
-             //Limites spatiales periodiques avec origine en (0,0,0) et nouvelle périodicité à 2,5*d des bords
-             while (at.pos->X[i]<(0+2.5*d) {
+             //Limites spatiales periodiques avec origine en (0,0,0) 
+             while (at.pos->X[i]<0) {
                   at.pos->X[i] += b_x;
              }
 
-             while (at.pos->X[i]>(b_x-2.5*d)) {
+             while (at.pos->X[i]>b_x) {
                   at.pos->X[i] -= b_x;
              } 
 
-             while (at.pos->Y[i]<(0+2.5*d)) {
+             while (at.pos->Y[i]<0) {
                   at.pos->Y[i] += b_y;
              }
-             while (at.pos->Y[i]>(b_y-2.5*d)) {
+             while (at.pos->Y[i]>b_y) {
                   at.pos->Y[i] -= b_y;
              }              
-             while (at.pos->Z[i]<(0+2.5*d)) {
+             while (at.pos->Z[i]<)) {
                   at.pos->Z[i] += b_z;
              }
-             while (at.pos->Z[i]>(b_z-2.5*d)) {
+             while (at.pos->Z[i]>b_z) {
                   at.pos->Z[i] -= b_z;
              } 
 */
 
-             //Limites spatiales periodiques avec origine en (0,0,0) et nouvelle périodicité à 2,5*d des bords
-             if (at.pos->X[i]<(0+2.5*d)) {
+             //Limites spatiales periodiques avec origine en (0,0,0)
+             if (at.pos->X[i]<0) {
                   at.pos->X[i] += b_x;
-             } else if (at.pos->X[i]>(b_x-2.5*d)) {
+             } else if (at.pos->X[i]>b_x) {
                   at.pos->X[i] -= b_x;
              } 
 
-             if (at.pos->Y[i]<(0+2.5*d)) {
+             if (at.pos->Y[i]<0) {
                   at.pos->Y[i] += b_y;
-             } else if (at.pos->Y[i]>(b_y-2.5*d)) {
+             } else if (at.pos->Y[i]>b_y) {
                   at.pos->Y[i] -= b_y;
              } 
              
-             if (at.pos->Z[i]<(0+2.5*d)) {
+             if (at.pos->Z[i]<0) {
                   at.pos->Z[i] += b_z;
-             } else if (at.pos->Z[i]>(b_z-2.5*d)) {
+             } else if (at.pos->Z[i]>b_z) {
                   at.pos->Z[i] -= b_z;
              } 
 
@@ -95,7 +72,7 @@ void Verlet(Particules & at, f64 const& dt, f64 const& r_cut){
              at.vit->Z[i] += 0.5*at.acc->Z[i]*dt;
 
              //Calcul de la force : F_i(t+dt) et a_i(t+dt)
-             for(u32 j=0; j<N; ++j){
+             for(u32 j=0; j<N; ++j){        //Ne parcourire que la liste de voisin//
 
                   //Calcul de la distance entre les atome r_i(t+dt)
                   f64 r_x = at.pos->X[i] - at.pos->X[j];
@@ -106,14 +83,17 @@ void Verlet(Particules & at, f64 const& dt, f64 const& r_cut){
 
                   //Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure
                   if (r_globale<r_cut) {
-                        F_x += F_Lennard_Jones(r_x);
-                        F_y += F_Lennard_Jones(r_y);
-                        F_z += F_Lennard_Jones(r_z);
 
+                        ///f64 theta = std::acos(r_z/r_globale);
+                        ///f64 phi = std::atan(r_y/r_z);
+
+                        F_x += F_Lennard_Jones(r_x);//F_Lennard_Jones(r_globale) *std::sin(theta) *std::cos(phi);
+                        F_y += F_Lennard_Jones(r_y);//F_Lennard_Jones(r_globale) *std::sin(theta) *std::sin(phi);
+                        F_z += F_Lennard_Jones(r_z);//F_Lennard_Jones(r_globale) *std::cos(theta);
+
+                        //Peut être pas nécessaire
                         //Stocker dans la liste de voisin
-                        
                         //nearestVoisin();
-                        
                         //at.liste[i].append(j)
                   }
                   //Stocker plus grand déplacement dans ce pas de temps. f64 r_max
