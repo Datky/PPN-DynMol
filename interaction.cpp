@@ -82,7 +82,7 @@ void Verlet(Particules & at, f64 const& dt, f64 const& r_cut){
                   f64 r_globale = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
                   //Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure
-                  if (r_globale<r_cut) {
+                  if (r_globale<r_cut && r_globale!=0) {
 
                         ///f64 theta = std::acos(r_z/r_globale);
                         ///f64 phi = std::atan(r_y/r_z);
