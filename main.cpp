@@ -1,4 +1,4 @@
-// NOTATIONS (A VALIDER ENSEMBLE) :
+// NOTATIONS :
 // E_paire(r) = 4 * E_0 * [ (d/r)^12 - (d/r)^6 ] : énergie potentielle de paire de type Lennard-Jones de l'intéraction
 // E_0  : profondeur du puit de potentiel (paramètre ajustable)
 //    E_0 = 119,8 * k_b pour l'argon
@@ -50,26 +50,19 @@ void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit);
 void accelerations_initiales_nulles(struct Vecteur_3D* acc);
 
 int main() {
-      /*
-      double r = 1; // (à revoir) valeur arbitraire juste pour entrer la formule
-      double E_paire = 4*E_0*(pow(d/r,12.0)-pow(d/r,6.0));
+    /*
+    printf("nombre d'atomes en interaction avec l'atome = %d atomes \n",N);
+    printf("profondeur du puit de potentiel : E_0 = -%e J \n",E_0);
+    printf("distance d'annulation du potentiel : d = %e A \n",d);
+    printf("énergie potentielle pour un atome à 1,000 m : E_paire = %e J \n",E_paire);
+    */
 
-      printf("nombre d'atomes en interaction avec l'atome = %d atomes \n",N);
-      printf("profondeur du puit de potentiel : E_0 = -%e J \n",E_0);
-      printf("distance d'annulation du potentiel : d = %e A \n",d);
-      printf("énergie potentielle pour un atome à 1,000 m : E_paire = %e J \n",E_paire);
-      */
-
- 
-
-      // Création et allocation des particules
+    // Création et allocation des particules
     struct Particules particules;
-      
 
     particules.pos = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
     particules.vit = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
     particules.acc = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-
 
     particules.pos->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
     particules.pos->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
@@ -87,17 +80,14 @@ int main() {
     struct Vecteur_3D *__restrict vitesses = particules.vit;
     struct Vecteur_3D *__restrict accelerations = particules.acc;
 
-
-
     remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.      
-
 
     std::string str_N = std::__cxx11::to_string(N);
     ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
 
-    //f64 r_max = 0;
-    //f64 sum_r_max = 0;
-    //fair la 1er liste des liste de voisin//
+    // ? f64 r_max = 0;
+    // ? f64 sum_r_max = 0;
+    // fair la 1er liste des liste de voisin//
 
 /*      
     for (u64 i = 0; i < nb_iteration; i++){
@@ -109,9 +99,9 @@ int main() {
 */
       
     for (u64 i = 1; i < nb_iteration; i++) {
-        Verlet(particules, dt, 2.5*d);           // Le potentiel est éegligable r_cut = 2.5*d.
-        //sum_r_max += _r_max;
-        //if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
+        Verlet(particules, dt, 2.5*d); // Le potentiel est negligable r_cut = 2.5*d.
+        // ? sum_r_max += _r_max;
+        // ? if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
         std::string fichier_i = std::__cxx11::to_string(i);
         ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration"+fichier_i+".xyz");
     }
@@ -120,20 +110,16 @@ int main() {
 }
 
 void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données
-
     // Peut être optimisé avec une seule boucle au lieu de 3
 
     std::string str_N = std::__cxx11::to_string(N);
     lireXYZ("source"+str_N+".xyz", pos);
-
     std::cout << "\nBonne lecture du fichier des positions.\n" << std::endl;
 
     generation_gaussienne_des_vitesses(vit);
-
     std::cout << "\nBonne affectation gaussienne des vitesses.\n" << std::endl;
 
     accelerations_initiales_nulles(acc);
-
     std::cout << "\nBonne affectation des valeurs nulles pour les accélérations.\n" << std::endl;
 }
 
