@@ -43,6 +43,7 @@
 #include "SoA/particule.h"
 #include "interaction.cpp"
 #include "XYZ.cpp"
+#include "voisinlist.cpp"
 
 // Prototypes de fonctions
 void remplissage_vecteurs(struct Vecteur_3D*, struct Vecteur_3D*, struct Vecteur_3D*);
