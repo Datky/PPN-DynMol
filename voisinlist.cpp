@@ -2,13 +2,13 @@
 #include "voisinlist.h"
 
 
-void  Voisin (Particles & at, f64 const & dt, f64 const & r_cut){
+void  Voisin (Particules & at, f64 const & dt, f64 const & r_cut){
 
 
 
 // Function to create the nearest neighbor table
 	
-	std::vector<Particles> makeVoisinlist(Particules & particules) {
+	std::vector<Particules> makeVoisinlist(Particules & particules) {
   
 
 // Get pointers to the particle positions, velocities, and accelerations
@@ -20,7 +20,7 @@ void  Voisin (Particles & at, f64 const & dt, f64 const & r_cut){
 
 // Create an empty vector to hold the nearest neighbor table
 		
-		std::vector<Particles> nearestVoisin;
+		std::vector<Particules> nearestVoisin;
 
 // Loop over all pairs of particles
 		
@@ -39,7 +39,7 @@ void  Voisin (Particles & at, f64 const & dt, f64 const & r_cut){
 	
 	// Sort the nearest neighbor table in ascending order of distance
 		
-		std::sort(nearestVoisin.begin(), nearestVoisin.end(), [](const Particles& a, const Particles& b) { 
+		std::sort(nearestVoisin.begin(), nearestVoisin.end(), [](const Particules& a, const Particules& b) { 
 			
 			return a.r_globale < b.r_globale; });
 	
