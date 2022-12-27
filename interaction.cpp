@@ -5,6 +5,7 @@
 #include <cmath>
 #include "interaction.h"
 #include "potentiel.cpp"
+//#include "voisinlist.cpp"
 
 // Algorithme de Verlet
 void Verlet(Particules & at, f64 const& dt, f64 const& r_cut){
