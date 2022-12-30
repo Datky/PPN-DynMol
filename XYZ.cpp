@@ -56,7 +56,7 @@ void  ecrireXYZ(struct Vecteur_3D* pos, std::string cible){
       }
       
       fichier.close();
-      std::cout << "Bonne écriture sur le fichier." << std::endl;
+//NEW      std::cout << "Bonne écriture sur le fichier." <<  << std::endl;
 }
 
 
