@@ -4,9 +4,13 @@ OFLAGS=-O3
 LFLAGS=-lm
 FILES=main.cpp
 
-simulation:
-	$(CC) $(CFLAGS) $(OFLAGS) $(FILES) -o $@ $(LFLAGS)
+simulation: main.o interaction.o potentiel.o XYZ.o remplissage_vecteurs.o
+	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
+
+
+%.o: %.c types.h constantes.h SoA/particule.h
+	$(CC) -c -o $@ $< 
 
 clean:
-	@rm -Rf simulation
-
+	@rm -Rf *.o simulation
+.PHONY: clean

@@ -8,6 +8,7 @@
 #include "types.h"
 #include "constantes.h"
 #include "SoA/particule.h"
+#include "XYZ.h"
 #include "remplissage_vecteurs.h"
 
 void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données

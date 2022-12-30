@@ -2,7 +2,7 @@
 
 #define N 10000
 #define nb_iteration 20
-f64 dt=1000;   //en fs (= 10^(-15) s)
+#define dt 1000   //en fs (= 10^(-15) s)
 
 //Pour l'argon
 #define E_0 9.960719*pow(10,-5)  //en u.Å²/fs² (= 119.8*1.380649*10^(-23) en kg.m²/s² )

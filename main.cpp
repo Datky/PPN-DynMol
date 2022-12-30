@@ -41,9 +41,9 @@
 #include "types.h"
 #include "constantes.h"
 #include "SoA/particule.h"
-#include "interaction.cpp"
-#include "XYZ.cpp"
-#include "remplissage_vecteurs.cpp"
+#include "interaction.h"
+#include "XYZ.h"
+#include "remplissage_vecteurs.h"
 
 int main() {
 //NEW
@@ -90,7 +90,7 @@ int main() {
 
 /*      
     for (u64 i = 0; i < nb_iteration; i++){
-        Verlet(particules, dt, 2.5*d);          // Le potentiel est négligable r_cut = 2.5*d.
+        Verlet(particules, 2.5*d);          // Le potentiel est négligable r_cut = 2.5*d.
         //sum_r_max += _r_max;
         //if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
         ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
@@ -98,7 +98,7 @@ int main() {
 */
       
     for (u64 i = 1; i <= nb_iteration; i++) {
-        Verlet(particules, dt, 2.5*d); // Le potentiel est negligable r_cut = 2.5*d.
+        Verlet(particules, 2.5*d); // Le potentiel est negligable r_cut = 2.5*d.
         // ? sum_r_max += _r_max;
         // ? if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
         std::string fichier_i = std::__cxx11::to_string(i);

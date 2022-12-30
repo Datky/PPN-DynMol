@@ -2,6 +2,7 @@
  * Les fonction d'énergies potentielles de paire
  **/
 
+#include <cmath>
 #include "potentiel.h"
 
 // Calcul du potentiel de Lennard_Jones :

@@ -19,6 +19,9 @@
 #define XYZ_H
 
 #include "types.h"
+#include "constantes.h"
+#include "SoA/particule.h"
+
 //#include "atome.hpp"
 
 /** Lit un fichier au format .xyz , retourne des atomes
