@@ -19,6 +19,7 @@ void Verlet(Particules & at, f64 const& r_cut){
             F_x = F_y = F_z = 0;            
 
             /*
+            // Déplacement dans ce pas de temps.
             f64 deplac_x = at.vit->X[i]*dt + 0.5*at.acc->X[i]*pow(dt,2.0);
             f64 deplac_y = at.vit->Y[i]*dt + 0.5*at.acc->Y[i]*pow(dt,2.0);
             f64 deplac_z = at.vit-Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
@@ -60,21 +61,18 @@ void Verlet(Particules & at, f64 const& r_cut){
              for(u32 j=0; j<N; ++j){        //Ne parcourir que la liste de voisin//
 
                   // Calcul de la distance entre les atomes : r_i(t+dt)
-                  f64 r_x = at.pos->X[j] - at.pos->X[i];
-                  f64 r_y = at.pos->Y[j] - at.pos->Y[i];
-                  f64 r_z = at.pos->Z[j] - at.pos->Z[i];
+                  f64 r_x = abs(at.pos->X[j] - at.pos->X[i]);
+                  f64 r_y = abs(at.pos->Y[j] - at.pos->Y[i]);
+                  f64 r_z = abs(at.pos->Z[j] - at.pos->Z[i]);
                   // ? f64 r_global2 = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
                   // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
                   if (r_global<r_cut && r_global!=0) {
 
-                        ///f64 theta = std::acos(r_z/r_global);
-                        ///f64 phi = std::atan(r_y/r_z);
-
-                        F_x += F_Lennard_Jones(r_x);//F_Lennard_Jones(r_global) *std::sin(theta) *std::cos(phi);
-                        F_y += F_Lennard_Jones(r_y);//F_Lennard_Jones(r_global) *std::sin(theta) *std::sin(phi);
-                        F_z += F_Lennard_Jones(r_z);//F_Lennard_Jones(r_global) *std::cos(theta);
+                        F_x += F_Lennard_Jones(r_x)*r_x/r_global;
+                        F_y += F_Lennard_Jones(r_y)*r_y/r_global;
+                        F_z += F_Lennard_Jones(r_z)*r_z/r_global;
 
                         // Peut être pas nécessaire
                         // Stocker dans la liste de voisin
