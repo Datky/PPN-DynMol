@@ -6,14 +6,11 @@
 #include "SoA/particule.h"
 
 /* Le potentiel de Lennard-Jones : 
- * énergie potentielle qui décrit l'interaction entre 2 atomes au sein d'un gaz monoatomique de type gaz rare. 
- * @param r distanse entre 2 atomes
- * @return énergie potentiel entre 2 atomes
+ * énergie potentielle qui décrit l'interaction entre 2 atomes au sein d'un gaz monoatomique de type gaz rare.
  **/
-f64 Lennard_Jones(f64 const& r);
 
 /* La force de Lennard-Jones : 
- * force qui est calculée par la dérive de l'énergie potentielle.  
+ * force qui est calculée par le négatif du gradient du potentiel de Lennard-Jones.  
  * @param r distanse entre 2 atomes
  * @return force entre 2 atomes
  **/
