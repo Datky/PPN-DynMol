@@ -84,13 +84,14 @@ int main() {
     std::string str_N = std::__cxx11::to_string(N);
     ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
 
+    auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
     // ? f64 r_max = 0;
     // ? f64 sum_r_max = 0;
     // fair la 1er liste des liste de voisin//
 
 /*      
     for (u64 i = 0; i < nb_iteration; i++){
-        Verlet(particules, 2.5*d);          // Le potentiel est négligable r_cut = 2.5*d.
+        Verlet(particules, 2.5*d, frontiere_type);          // Le potentiel est négligable r_cut = 2.5*d.
         //sum_r_max += _r_max;
         //if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
         ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
@@ -98,7 +99,7 @@ int main() {
 */
       
     for (u64 i = 1; i <= nb_iteration; i++) {
-        Verlet(particules, 2.5*d); // Le potentiel est negligable r_cut = 2.5*d.
+        Verlet(particules, 2.5*d, frontiere_type); // Le potentiel est negligable r_cut = 2.5*d.
         // ? sum_r_max += _r_max;
         // ? if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
         std::string fichier_i = std::__cxx11::to_string(i);

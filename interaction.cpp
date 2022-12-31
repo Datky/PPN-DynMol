@@ -8,7 +8,7 @@
 //#include "voisinlist.cpp"
 
 // Algorithme de Verlet
-void Verlet(Particules & at, f64 const& r_cut){
+void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
 
       f64 F_x, F_y, F_z ;
       // ? f64 r_cut2 = r_cut*r_cut ;
@@ -33,24 +33,9 @@ void Verlet(Particules & at, f64 const& r_cut){
              at.pos->Y[i] += at.vit->Y[i]*dt + 0.5*at.acc->Y[i]*pow(dt,2.0);
              at.pos->Z[i] += at.vit->Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
 
-             // Limites spatiales périodiques avec origine en (0,0,0)
-             if (at.pos->X[i]<0) {
-                  at.pos->X[i] = b_x;
-             } else if (at.pos->X[i]>b_x) {
-                  at.pos->X[i] = 0;
-             } 
-
-             if (at.pos->Y[i]<0) {
-                  at.pos->Y[i] = b_y;
-             } else if (at.pos->Y[i]>b_y) {
-                  at.pos->Y[i] = 0;
-             } 
-             
-             if (at.pos->Z[i]<0) {
-                  at.pos->Z[i] = b_z;
-             } else if (at.pos->Z[i]>b_z) {
-                  at.pos->Z[i] = 0;
-             } 
+             // Mise en place d'une frontière
+             auto unique_limites = LimitesFabric::create(frontiere_type);
+             unique_limites->creeLimites(at.pos->X[i], at.pos->Y[i], at.pos->Z[i], F_x, F_y, F_z);
 
              // 1er calcul des vitesses : v_i(t+dt/2)
              at.vit->X[i] += 0.5*at.acc->X[i]*dt;
@@ -92,3 +77,17 @@ void Verlet(Particules & at, f64 const& r_cut){
              at.vit->Z[i] += 0.5*at.acc->Z[i]*dt;
       }   
 }
+
+std::unique_ptr<Limites> LimitesFabric::create(Frontiere const& frontiere_type) {
+      std::unique_ptr<Limites> unique_limites;
+
+      switch (frontiere_type) {
+            case Frontiere::Periodiques:
+                  unique_limites = std::make_unique<LimitesPeriodiques>();
+
+            case Frontiere::Murs:
+                  unique_limites = std::make_unique<LimitesMurs>();
+      }
+      return unique_limites;
+}
+
