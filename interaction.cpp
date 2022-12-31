@@ -18,6 +18,15 @@ void Verlet(Particules & at, f64 const& r_cut){
             // Mise à zéro de la force
             F_x = F_y = F_z = 0;            
 
+            /*
+            f64 deplac_x = at.vit->X[i]*dt + 0.5*at.acc->X[i]*pow(dt,2.0);
+            f64 deplac_y = at.vit->Y[i]*dt + 0.5*at.acc->Y[i]*pow(dt,2.0);
+            f64 deplac_z = at.vit-Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
+            f64 deplac_global = sqrt(pow(deplac_x,2.0) + pow(deplac_y,2.0) + pow(deplac_z,2.0));
+
+            // Stocker plus grand déplacement dans ce pas de temps. f64 r_max  
+            if( r_max < deplac_global ) r_max = deplac_global; */
+
              // Calcul des positions : p_i(t+dt)
              at.pos->X[i] += at.vit->X[i]*dt + 0.5*at.acc->X[i]*pow(dt,2.0);
              at.pos->Y[i] += at.vit->Y[i]*dt + 0.5*at.acc->Y[i]*pow(dt,2.0);
@@ -72,9 +81,6 @@ void Verlet(Particules & at, f64 const& r_cut){
                         // nearestVoisin();
                         // at.liste[i].append(j)
                   }
-                  // Stocker plus grand déplacement dans ce pas de temps. f64 r_max              
-                   
-                  // if(r_max<r_global) r_max=r_global;
              }
 
              // Calcul des accélérations : a_i(t+dt)
