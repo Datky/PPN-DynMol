@@ -4,14 +4,12 @@
 
 #include <cmath>
 #include "interaction.h"
-#include "potentiel.h"
 //#include "voisinlist.cpp"
 
 // Algorithme de Verlet
 void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
 
       f64 F_x, F_y, F_z ;
-      // ? f64 r_cut2 = r_cut*r_cut ;
 
       for(u32 i=0; i<N; ++i){
 
@@ -35,7 +33,7 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
 
              // Mise en place d'une frontière
              auto unique_limites = LimitesFabric::create(frontiere_type);
-             unique_limites->creeLimites(at.pos->X[i], at.pos->Y[i], at.pos->Z[i], F_x, F_y, F_z);
+             unique_limites->creeLimites(at.pos->X[i], at.pos->Y[i], at.pos->Z[i], F_x, F_y, F_z, r_cut);
 
              // 1er calcul des vitesses : v_i(t+dt/2)
              at.vit->X[i] += 0.5*at.acc->X[i]*dt;
@@ -49,7 +47,6 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
                   f64 r_x = abs(at.pos->X[j] - at.pos->X[i]);
                   f64 r_y = abs(at.pos->Y[j] - at.pos->Y[i]);
                   f64 r_z = abs(at.pos->Z[j] - at.pos->Z[i]);
-                  // ? f64 r_global2 = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
                   // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
