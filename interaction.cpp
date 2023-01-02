@@ -51,7 +51,7 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
                   f64 r_x = abs(at.pos->X[j] - at.pos->X[i]);
                   f64 r_y = abs(at.pos->Y[j] - at.pos->Y[i]);
                   f64 r_z = abs(at.pos->Z[j] - at.pos->Z[i]);
-              
+                  rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);              
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
                   // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
@@ -68,6 +68,35 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
                         // at.liste[i].append(j)
                   }
              }
+           
+            
+            
+            /*
+            for (int jj = 0; jj < NN[i]; ++jj){
+            
+            const int j = NL[i * MN + jj];
+            f64 r_x = abs(at.pos->X[j] - at.pos->X[i]);
+            f64 r_y = abs(at.pos->Y[j] - at.pos->Y[i]);
+            f64 r_z = abs(at.pos->Z[j] - at.pos->Z[i]);
+            rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);              
+            f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
+            
+            if (r_global<r_cut && r_global!=0) {
+
+                        F_x += F_Lennard_Jones(r_x)*r_x/r_global;
+                        F_y += F_Lennard_Jones(r_y)*r_y/r_global;
+                        F_z += F_Lennard_Jones(r_z)*r_z/r_global;
+                        
+              
+                  }
+             }
+            
+            */
+            
+            
+            
+            
+            
 
              // Calcul des accélérations : a_i(t+dt)
              at.acc->X[i] = F_x/m;
