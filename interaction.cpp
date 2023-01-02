@@ -5,6 +5,7 @@
 #include <cmath>
 #include "interaction.h"
 #include "voisinlist.cpp"
+#include "rayonverlet.cpp"
 
 // Algorithme de Verlet
 void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
