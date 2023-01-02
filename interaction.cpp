@@ -77,6 +77,39 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
       }   
 }
 
+/*Fabrication****************************************************************************************************/
+std::unique_ptr<Structure> StructureFabric::create(Class const& structure_type) {
+      std::unique_ptr<Structure> unique_structure;
+
+      switch (structure_type) {
+            case Class::SoA:
+                  unique_structure = std::make_unique<Structure_SoA>();
+
+            case Class::AoS:
+                  unique_structure = std::make_unique<Structure_AoS>();
+      }
+      return unique_structure;
+}
+
+std::unique_ptr<Version> VersionFabric::create(Optimisation const& version_type) {
+      std::unique_ptr<Version> unique_version;
+
+      switch (version_type) {
+            case Optimisation::v0:
+                  unique_version = std::make_unique<Version0>();
+
+            case Optimisation::Liste_voisins:
+                  unique_version = std::make_unique<VersionLV>();
+
+            case Optimisation::Cellule:
+                  unique_version = std::make_unique<VersionC>();
+
+            case Optimisation::Liste_voisins_et_Cellule:
+                  unique_version = std::make_unique<VersionLVC>();
+      }
+      return unique_version;
+}
+
 std::unique_ptr<Limites> LimitesFabric::create(Frontiere const& frontiere_type) {
       std::unique_ptr<Limites> unique_limites;
 

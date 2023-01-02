@@ -11,15 +11,40 @@
 #include "SoA/particule.h"
 #include "potentiel.h"
 
+enum class Class {SoA, AoS};
+enum class Optimisation {v0, Liste_voisins, Cellule,  Liste_voisins_et_Cellule};
 enum class Frontiere {Periodiques, Murs};
 
 /* Verlet : Pour trouver la nouvelle position d'un atom. avec des limites spatial périodiques
  * @param [int/out] at tablaeu des les atome dans la boîte de modélisation
  * @param [int] r_cut distance de coupure
  * @param [int] frontiere_type le type de frontière utiliser
- **/
+**/
 void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type); //f64 & r_max
 
+/*Structure*****************************************************************************************************/
+struct Structure {
+      virtual ~Structure() = default;
+};
+
+struct Structure_SoA : public Structure {};
+
+struct Structure_AoS : public Structure {};
+
+/*Optimisation**************************************************************************************************/
+struct Version { 
+      virtual ~Version() = default;
+};
+
+struct Version0 : public Version {};
+
+struct VersionLV : public Version {};
+
+struct VersionC : public Version {};
+
+struct VersionLVC : public Version {};
+
+/*Frontiere******************************************************************************************************/
 struct Limites {
       virtual void creeLimites(f64 & X, f64 & Y, f64 & Z, f64 & F_x, f64 & F_y, f64 & F_z, f64 const& r_cut) = 0;
       virtual ~Limites() = default;
@@ -107,8 +132,18 @@ struct LimitesMurs : public Limites {
       }
 };
 
+/*Fabrication****************************************************************************************************/
+
+namespace StructureFabric {
+      std::unique_ptr<Structure> create(Class const& structure_type);
+};
+
+namespace VersionFabric {
+      std::unique_ptr<Version> create(Optimisation const& version_type);
+};
+
 namespace LimitesFabric {
-      std::unique_ptr<Limites> create(Frontiere const& f);
+      std::unique_ptr<Limites> create(Frontiere const& frontiere_type);
 };
 
 #endif //INTERACTION_H
