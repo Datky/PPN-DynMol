@@ -34,7 +34,7 @@ void  Voisin(Particules& at, f64 const& r_cut) {
 
 					NL[i * MN + NN[i]++] = j;
 					if (NN[i] > MN) {
-						std::cout << "Error: number of neighbors for atom " << i << " exceeds " << MN << std::endl;
+						std::cout << "Erreur : nombre de voisins pour l'atome " << i << " exceeds " << MN << std::endl;
 						exit(1);
 
 					}
