@@ -4,18 +4,21 @@
 
 #include <cmath>
 #include "interaction.h"
-#include "voisinlist.cpp"
 #include "rayonverlet.cpp"
 
 // Algorithme de Verlet
 void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
 
       f64 F_x, F_y, F_z ;
+      
+      
 
       for(u32 i=0; i<N; ++i){
 
             // Mise à zéro de la force
-            F_x = F_y = F_z = 0;            
+            F_x = F_y = F_z = 0;  
+            
+  
 
             /*
             // Déplacement dans ce pas de temps.
@@ -48,7 +51,7 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
                   f64 r_x = abs(at.pos->X[j] - at.pos->X[i]);
                   f64 r_y = abs(at.pos->Y[j] - at.pos->Y[i]);
                   f64 r_z = abs(at.pos->Z[j] - at.pos->Z[i]);
-                  rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);
+              
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
                   // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
@@ -57,10 +60,11 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
                         F_x += F_Lennard_Jones(r_x)*r_x/r_global;
                         F_y += F_Lennard_Jones(r_y)*r_y/r_global;
                         F_z += F_Lennard_Jones(r_z)*r_z/r_global;
-
+                        
+                 
                         // Peut être pas nécessaire
                         // Stocker dans la liste de voisin
-                        // nearestVoisin();
+               
                         // at.liste[i].append(j)
                   }
              }
