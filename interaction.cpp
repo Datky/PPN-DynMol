@@ -4,7 +4,7 @@
 
 #include <cmath>
 #include "interaction.h"
-//#include "voisinlist.cpp"
+#include "voisinlist.cpp"
 
 // Algorithme de Verlet
 void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
@@ -47,6 +47,7 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
                   f64 r_x = abs(at.pos->X[j] - at.pos->X[i]);
                   f64 r_y = abs(at.pos->Y[j] - at.pos->Y[i]);
                   f64 r_z = abs(at.pos->Z[j] - at.pos->Z[i]);
+                  rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
                   // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
