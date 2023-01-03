@@ -11,7 +11,8 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
 
       f64 F_x, F_y, F_z ;
       
-      
+      // Mise en place d'une frontière : création du pointeur
+      auto unique_limites = LimitesFabric::create(frontiere_type);
 
       for(u32 i=0; i<N; ++i){
 
@@ -36,7 +37,6 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
              at.pos->Z[i] += at.vit->Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
 
              // Mise en place d'une frontière
-             auto unique_limites = LimitesFabric::create(frontiere_type);
              unique_limites->creeLimites(at.pos->X[i], at.pos->Y[i], at.pos->Z[i], F_x, F_y, F_z, r_cut);
 
              // 1er calcul des vitesses : v_i(t+dt/2)
