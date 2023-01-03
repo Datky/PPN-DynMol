@@ -52,5 +52,6 @@ make
 
 #### Nettoyage ####
 
+make clean_o # Suppression automatique des fichiers objet (.o)
 rm simulation initial10000.cfg source10000.cfg source10000.xyz
 
