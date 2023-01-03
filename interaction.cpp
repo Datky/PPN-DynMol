@@ -117,9 +117,11 @@ std::unique_ptr<Structure> StructureFabric::create(Class const& structure_type) 
       switch (structure_type) {
             case Class::SoA:
                   unique_structure = std::make_unique<Structure_SoA>();
+                  break;
 
             case Class::AoS:
                   unique_structure = std::make_unique<Structure_AoS>();
+                  break;
       }
       return unique_structure;
 }
@@ -130,15 +132,19 @@ std::unique_ptr<Version> VersionFabric::create(Optimisation const& version_type)
       switch (version_type) {
             case Optimisation::v0:
                   unique_version = std::make_unique<Version0>();
+                  break;
 
             case Optimisation::Liste_voisins:
                   unique_version = std::make_unique<VersionLV>();
+                  break;
 
             case Optimisation::Cellule:
                   unique_version = std::make_unique<VersionC>();
+                  break;
 
             case Optimisation::Liste_voisins_et_Cellule:
                   unique_version = std::make_unique<VersionLVC>();
+                  break;
       }
       return unique_version;
 }
@@ -149,9 +155,11 @@ std::unique_ptr<Limites> LimitesFabric::create(Frontiere const& frontiere_type) 
       switch (frontiere_type) {
             case Frontiere::Periodiques:
                   unique_limites = std::make_unique<LimitesPeriodiques>();
+                  break;
 
             case Frontiere::Murs:
                   unique_limites = std::make_unique<LimitesMurs>();
+                  break;
       }
       return unique_limites;
 }
