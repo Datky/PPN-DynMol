@@ -1,3 +1,7 @@
+#pragma once
+//#ifndef STRUCT_P
+//#define STRUCT_P
+
 #include <iostream>
 #include <cstdlib>
 #include "../types.h"
@@ -5,9 +9,6 @@
 /** @fichier
  * Structures de données pour représenter les particules
  **/
-
-#ifndef STRUCT_P
-#define STRUCT_P
 
 
 struct Vecteur_3D {
@@ -24,4 +25,4 @@ struct Particules {
 };
 
 
-#endif //STRUCT_P
+//#endif //STRUCT_P

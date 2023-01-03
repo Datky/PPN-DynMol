@@ -1,5 +1,6 @@
-#ifndef POTENTIEL_H
-#define POTENTIEL_H
+#pragma once
+//#ifndef POTENTIEL_H
+//#define POTENTIEL_H
 
 #include "types.h"
 #include "constantes.h"
@@ -16,4 +17,4 @@
  **/
 f64 F_Lennard_Jones(f64 const& r);
 
-#endif //POTENTIEL_H
+//#endif //POTENTIEL_H

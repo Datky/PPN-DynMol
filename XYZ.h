@@ -1,3 +1,7 @@
+#pragma once
+//#ifndef XYZ_H
+//#define XYZ_H
+
 /** Un fichier .xyz contient typiquement 
  * la première ligne : le nombre d'atomes,
  * la seconde ligne : un commentaire 
@@ -15,11 +19,8 @@
  *
  **/
 
-#ifndef XYZ_H
-#define XYZ_H
 
 #include "types.h"
-#include "constantes.h"
 #include "SoA/particule.h"
 
 //#include "atome.hpp"
@@ -35,4 +36,4 @@ void lireXYZ(std::string source, struct Vecteur_3D* pos);
  **/
 void  ecrireXYZ(struct Vecteur_3D* pos, std::string cible);
 
-#endif //XYZ_H
+//#endif //XYZ_H

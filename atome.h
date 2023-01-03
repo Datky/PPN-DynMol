@@ -1,13 +1,15 @@
+#pragma once
+
 #include <vector>
 #include <random>
 
-#include "types.h"
+//NEW#include "types.h"
 /** @fichier
  * Structures de données pour représenter les atomes
  **/
 
-#ifndef ATOM_FUNC_H
-#define ATOM_FUNC_H
+//#ifndef ATOM_FUNC_H
+//#define ATOM_FUNC_H
 
 
 struct Vec3d
@@ -54,4 +56,4 @@ void generation_aleatoire_uniforme_des_atomes(Atome *A, u64 N, Limites_du_domain
   }
 };
 
-#endif //ATOM_FUNC_H
+//#endif //ATOM_FUNC_H
