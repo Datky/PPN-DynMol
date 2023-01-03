@@ -104,7 +104,15 @@ int main() {
         // ? if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
         std::string fichier_i = std::__cxx11::to_string(i);
         ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration"+fichier_i+".xyz");
-        std::cout << "Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;
+        if (i <= 3) {
+            std::cout << "Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;
+        }
+        if (i == 4) {
+            std::cout << "ETC..." << std::endl;
+        }
+        if (i==nb_iteration) {
+            std::cout << "Bonne création du fichier .xyz de la " << nb_iteration << "-ème itération." << std::endl;
+        }
 //        std::cout << particules.pos->X[222] << std::endl; //NEW
     }
       
