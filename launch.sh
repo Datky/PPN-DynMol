@@ -45,7 +45,7 @@ atomsk source10000.cfg xyz
 
 #### Exécution du makefile, exécution du programme ####
 
-mkdir Simulation
+mkdir Sortie
 
 make
 ./simulation

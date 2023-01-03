@@ -38,6 +38,7 @@
 #include <iostream>
 #include <cstdio>
 #include <random>
+#include <x86intrin.h>
 #include "types.h"
 #include "constantes.h"
 #include "SoA/particule.h"
@@ -98,24 +99,23 @@ int main() {
         ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
     }
 */
+    u64 debut = __rdtsc(); // Début de la mesure de perf
       
     for (u64 i = 1; i <= nb_iteration; i++) {
         Verlet(particules, 2.5*d, frontiere_type); // Le potentiel est negligable r_cut = 2.5*d.
         // ? sum_r_max += _r_max;
         // ? if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
         std::string fichier_i = std::__cxx11::to_string(i);
-        ecrireXYZ(positions, "Simulation/simulation"+str_N+"_iteration"+fichier_i+".xyz");
-        if (i <= 3) {
-            std::cout << "Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;
-        }
-        if (i == 4) {
-            std::cout << "ETC..." << std::endl;
-        }
-        if (i==nb_iteration) {
-            std::cout << "Bonne création du fichier .xyz de la " << nb_iteration << "-ème itération." << std::endl;
-        }
+        ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");
+        std::cout << "Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;
+        std::cout << "[" << i << "/" << nb_iteration << "] : Bonne écriture sur fichier des positions." << std::endl;
+
 //        std::cout << particules.pos->X[222] << std::endl; //NEW
     }
+
+    u64 fin = __rdtsc(); // Fin de la mesure de perf
+    u64 total = fin-debut;
+    std::cout << "\nLa simulation s'est exécutée en " << total << " cycles CPU (Moyenne : " << total/nb_iteration << ")." << std::endl;
       
     return 0;
 }
