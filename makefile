@@ -12,5 +12,14 @@ simulation: main.o interaction.o potentiel.o XYZ.o remplissage_vecteurs.o
 	$(CC) -c -o $@ $< 
 
 clean:
-	@rm -Rf *.o simulation
+	@rm -Rf *.o Simulation
 .PHONY: clean
+
+clean_o:
+	@rm -Rf *.o
+.PHONY: clean_o
+
+clean_Simulation:
+	@rm -Rf Simulation
+
+.PHONY: clean_Simulation
