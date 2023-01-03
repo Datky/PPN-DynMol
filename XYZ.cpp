@@ -9,6 +9,7 @@
 #include "XYZ.h"
 #include "constantes.h"
 
+
 //
 void lireXYZ(std::string source, struct Vecteur_3D* pos){
       std::ifstream fichier(source);
