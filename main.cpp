@@ -44,9 +44,10 @@
 #include "interaction.h"
 #include "XYZ.h"
 #include "remplissage_vecteurs.h"
+#include "potentiel.h"
 
 int main() {
-//NEW
+
     std::cout << std::endl << "Bienvenue dans l'exécution du programme développé par l'équipe 1 du M1 CHPS." << std::endl;
     std::cout << "Nous considérons comme paramètres :" << std::endl;
     std::cout << "     - " << N << " : nombre d'atomes('N')" << std::endl;
