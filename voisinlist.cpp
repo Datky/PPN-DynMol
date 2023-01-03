@@ -1,11 +1,8 @@
-
 #include "main.cpp"
 #include "constantes.h"
-#include "rayonverlet.cpp"
+//#include "rayonverlet.cpp"
 #include <cmath>
 #include <vector>
-
-
 
 
 // Fixer le nombre de voisins de l'atome de fer i à NNi
