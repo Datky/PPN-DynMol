@@ -84,7 +84,7 @@ int main() {
     remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.      
 
     std::string str_N = std::__cxx11::to_string(N);
-    ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
+    ecrireXYZ(positions, "Sortie/simulation"+str_N+".xyz");
 
     auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
     // ? f64 r_max = 0;
