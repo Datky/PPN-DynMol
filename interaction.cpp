@@ -45,28 +45,28 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
              at.vit->Z[i] += 0.5*at.acc->Z[i]*dt;
 
              // Calcul de la force : F_i(t+dt) et a_i(t+dt)
-             for(u32 j=0; j<N; ++j){        //Ne parcourir que la liste de voisin//
-
-                  // Calcul de la distance entre les atomes : r_i(t+dt)
-                  f64 r_x = abs(at.pos->X[i] - at.pos->X[j]);
-                  f64 r_y = abs(at.pos->Y[i] - at.pos->Y[j]);
-                  f64 r_z = abs(at.pos->Z[i] - at.pos->Z[j]);
-//                  rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);              
-                  f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
-
-                  // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
-                  if (r_global<r_cut && r_global!=0) {
-
-                        F_x += F_Lennard_Jones(r_x)*r_x/r_global;
-                        F_y += F_Lennard_Jones(r_y)*r_y/r_global;
-                        F_z += F_Lennard_Jones(r_z)*r_z/r_global;
-                        
-                 
-                        // Peut être pas nécessaire
+             for(u32 j=0; j<N; ++j){ 
+                   
+                   //Ne parcourir que la liste de voisin//
+                   for (int jj = 0; jj < NN[i]; ++jj){
+                         const int j = NL[i * MN + jj];// Calcul de la distance entre les atomes : r_i(t+dt)
+                         f64 r_x = abs(at.pos->X[i] - at.pos->X[j]);
+                         f64 r_y = abs(at.pos->Y[i] - at.pos->Y[j]);
+                         f64 r_z = abs(at.pos->Z[i] - at.pos->Z[j]);
+                         rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);
+                         f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
+                         // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
+                         
+                         if (r_global<r_cut && r_global!=0) {
+                               F_x += F_Lennard_Jones(r_x)*r_x/r_global;
+                               F_y += F_Lennard_Jones(r_y)*r_y/r_global;
+                               F_z += F_Lennard_Jones(r_z)*r_z/r_global;
+                                // Peut être pas nécessaire
                         // Stocker dans la liste de voisin
                
                         // at.liste[i].append(j)
-                  }
+                         }
+                   }
              }
            
             
