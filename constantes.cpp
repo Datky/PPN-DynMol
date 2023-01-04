@@ -2,7 +2,7 @@
 #include <iostream>
 
 u32 parametres_N::parametres() {
-    std::cout << std::endl << "Merci d'entrer le nombre de particules N (exemple : 10000): ";
+    std::cout << std::endl << "Merci d'entrer le nombre de particules N (5000 ou 10000 recommandés ou 15000): ";
     std::cin >> N;
     std::cout << std::endl;
     return N;
