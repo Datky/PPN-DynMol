@@ -15,7 +15,7 @@ void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct
     // Peut être optimisé avec une seule boucle au lieu de 3
 
     std::string str_N = std::__cxx11::to_string(N);
-    lireXYZ("source"+str_N+".xyz", pos);
+    lireXYZ("Entree/source"+str_N+".xyz", pos);
     std::cout << "\nBonne lecture du fichier des positions générées aléatoirement par le logiciel Atomsk.\n" << std::endl;
 
     generation_gaussienne_des_vitesses(vit);
