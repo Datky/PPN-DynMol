@@ -53,5 +53,5 @@ make
 
 #### Nettoyage ####
 
-make clean # Suppression automatique des fichiers objet (.o)
+make clean_o # Suppression automatique des fichiers objet (.o)
 
