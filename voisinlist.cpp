@@ -1,6 +1,6 @@
 #include "main.cpp"
 #include "constantes.h"
-//#include "rayonverlet.cpp"
+#include "rayonverlet.cpp"
 #include <cmath>
 #include <vector>
 
@@ -41,3 +41,4 @@ void  Voisin(Particules& at, f64 const& r_cut) {
    
 			}
 		}
+}
