@@ -4,12 +4,12 @@
 #include "types.h"
 
 
-void rayonverlet1(const double Length, const double halfLength, double& xij)
+void rayonverlet1(const double boxLength, const double halfLength, double& xij)
 {
 	if (xij < -halfLength)
-		xij += Length;
+		xij += boxLength;
 	else if (xij > +halfLength)
-		xij -= Length;
+		xij -= boxLength;
 }
 
 
