@@ -27,21 +27,22 @@
 # -cell <add|rm|set> <d> <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz>
 # set <d> <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz> : change the length of <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz> to <d> Å
 
-# 100 atomes :
-# atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 initial100.cfg
-# atomsk initial100.cfg -add-atom Ar random 100 source100.cfg
-# atomsk source100.cfg xyz
+mkdir Entree 
 
-# 1000 atomes :
-# atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 initial1000.cfg
-# atomsk initial1000.cfg -add-atom Ar random 1000 source1000.cfg
-# atomsk source1000.cfg xyz
+# 5000 atomes :
+atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial5000.cfg
+atomsk Entree/initial5000.cfg -add-atom Ar random 5000 Entree/source5000.cfg
+atomsk Entree/source5000.cfg xyz
 
 # 10000 atomes (version proche des standards) :
-atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 initial10000.cfg
-atomsk initial10000.cfg -add-atom Ar random 10000 source10000.cfg
-atomsk source10000.cfg xyz
+atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial10000.cfg
+atomsk Entree/initial10000.cfg -add-atom Ar random 10000 Entree/source10000.cfg
+atomsk Entree/source10000.cfg xyz
 
+# 15000 atomes :
+atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial15000.cfg
+atomsk Entree/initial15000.cfg -add-atom Ar random 15000 Entree/source15000.cfg
+atomsk Entree/source15000.cfg xyz
 
 #### Exécution du makefile, exécution du programme ####
 
@@ -52,6 +53,5 @@ make
 
 #### Nettoyage ####
 
-make clean_o # Suppression automatique des fichiers objet (.o)
-rm simulation initial10000.cfg source10000.cfg source10000.xyz
+make clean # Suppression automatique des fichiers objet (.o)
 
