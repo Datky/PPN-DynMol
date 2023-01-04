@@ -4,12 +4,12 @@
 
 #include <cmath>
 #include "interaction.h"
-#include "rayonverlet.cpp"
-#include <vector>
+//#include "rayonverlet.cpp"
+//#include <vector>
 
-std::vector<int> NN, NL;
+//std::vector<int> NN, NL;
 const int MN = 10000;
-
+/*
 void  Voisin(Particules & at, f64 const& r_cut) {
 
         double r_cut2 = r_cut * r_cut;
@@ -40,7 +40,7 @@ void  Voisin(Particules & at, f64 const& r_cut) {
                         }
                 }
 }
-            
+*/           
 
 // Algorithme de Verlet
 void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
@@ -82,14 +82,16 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
 
              // Calcul de la force : F_i(t+dt) et a_i(t+dt)
              for(u32 j=0; j<N; ++j){ 
-                   
+
+/*                   
                    //Ne parcourir que la liste de voisin//
                    for (int jj = 0; jj < NN[i]; ++jj){
                          const int j = NL[i * MN + jj];// Calcul de la distance entre les atomes : r_i(t+dt)
+*/
                          f64 r_x = abs(at.pos->X[i] - at.pos->X[j]);
                          f64 r_y = abs(at.pos->Y[i] - at.pos->Y[j]);
                          f64 r_z = abs(at.pos->Z[i] - at.pos->Z[j]);
-                         rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);
+//                         rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);
                          f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
                          // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
                          
@@ -101,7 +103,7 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
                         // Stocker dans la liste de voisin
                
                         // at.liste[i].append(j)
-                         }
+                     //}    
                    }
              }
            
