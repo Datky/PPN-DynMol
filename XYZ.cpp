@@ -51,7 +51,7 @@ void  ecrireXYZ(struct Vecteur_3D* pos, std::string cible){
       
       std::string s = "Élément";
 
-      for (int i = 0; i < N; ++i) {
+      for (u32 i = 0; i < N; ++i) {
             fichier << std::setprecision(11)<< s <<' '<< pos->X[i] <<' '<<' '<< pos->Y[i] <<' '<< pos->Z[i];     //Ecriture des <Élément i> <x(i)> <y(i)> <z(i)>
             fichier << std::endl;
       }
