@@ -42,6 +42,7 @@
 #include "types.h"
 #include "constantes.h"
 #include "SoA/particule.h"
+#include "AoS/particule.h"
 #include "interaction.h"
 #include "XYZ.h"
 #include "remplissage_vecteurs.h"
