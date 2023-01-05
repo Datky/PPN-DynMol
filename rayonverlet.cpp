@@ -20,4 +20,5 @@ void rayonverlet(const double bx, const double by, const double bz, double& x12,
         const double halfz = bz * 0.5;
         rayonverlet1(b_x, halfx, x12);
         rayonverlet1(b_y, halfy, y12);
--- INSERT --                                                  1,1           Top
+        }
+
