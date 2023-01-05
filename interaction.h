@@ -67,71 +67,65 @@ struct LimitesMurs : public Limites {
              // Murs au frontière de la boîte
              if (X < r_cut) { 
                   f64 r_x = abs(X);
-                  f64 r_y = std::min(Y,b_x-Y);
-                  f64 r_z = std::min(Z,b_x-Z);
+                  f64 r_y = std::max(abs(Y),abs(b_x-Y));
+                  f64 r_z = std::max(abs(Z),abs(b_x-Z));
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global;
-                  X = 0;
+                  F_x += F_Lennard_Jones(r_x)*r_x/r_global;
+                  F_y += F_Lennard_Jones(r_y)*r_y/r_global;
+                  F_z += F_Lennard_Jones(r_z)*r_z/r_global;
 
              } else if (X > b_x-r_cut) { 
                   f64 r_x = abs(b_x-X);
-                  f64 r_y = std::min(Y,b_y-Y);
-                  f64 r_z = std::min(Z,b_x-Z);
+                  f64 r_y = std::max(abs(Y),abs(b_y-Y));
+                  f64 r_z = std::max(abs(Z),abs(b_z-Z));
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global;
-                  X = b_x;
+                  F_x += F_Lennard_Jones(r_x)*r_x/r_global;
+                  F_y += F_Lennard_Jones(r_y)*r_y/r_global;
+                  F_z += F_Lennard_Jones(r_z)*r_z/r_global;
              } 
 
              if (Y < r_cut) { 
-                  f64 r_x = std::min(X,b_x-X);
+                  f64 r_x = std::max(abs(X),abs(b_x-X));
                   f64 r_y = abs(Y);
-                  f64 r_z = std::min(Z,b_x-Z);
+                  f64 r_z = std::max(abs(Z),abs(b_z-Z));
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global;
-                  Y = 0;
+                  F_x += F_Lennard_Jones(r_x)*r_x/r_global;
+                  F_y += F_Lennard_Jones(r_y)*r_y/r_global;
+                  F_z += F_Lennard_Jones(r_z)*r_z/r_global;
 
              } else if (Y > b_y-r_cut) { 
-                  f64 r_x = std::min(X,b_x-X);
+                  f64 r_x = std::max(abs(X),abs(b_x-X));
                   f64 r_y = abs(b_y-Y);
-                  f64 r_z = std::min(Z,b_x-Z);
+                  f64 r_z = std::max(abs(Z),abs(b_z-Z));
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global;
-                  Y = b_y;
+                  F_x += F_Lennard_Jones(r_x)*r_x/r_global;
+                  F_y += F_Lennard_Jones(r_y)*r_y/r_global;
+                  F_z += F_Lennard_Jones(r_z)*r_z/r_global;
              } 
              
              if (Z < r_cut) {
-                  f64 r_x = std::min(X,b_x-X);
-                  f64 r_y = std::min(Y,b_y-Y);
+                  f64 r_x = std::max(abs(X),abs(b_x-X));
+                  f64 r_y = std::max(abs(Y),abs(b_y-Y));
                   f64 r_z = abs(Z);
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global; 
-                  Z = 0;
+                  F_x += F_Lennard_Jones(r_x)*r_x/r_global;
+                  F_y += F_Lennard_Jones(r_y)*r_y/r_global;
+                  F_z += F_Lennard_Jones(r_z)*r_z/r_global; 
 
              } else if (Z > b_z-r_cut) { 
-                  f64 r_x = std::min(X,b_x-X);
-                  f64 r_y = std::min(Y,b_y-Y);
+                  f64 r_x = std::max(abs(X),abs(b_x-X));
+                  f64 r_y = std::max(abs(Y),abs(b_y-Y));
                   f64 r_z = abs(b_z-Z);
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global;
-                  Z = b_z;
+                  F_x += F_Lennard_Jones(r_x)*r_x/r_global;
+                  F_y += F_Lennard_Jones(r_y)*r_y/r_global;
+                  F_z += F_Lennard_Jones(r_z)*r_z/r_global;
              }
       }
 };
