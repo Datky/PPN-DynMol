@@ -5,11 +5,11 @@
 #include <cmath>
 #include "interaction.h"
 #include "rayonverlet.cpp"
-//#include <vector>
+#include <vector>
 
-//std::vector<int> NN, NL;
+std::vector<int> NN, NL;
 const int MN = 10000;
-/*
+
 void  Voisin(Particules & at, f64 const& r_cut) {
 
         double r_cut2 = r_cut * r_cut;
@@ -40,7 +40,7 @@ void  Voisin(Particules & at, f64 const& r_cut) {
                         }
                 }
 }
-*/           
+    
 
 // Algorithme de Verlet
 void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
@@ -83,11 +83,11 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
              // Calcul de la force : F_i(t+dt) et a_i(t+dt)
              for(u32 j=0; j<N; ++j){ 
 
-/*                   
+                 
                    //Ne parcourir que la liste de voisin//
                    for (int jj = 0; jj < NN[i]; ++jj){
                          const int j = NL[i * MN + jj];// Calcul de la distance entre les atomes : r_i(t+dt)
-*/
+
                          f64 r_x = at.pos->X[i] - at.pos->X[j];
                          f64 r_y = at.pos->Y[i] - at.pos->Y[j];
                          f64 r_z = at.pos->Z[i] - at.pos->Z[j];
@@ -103,7 +103,7 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
                         // Stocker dans la liste de voisin
                
                         // at.liste[i].append(j)
-                     //}    
+                     }    
                    }
              }
            
