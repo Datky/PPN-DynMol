@@ -68,9 +68,9 @@ int main() {
 
 
 
-    
     remplissage_vecteurs(liste); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.
-    std::cout << liste[1].pos_X << std::endl;    
+
+
     /*
     std::string str_N = std::__cxx11::to_string(N);
     ecrireXYZ(positions, "Sortie/simulation"+str_N+".xyz");
