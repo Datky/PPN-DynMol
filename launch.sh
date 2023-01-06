@@ -30,9 +30,9 @@
 mkdir Entree 
 
 # 5000 atomes :
-atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial5000.cfg
-atomsk Entree/initial5000.cfg -add-atom Ar random 5000 Entree/source5000.cfg
-atomsk Entree/source5000.cfg xyz
+#atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial5000.cfg
+#atomsk Entree/initial5000.cfg -add-atom Ar random 5000 Entree/source5000.cfg
+#atomsk Entree/source5000.cfg xyz
 
 # 10000 atomes (version proche des standards) :
 atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial10000.cfg
@@ -40,9 +40,9 @@ atomsk Entree/initial10000.cfg -add-atom Ar random 10000 Entree/source10000.cfg
 atomsk Entree/source10000.cfg xyz
 
 # 15000 atomes :
-atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial15000.cfg
-atomsk Entree/initial15000.cfg -add-atom Ar random 15000 Entree/source15000.cfg
-atomsk Entree/source15000.cfg xyz
+#atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial15000.cfg
+#atomsk Entree/initial15000.cfg -add-atom Ar random 15000 Entree/source15000.cfg
+#atomsk Entree/source15000.cfg xyz
 
 #### Exécution du makefile, exécution du programme ####
 

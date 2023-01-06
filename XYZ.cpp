@@ -8,10 +8,11 @@
 #include <iomanip> // Nécessaire pour bonne précision en lecture/écriture
 #include "XYZ.h"
 #include "constantes.h"
+#include "AoS/particule.h"
 
 
 //
-void lireXYZ(std::string source, struct Vecteur_3D* pos){
+void lireXYZ(std::string source, struct Particule* liste){
       std::ifstream fichier(source);
 
       if (not fichier){ throw std::runtime_error("Fichier non trouve : "+source); }
@@ -27,9 +28,9 @@ void lireXYZ(std::string source, struct Vecteur_3D* pos){
       u64 i = 0;
 
       while (fichier >> std::setprecision(11) >> s >> p_x >> p_y >> p_z) { //Récupération des <Élément i> <x(i)> <y(i)> <z(i)>
-            pos->X[i] = p_x;
-            pos->Y[i] = p_y;
-            pos->Z[i] = p_z;
+            liste[i].pos_X = p_x;
+            liste[i].pos_Y = p_y;
+            liste[i].pos_Z = p_z;
             ++i;
       }
 

@@ -11,18 +11,19 @@
 #include "XYZ.h"
 #include "remplissage_vecteurs.h"
 
-void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données
+void remplissage_vecteurs(Particule* liste) { // Remplit les vecteurs de données
     // Peut être optimisé avec une seule boucle au lieu de 3
 
     std::string str_N = std::__cxx11::to_string(N);
-    lireXYZ("Entree/source"+str_N+".xyz", pos);
+    lireXYZ("Entree/source"+str_N+".xyz", liste);
     std::cout << "\nBonne lecture du fichier des positions générées aléatoirement par le logiciel Atomsk.\n" << std::endl;
-
+    /*
     generation_gaussienne_des_vitesses(vit);
     std::cout << "\nBonne affectation vitesses selon une fonction gaussienne.\n" << std::endl;
 
     accelerations_initiales_nulles(acc);
     std::cout << "\nBonne affectation des accélérations avec des valeurs nulles.\n" << std::endl;
+    */
 }
 
 void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit){

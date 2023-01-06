@@ -6,7 +6,7 @@
  * ...
  **/
 
-void remplissage_vecteurs(struct Vecteur_3D*, struct Vecteur_3D*, struct Vecteur_3D*);
+void remplissage_vecteurs(Particule* liste);
 void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit);
 void accelerations_initiales_nulles(struct Vecteur_3D* acc);
 

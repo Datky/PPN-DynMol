@@ -59,47 +59,26 @@ int main() {
     std::cout << "     - " << E_0 << " u.Å²/fs² " << ": profondeur du puit de potentiel" << std::endl;
     std::cout << "     - " << d << " Å " << ": distance d'annulation du potentiel" << std::endl;
 
+
+
     // Création et allocation des particules
-    struct Particules particules;
+    struct Liste liste_part;
+    liste_part.liste = static_cast<Particule*>(std::aligned_alloc(sizeof(Particule), sizeof(Particule)*N));
+    Particule* liste = liste_part.liste;
 
-    particules.pos = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-    particules.vit = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-    particules.acc = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
 
-    particules.pos->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.pos->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.pos->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
 
-    particules.vit->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.vit->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.vit->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-
-    particules.acc->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.acc->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.acc->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-
-    struct Vecteur_3D *__restrict positions = particules.pos;
-    struct Vecteur_3D *__restrict vitesses = particules.vit;
-    struct Vecteur_3D *__restrict accelerations = particules.acc;
-
-    remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.      
-
+    
+    remplissage_vecteurs(liste); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.
+    std::cout << liste[1].pos_X << std::endl;    
+    /*
     std::string str_N = std::__cxx11::to_string(N);
     ecrireXYZ(positions, "Sortie/simulation"+str_N+".xyz");
 
     auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
-    // ? f64 r_max = 0;
-    // ? f64 sum_r_max = 0;
-    // fair la 1er liste des liste de voisin//
+    
 
-/*      
-    for (u64 i = 0; i < nb_iteration; i++){
-        Verlet(particules, 2.5*d, frontiere_type);          // Le potentiel est négligable r_cut = 2.5*d.
-        //sum_r_max += _r_max;
-        //if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
-        ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
-    }
-*/
+
     u64 debut = __rdtsc(); // Début de la mesure de perf
       
     for (u64 i = 1; i <= nb_iteration; i++) {
@@ -117,6 +96,7 @@ int main() {
     u64 fin = __rdtsc(); // Fin de la mesure de perf
     u64 total = fin-debut;
     std::cout << "\nLa simulation s'est exécutée en " << total << " cycles CPU (Moyenne : " << total/nb_iteration << ")." << std::endl;
-      
+    */
+
     return 0;
 }
