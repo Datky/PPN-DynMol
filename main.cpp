@@ -71,14 +71,14 @@ int main() {
     remplissage_vecteurs(liste); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.
 
 
-    /*
+    
     std::string str_N = std::__cxx11::to_string(N);
-    ecrireXYZ(positions, "Sortie/simulation"+str_N+".xyz");
+    ecrireXYZ(liste, "Sortie/simulation"+str_N+".xyz");
 
     auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
     
 
-
+    
     u64 debut = __rdtsc(); // Début de la mesure de perf
       
     for (u64 i = 1; i <= nb_iteration; i++) {
@@ -96,7 +96,7 @@ int main() {
     u64 fin = __rdtsc(); // Fin de la mesure de perf
     u64 total = fin-debut;
     std::cout << "\nLa simulation s'est exécutée en " << total << " cycles CPU (Moyenne : " << total/nb_iteration << ")." << std::endl;
-    */
-
+    
+    
     return 0;
 }

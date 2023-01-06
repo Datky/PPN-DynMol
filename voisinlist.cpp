@@ -1,6 +1,7 @@
 #include "main.cpp"
 #include "constantes.h"
 #include "rayonverlet.cpp"
+#include "AoS/particule.h"
 #include <cmath>
 #include <vector>
 
@@ -11,7 +12,7 @@ std::vector<int> NN, NL;
 const int MN = 10000;
 
 
-void  Voisin(Particules& at, f64 const& r_cut) {
+void  Voisin(struct Particule* liste, f64 const& r_cut) {
 
 	double r_cut2 = r_cut * r_cut;
 
@@ -21,9 +22,9 @@ void  Voisin(Particules& at, f64 const& r_cut) {
 			for (int j = i + 1; j < N; ++j) {
 
 				// Calculate the distance between the two particles          
-				double r_x = abs(at.pos->X[j] - at.pos->X[i]);
-				double r_y = abs(at.pos->Y[j] - at.pos->Y[i]);
-				double r_z = abs(at.pos->Z[j] - at.pos->Z[i]);
+				double r_x = abs(liste[j].pos_X - liste[i].pos_X);
+				double r_y = abs(liste[j].pos_Y - liste[i].pos_Y);
+				double r_z = abs(liste[j].pos_Z - liste[i].pos_Z);
 				rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);
 				const double r_global = sqrt(pow(r_x, 2.0) + pow(r_y, 2.0) + pow(r_z, 2.0));
 
