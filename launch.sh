@@ -29,6 +29,21 @@
 
 mkdir Entree 
 
+# 10 atomes :
+atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial10.cfg
+atomsk Entree/initial10.cfg -add-atom Ar random 10 Entree/source10.cfg
+atomsk Entree/source10.cfg xyz
+
+# 100 atomes :
+atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial100.cfg
+atomsk Entree/initial100.cfg -add-atom Ar random 100 Entree/source100.cfg
+atomsk Entree/source100.cfg xyz
+
+# 1000 atomes :
+atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial1000.cfg
+atomsk Entree/initial1000.cfg -add-atom Ar random 1000 Entree/source1000.cfg
+atomsk Entree/source1000.cfg xyz
+
 # 5000 atomes :
 atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial5000.cfg
 atomsk Entree/initial5000.cfg -add-atom Ar random 5000 Entree/source5000.cfg
@@ -51,7 +66,7 @@ mkdir Sortie
 mkdir Bin
 
 make
-./simulation
+./Bin/simulation
 
 #### Nettoyage ####
 
