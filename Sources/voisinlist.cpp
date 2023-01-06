@@ -1,6 +1,6 @@
-#include "main.cpp"
-#include "constantes.h"
-#include "rayonverlet.cpp"
+#include "../main.cpp"
+#include "../Headers/constantes.h"
+#include "../Headers/rayonverlet.cpp"
 #include <cmath>
 #include <vector>
 

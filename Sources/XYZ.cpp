@@ -6,8 +6,8 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip> // Nécessaire pour bonne précision en lecture/écriture
-#include "XYZ.h"
-#include "constantes.h"
+#include "../Headers/XYZ.h"
+#include "../Headers/constantes.h"
 
 
 //

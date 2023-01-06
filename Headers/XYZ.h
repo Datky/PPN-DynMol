@@ -21,7 +21,7 @@
 
 
 #include "types.h"
-#include "SoA/particule.h"
+#include "../SoA/particule.h"
 
 //#include "atome.hpp"
 

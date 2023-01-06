@@ -48,6 +48,8 @@ atomsk Entree/source15000.cfg xyz
 
 mkdir Sortie
 
+mkdir Bin
+
 make
 ./simulation
 

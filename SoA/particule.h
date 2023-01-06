@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <cstdlib>
-#include "../types.h"
+#include "../Headers/types.h"
 
 /** @fichier
  * Structures de données pour représenter les particules

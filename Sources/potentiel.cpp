@@ -3,7 +3,7 @@
  **/
 
 #include <cmath>
-#include "potentiel.h"
+#include "../Headers/potentiel.h"
 
 // Calcul de la force de Lennard_Jones de manière explicite :
 f64 F_Lennard_Jones(f64 const& r){

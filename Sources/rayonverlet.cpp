@@ -1,7 +1,7 @@
 #include "constantes.h"
 #include <iostream>
 //#include "main.cpp"
-#include "types.h"
+#include "../Headers/types.h"
 
 
 void rayonverlet1(const double boxLength, const double halfLength, double& xij)

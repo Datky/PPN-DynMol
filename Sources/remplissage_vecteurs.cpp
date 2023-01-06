@@ -5,11 +5,11 @@
 #include <iostream>
 #include <cstdio>
 #include <random>
-#include "types.h"
-#include "constantes.h"
-#include "SoA/particule.h"
-#include "XYZ.h"
-#include "remplissage_vecteurs.h"
+#include "../Headers/types.h"
+#include "../Headers/constantes.h"
+#include "../SoA/particule.h"
+#include "../Headers/XYZ.h"
+#include "../Headers/remplissage_vecteurs.h"
 
 void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données
     // Peut être optimisé avec une seule boucle au lieu de 3

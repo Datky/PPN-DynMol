@@ -3,7 +3,7 @@
  **/
 
 #include <cmath>
-#include "interaction.h"
+#include "../Headers/interaction.h"
 //#include "rayonverlet.cpp"
 //#include <vector>
 

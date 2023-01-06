@@ -39,13 +39,13 @@
 #include <cstdio>
 #include <random>
 #include <x86intrin.h>
-#include "types.h"
-#include "constantes.h"
+#include "Headers/types.h"
+#include "Headers/constantes.h"
 #include "SoA/particule.h"
-#include "interaction.h"
-#include "XYZ.h"
-#include "remplissage_vecteurs.h"
-#include "potentiel.h"
+#include "Headers/interaction.h"
+#include "Headers/XYZ.h"
+#include "Headers/remplissage_vecteurs.h"
+#include "Headers/potentiel.h"
 
 int main() {
     std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;

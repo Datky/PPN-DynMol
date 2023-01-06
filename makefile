@@ -4,20 +4,35 @@ OFLAGS=-O3
 LFLAGS=-lm
 FILES=main.cpp
 
-simulation: main.o interaction.o potentiel.o XYZ.o remplissage_vecteurs.o constantes.o
+Bin/simulation: Bin/main.o Bin/interaction.o Bin/potentiel.o Bin/XYZ.o Bin/remplissage_vecteurs.o Bin/constantes.o
 	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
 
-%.o: %.cpp types.h constantes.h SoA/particule.h
+Bin/main.o: main.cpp Headers/types.h Headers/constantes.h SoA/particule.h
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
+
+Bin/interaction.o: Sources/interaction.cpp Headers/types.h Headers/constantes.h SoA/particule.h
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
+
+Bin/potentiel.o: Sources/potentiel.cpp Headers/types.h Headers/constantes.h SoA/particule.h
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
+
+Bin/XYZ.o: Sources/XYZ.cpp Headers/types.h Headers/constantes.h SoA/particule.h
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
+
+Bin/remplissage_vecteurs.o: Sources/remplissage_vecteurs.cpp Headers/types.h Headers/constantes.h SoA/particule.h
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
+
+Bin/constantes.o: Sources/constantes.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
 
 # Règle pour suppression de tous les fichiers créés.
 clean:
-	@rm -Rf *.o simulation Entree Sortie
+	@rm -Rf Bin/*.o Bin/simulation Entree Sortie
 .PHONY: clean
 
 # Règle pour suppression uniquement des ".o" et de l'exécutable.
 clean_o:
-	@rm -Rf *.o simulation 
+	@rm -Rf Bin/*.o Bin/simulation 
 .PHONY: clean_o
 
 .PHONY: clean_Sortie
