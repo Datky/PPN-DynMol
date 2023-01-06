@@ -82,11 +82,11 @@ int main() {
     u64 debut = __rdtsc(); // Début de la mesure de perf
       
     for (u64 i = 1; i <= nb_iteration; i++) {
-        Verlet(particules, 2.5*d, frontiere_type); // Le potentiel est negligable r_cut = 2.5*d.
+        Verlet(liste, 2.5*d, frontiere_type); // Le potentiel est negligable r_cut = 2.5*d.
         // ? sum_r_max += _r_max;
         // ? if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
         std::string fichier_i = std::__cxx11::to_string(i);
-        ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");
+        ecrireXYZ(liste, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");
         std::cout << "Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;
         std::cout << "[" << i << "/" << nb_iteration << "] : Bonne écriture sur fichier des positions." << std::endl;
 

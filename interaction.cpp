@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include "interaction.h"
+#include "AoS/particule.h"
 //#include "rayonverlet.cpp"
 //#include <vector>
 
@@ -43,7 +44,7 @@ void  Voisin(Particules & at, f64 const& r_cut) {
 */           
 
 // Algorithme de Verlet
-void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
+void Verlet(struct Particule* liste, f64 const& r_cut, Frontiere const& frontiere_type){
 
       f64 F_x, F_y, F_z ;
       
@@ -68,17 +69,17 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
             if( r_max < deplac_global ) r_max = deplac_global; */
 
              // Calcul des positions : p_i(t+dt)
-             at.pos->X[i] += at.vit->X[i]*dt + 0.5*at.acc->X[i]*pow(dt,2.0);
-             at.pos->Y[i] += at.vit->Y[i]*dt + 0.5*at.acc->Y[i]*pow(dt,2.0);
-             at.pos->Z[i] += at.vit->Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
+             liste[i].pos_X += liste[i].vit_X*dt + 0.5*liste[i].acc_X*pow(dt,2.0);
+             liste[i].pos_Y += liste[i].vit_Y*dt + 0.5*liste[i].acc_Y*pow(dt,2.0);
+             liste[i].pos_Z += liste[i].vit_Z*dt + 0.5*liste[i].acc_Z*pow(dt,2.0);
 
              // Mise en place d'une frontière
-             unique_limites->creeLimites(at.pos->X[i], at.pos->Y[i], at.pos->Z[i], F_x, F_y, F_z, r_cut);
+             unique_limites->creeLimites(liste[i].pos_X, liste[i].pos_Y, liste[i].pos_Z, F_x, F_y, F_z, r_cut);
 
              // 1er calcul des vitesses : v_i(t+dt/2)
-             at.vit->X[i] += 0.5*at.acc->X[i]*dt;
-             at.vit->Y[i] += 0.5*at.acc->Y[i]*dt;
-             at.vit->Z[i] += 0.5*at.acc->Z[i]*dt;
+             liste[i].vit_X += 0.5*liste[i].acc_X*dt;
+             liste[i].vit_Y += 0.5*liste[i].acc_Y*dt;
+             liste[i].vit_Z += 0.5*liste[i].acc_Z*dt;
 
              // Calcul de la force : F_i(t+dt) et a_i(t+dt)
              for(u32 j=0; j<N; ++j){ 
@@ -88,9 +89,9 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
                    for (int jj = 0; jj < NN[i]; ++jj){
                          const int j = NL[i * MN + jj];// Calcul de la distance entre les atomes : r_i(t+dt)
 */
-                         f64 r_x = at.pos->X[i] - at.pos->X[j];
-                         f64 r_y = at.pos->Y[i] - at.pos->Y[j];
-                         f64 r_z = at.pos->Z[i] - at.pos->Z[j];
+                         f64 r_x = liste[i].pos_X - liste[j].pos_X;
+                         f64 r_y = liste[i].pos_Y - liste[j].pos_Y;
+                         f64 r_z = liste[i].pos_Z - liste[j].pos_Z;
 //                         rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);
                          f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
                          // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
@@ -117,14 +118,14 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
             
 
              // Calcul des accélérations : a_i(t+dt)
-             at.acc->X[i] = F_x/m;
-             at.acc->Y[i] = F_y/m;
-             at.acc->Z[i] = F_z/m;
+             liste[i].acc_X = F_x/m;
+             liste[i].pos_Y = F_y/m;
+             liste[i].pos_Z = F_z/m;
 
              // 2ième calcul des vitesses : v_i(t+dt)
-             at.vit->X[i] += 0.5*at.acc->X[i]*dt;
-             at.vit->Y[i] += 0.5*at.acc->Y[i]*dt;
-             at.vit->Z[i] += 0.5*at.acc->Z[i]*dt;
+             liste[i].vit_X += 0.5*liste[i].vit_X*dt;
+             liste[i].vit_Y += 0.5*liste[i].vit_Y*dt;
+             liste[i].vit_Z += 0.5*liste[i].vit_Z*dt;
       }   
 }
 

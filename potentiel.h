@@ -4,7 +4,7 @@
 
 #include "types.h"
 #include "constantes.h"
-#include "SoA/particule.h"
+#include "AoS/particule.h"
 
 /* Le potentiel de Lennard-Jones : 
  * énergie potentielle qui décrit l'interaction entre 2 atomes au sein d'un gaz monoatomique de type gaz rare.
