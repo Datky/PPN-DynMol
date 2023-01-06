@@ -66,7 +66,7 @@ struct LimitesMurs : public Limites {
       void creeLimites(f64 & X, f64 & Y, f64 & Z, f64 & F_x, f64 & F_y, f64 & F_z, f64 const& r_cut) override {
              // Murs au frontière de la boîte
              if (X < r_cut) { 
-                  f64 r_x = X+proches;
+                  f64 r_x = X+1;
                   f64 r_y = std::min(Y,b_x-Y);
                   f64 r_z = std::min(Z,b_x-Z);
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
@@ -77,7 +77,7 @@ struct LimitesMurs : public Limites {
                   X = r_cut+1;
 
              } else if (X > b_x-r_cut) { 
-                  f64 r_x = b_x-X-proches;
+                  f64 r_x = b_x-X-1;
                   f64 r_y = std::min(Y,b_y-Y);
                   f64 r_z = std::min(Z,b_z-Z);
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
@@ -90,7 +90,7 @@ struct LimitesMurs : public Limites {
 
              if (Y < r_cut) { 
                   f64 r_x = std::min(X,b_x-X);
-                  f64 r_y = Y+proches;
+                  f64 r_y = Y+1;
                   f64 r_z = std::min(Z,b_z-Z);
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
@@ -101,7 +101,7 @@ struct LimitesMurs : public Limites {
 
              } else if (Y > b_y-r_cut) { 
                   f64 r_x = std::min(X,b_x-X);
-                  f64 r_y = b_y-Y-proches;
+                  f64 r_y = b_y-Y-1;
                   f64 r_z = std::min(Z,b_z-Z);
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
@@ -114,7 +114,7 @@ struct LimitesMurs : public Limites {
              if (Z < r_cut) {
                   f64 r_x = std::min(X,b_x-X);
                   f64 r_y = std::min(Y,b_y-Y);
-                  f64 r_z = Z+proches;
+                  f64 r_z = Z+1;
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
                   F_x += F_Lennard_Jones(r_global)*r_x/r_global;
@@ -125,7 +125,7 @@ struct LimitesMurs : public Limites {
              } else if (Z > b_z-r_cut) { 
                   f64 r_x = std::min(X,b_x-X);
                   f64 r_y = std::min(Y,b_y-Y);
-                  f64 r_z = b_z-Z-proches;
+                  f64 r_z = b_z-Z-1;
                   f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
 
                   F_x += F_Lennard_Jones(r_global)*r_x/r_global;
