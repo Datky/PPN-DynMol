@@ -119,13 +119,13 @@ void Verlet(struct Particule* liste, f64 const& r_cut, Frontiere const& frontier
 
              // Calcul des accélérations : a_i(t+dt)
              liste[i].acc_X = F_x/m;
-             liste[i].pos_Y = F_y/m;
-             liste[i].pos_Z = F_z/m;
+             liste[i].acc_Y = F_y/m;
+             liste[i].acc_Z = F_z/m;
 
              // 2ième calcul des vitesses : v_i(t+dt)
-             liste[i].vit_X += 0.5*liste[i].vit_X*dt;
-             liste[i].vit_Y += 0.5*liste[i].vit_Y*dt;
-             liste[i].vit_Z += 0.5*liste[i].vit_Z*dt;
+             liste[i].vit_X += 0.5*liste[i].acc_X*dt;
+             liste[i].vit_Y += 0.5*liste[i].acc_Y*dt;
+             liste[i].vit_Z += 0.5*liste[i].acc_Z*dt;
       }   
 }
 
