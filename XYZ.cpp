@@ -40,7 +40,7 @@ void lireXYZ(std::string source, struct Particule* liste){
 
 
 //
-void  ecrireXYZ(struct Vecteur_3D* pos, std::string cible){
+void  ecrireXYZ(struct Particule* liste, std::string cible){
       std::ofstream fichier;
       fichier.open(cible, std::ofstream::app);
 
@@ -53,7 +53,7 @@ void  ecrireXYZ(struct Vecteur_3D* pos, std::string cible){
       std::string s = "Élément";
 
       for (u32 i = 0; i < N; ++i) {
-            fichier << std::setprecision(11)<< s <<' '<< pos->X[i] <<' '<<' '<< pos->Y[i] <<' '<< pos->Z[i];     //Ecriture des <Élément i> <x(i)> <y(i)> <z(i)>
+            fichier << std::setprecision(11)<< s <<' '<< liste[i].pos_X <<' '<<' '<< liste[i].pos_Y <<' '<< liste[i].pos_Z;     //Ecriture des <Élément i> <x(i)> <y(i)> <z(i)>
             fichier << std::endl;
       }
       
