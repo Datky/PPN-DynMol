@@ -42,13 +42,14 @@
 #include "types.h"
 #include "constantes.h"
 #include "SoA/particule.h"
-#include "AoS/particule.h"
 #include "interaction.h"
 #include "XYZ.h"
 #include "remplissage_vecteurs.h"
 #include "potentiel.h"
 
 int main() {
+    std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;
+    std::cout << "Ci-après un exemple de valeur de force attractive : " << F_Lennard_Jones(1000) << std::endl;
 
     std::cout << std::endl << "Bienvenue dans l'exécution du programme développé par l'équipe 1 du M1 CHPS." << std::endl;
     std::cout << "Nous considérons comme paramètres :" << std::endl;

@@ -106,15 +106,6 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
                      //}    
                    }
              }
-           
-            
-            
-
-            
-            
-            
-            
-            
 
              // Calcul des accélérations : a_i(t+dt)
              at.acc->X[i] = F_x/m;
