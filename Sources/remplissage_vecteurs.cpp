@@ -53,10 +53,12 @@ void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit){
     std::cout << "Quantité de mouvement du système selon z avant ajustement: " << qdm_systeme_z << "A/s" << std::endl;
 
 // Ajustement de qdm_systeme à 0, ie m*vit->X[i] = m*vit->X[i] - qdm_systeme_x, ETC.
+    f64 qdm_systeme_x_sur_N_sur_m = qdm_systeme_x/N/m;
+
     for(u64 i = 0; i < N; i++){
-        vit->X[i] -= qdm_systeme_x/N/m;
-        vit->Y[i] -= qdm_systeme_y/N/m;
-        vit->Z[i] -= qdm_systeme_z/N/m;
+        vit->X[i] -= qdm_systeme_x_sur_N_sur_m;
+        vit->Y[i] -= qdm_systeme_x_sur_N_sur_m;
+        vit->Z[i] -= qdm_systeme_x_sur_N_sur_m;
 //        std::cout << &vit->X[i] << ": vit_Gauss_après_qdm_syst_nulle_X = " <<vit->X[i] << std::endl;
 //        std::cout << &vit->Y[i] << ": vit_Gauss_après_qdm_syst_nulle_Y = " <<vit->Y[i] << std::endl;
 //        std::cout << &vit->Z[i] << ": vit_Gauss_après_qdm_syst_nulle_Z = " <<vit->Z[i] << std::endl;
@@ -78,17 +80,20 @@ void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit){
 
 // Calcul de la température en fonction de la norme du vecteur vitesse.
     f64 temperature = 0;
+    f64 inverse_trois_k_b_N_m = 1/(3*k_b*N)*m;
+    
     for(u64 i = 0; i < N; i++){
-        temperature = temperature + 1/(3*k_b*N)*m*(pow(vit->X[i],2.0)+pow(vit->Y[i],2.0)+pow(vit->Z[i],2.0));
+        temperature = temperature + inverse_trois_k_b_N_m*(pow(vit->X[i],2.0)+pow(vit->Y[i],2.0)+pow(vit->Z[i],2.0));
     }
 
 // Calcul de la vitesse selon initialisation à temperature_cible;
+    f64 sqrt_temperature_cible_sur_temperature = sqrt(temperature_cible/temperature);
     for(u64 i = 0; i < N; i++){
-        vit->X[i] = (vit->X[i])*sqrt(temperature_cible/temperature);
+        vit->X[i] = (vit->X[i])*sqrt_temperature_cible_sur_temperature;
 //        std::cout << &vit->X[i] << ": vit_Gauss_après_ajustement_Tcible_X = " <<vit->X[i] << std::endl;
-        vit->Y[i] = (vit->Y[i])*sqrt(temperature_cible/temperature);
+        vit->Y[i] = (vit->Y[i])*sqrt_temperature_cible_sur_temperature;
 //        std::cout << &vit->Y[i] << ": vit_Gauss_après_ajustement_Tcible_Y = " <<vit->Y[i] << std::endl;
-        vit->Z[i] = (vit->Z[i])*sqrt(temperature_cible/temperature);
+        vit->Z[i] = (vit->Z[i])*sqrt_temperature_cible_sur_temperature;
 //        std::cout << &vit->Z[i] << ": vit_Gauss_après_ajustement_Tcible_Z = " <<vit->Z[i] << std::endl;
     }
 }
