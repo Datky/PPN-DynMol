@@ -43,7 +43,7 @@ void  Voisin(Particules & at, f64 const& r_cut) {
 */           
 
 // Algorithme de Verlet
-void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
+void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type){
 
       f64 F_x, F_y, F_z ;
       
@@ -73,7 +73,7 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
              at.pos->Z[i] += at.vit->Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
 
              // Mise en place d'une frontière
-             unique_limites->creeLimites(at.pos->X[i], at.pos->Y[i], at.pos->Z[i], F_x, F_y, F_z, r_cut);
+             unique_limites->creeLimites(at.pos->X[i], at.pos->Y[i], at.pos->Z[i], F_x, F_y, F_z, r_cut_carre);
 
              // 1er calcul des vitesses : v_i(t+dt/2)
              at.vit->X[i] += 0.5*at.acc->X[i]*dt;
@@ -92,13 +92,19 @@ void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type){
                          f64 r_y = at.pos->Y[i] - at.pos->Y[j];
                          f64 r_z = at.pos->Z[i] - at.pos->Z[j];
 //                         rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);
-                         f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
+                         // f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0)); !AVANT!
+                         f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU! économie de NxN sqrt
                          // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
-                         
-                         if (r_global<r_cut && r_global!=0) {
-                               F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                               F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                               F_z += F_Lennard_Jones(r_global)*r_z/r_global;
+
+                         // if (r_global<r_cut && r_global!=0) { !AVANT!                 
+                         if (r_global_carre<r_cut_carre && r_global_carre!=0) { //!NOUVEAU!
+                               // F_x += F_Lennard_Jones(r_global)*r_x/r_global; !AVANT!
+                               // F_y += F_Lennard_Jones(r_global)*r_y/r_global; !AVANT!
+                               // F_z += F_Lennard_Jones(r_global)*r_z/r_global; !AVANT!
+                               F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU! économie de NxNx3 divisions
+                               F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
+                               F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+
                                 // Peut être pas nécessaire
                         // Stocker dans la liste de voisin
                

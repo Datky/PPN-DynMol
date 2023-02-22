@@ -18,7 +18,7 @@ enum class Frontiere {Periodiques, Murs};
  * @param [int] r_cut distance de coupure
  * @param [int] frontiere_type le type de frontière utiliser
 **/
-void Verlet(Particules & at, f64 const& r_cut, Frontiere const& frontiere_type); //f64 & r_max
+void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type); //f64 & r_max
 
 /*Structure*****************************************************************************************************/
 struct Structure {
@@ -44,12 +44,12 @@ struct VersionLVC : public Version {};
 
 /*Frontiere******************************************************************************************************/
 struct Limites {
-      virtual void creeLimites(f64 & X, f64 & Y, f64 & Z, f64 & F_x, f64 & F_y, f64 & F_z, f64 const& r_cut) = 0;
+      virtual void creeLimites(f64 & X, f64 & Y, f64 & Z, f64 & F_x, f64 & F_y, f64 & F_z, f64 const& r_cut_carre) = 0;
       virtual ~Limites() = default;
 };
 
 struct LimitesPeriodiques : public Limites {
-      void creeLimites(f64 & X, f64 & Y, f64 & Z, f64 & F_x, f64 & F_y, f64 & F_z, f64 const& r_cut) override {
+      void creeLimites(f64 & X, f64 & Y, f64 & Z, f64 & F_x, f64 & F_y, f64 & F_z, f64 const& r_cut_carre) override {
              // Limites spatiales périodiques avec origine en (0,0,0)
              if (X < 0) {X = b_x;}
              else if (X > b_x) {X = 0;} 
