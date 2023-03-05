@@ -50,7 +50,7 @@ make
 
 #### Nettoyage ####
 
-rm -rf Entree
+#rm -rf Entree
 
 make clean_o # Suppression automatique des fichiers objet (.o)
 

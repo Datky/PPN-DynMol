@@ -120,20 +120,37 @@ int main() {
     Cellules cellules;
     std::vector vec = cellules.vec;
 
+    // Taille des cellules
+    f64 tc_x = b_x / c_x;
+    f64 tc_y = b_y / c_y;
+    f64 tc_z = b_z / c_z;
+
 
     // Création des vecteurs
-    for (int i = 0; i < c_z; ++i) {
+    for (int i = 0; i < c_z+2; ++i) {
         std::vector<std::vector<std::vector<u32>>> v_z;
         vec.push_back(v_z); 
-        for (int j = 0; j < c_y; ++j) {
+        for (int j = 0; j < c_y+2; ++j) {
             std::vector<std::vector<u32>> v_y;
             vec[i].push_back(v_y);
-            for (int k = 0; k < c_x; ++k) {
+            for (int k = 0; k < c_x+2; ++k) {
                 std::vector<u32> v_x;
                 vec[i][j].push_back(v_x);
             }      
         }
     }
+
+    // Stockage des particules dans les cellules
+    for (u32 i = 0; i < N; ++i) {
+        int ind_z = positions->Z[i] / tc_z;
+        int ind_y = positions->Y[i] / tc_y;
+        int ind_x = positions->X[i] / tc_x;
+
+        // Attention aux ghost cells
+        vec[ind_z+1][ind_y+1][ind_x+1].push_back(i);
+    }
+
+    std::cout << "Positions de base bien enregistrées dans les cellules.\n" << std::endl;
 
 
 
