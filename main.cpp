@@ -46,6 +46,7 @@
 #include "Headers/XYZ.h"
 #include "Headers/remplissage_vecteurs.h"
 #include "Headers/potentiel.h"
+#include "Headers/cellules.h"
 
 int main() {
     std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;
