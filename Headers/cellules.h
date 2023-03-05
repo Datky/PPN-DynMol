@@ -11,9 +11,13 @@
  * Structures de données pour représenter les cellules
  **/
 
-
+/*
 struct Cellules {
       std::vector<std::vector<u32>> vec;
+};
+*/
+struct Cellules {
+      std::vector<std::vector<std::vector<std::vector<u32>>>> vec;
 };
 
 

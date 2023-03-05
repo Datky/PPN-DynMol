@@ -94,7 +94,7 @@ int main() {
 
 
 
-
+    /*
     // Cellules
     Cellules cellules;
     std::vector vec = cellules.vec;
@@ -108,8 +108,12 @@ int main() {
         vec.push_back(v);
     }
 
-
-
+    // Insertion des particules dans les cellules
+    int min = (c_x+2) * (c_y+2); // À cause des ghost cell
+    for (int i = 0; i < N; ++i) {
+        f64 z = positions->Z[i];
+    }
+    */
 
     u64 debut = __rdtsc(); // Début de la mesure de perf
 
