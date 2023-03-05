@@ -21,6 +21,11 @@
 #define b_y 719.14  //en Å
 #define b_z 719.14  //en Å
 
+// Nombre de cellules dans la boîte
+#define c_x 1
+#define c_y 1
+#define c_z 1
+
 extern const u32 N;
 extern const u32 nb_iteration;
 extern const u32 dt;

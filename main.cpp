@@ -90,32 +90,38 @@ int main() {
     ecrireXYZ(positions, "Sortie/simulation"+str_N+".xyz");
 
     auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
-    // ? f64 r_max = 0;
-    // ? f64 sum_r_max = 0;
-    // fair la 1er liste des liste de voisin//
 
-/*      
-    for (u64 i = 0; i < nb_iteration; i++){
-        Verlet(particules, 2.5*d, frontiere_type);          // Le potentiel est négligable r_cut = 2.5*d.
-        //sum_r_max += _r_max;
-        //if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
-        ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
+
+
+
+
+    // Cellules
+    Cellules cellules;
+    std::vector vec = cellules.vec;
+
+
+    // Calcul du nombre total de cellules + ghost cell
+    int nombre_cellules_total = ((c_x+2) * (c_y+2) * (c_z+2));
+    // Création des vecteurs
+    for (int i = 0; i < nombre_cellules_total; ++i) {
+        std::vector<u32> v;
+        vec.push_back(v);
     }
-*/
+
+
+
+
     u64 debut = __rdtsc(); // Début de la mesure de perf
 
     f64 r_cut_carre = 2.5*d*2.5*d; // Le potentiel est negligable r_cut = 2.5*d. // !NOUVEAU! ajout de 3 x multiplications
     for (u64 i = 1; i <= nb_iteration; i++) {
-        // Verlet(particules, 2.5*d, frontiere_type); // Le potentiel est negligable r_cut = 2.5*d. // !AVANT! 
         Verlet(particules, r_cut_carre, frontiere_type); // !NOUVEAU! économie de nb_iteration x multiplications
-        // ? sum_r_max += _r_max;
-        // ? if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
+
         std::string fichier_i = std::__cxx11::to_string(i);
         ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");
         std::cout << "Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;
         std::cout << "[" << i << "/" << nb_iteration << "] : Bonne écriture sur fichier des positions." << std::endl;
 
-//        std::cout << particules.pos->X[222] << std::endl; //NEW
     }
 
     u64 fin = __rdtsc(); // Fin de la mesure de perf

@@ -13,7 +13,7 @@
 
 
 struct Cellules {
-      std::vector<std::vector<int>> vec;
+      std::vector<std::vector<u32>> vec;
 };
 
 
