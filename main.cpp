@@ -115,6 +115,28 @@ int main() {
     }
     */
 
+
+    // Cellules
+    Cellules cellules;
+    std::vector vec = cellules.vec;
+
+
+    // Création des vecteurs
+    for (int i = 0; i < c_z; ++i) {
+        std::vector<std::vector<std::vector<u32>>> v_z;
+        vec.push_back(v_z); 
+        for (int j = 0; j < c_y; ++j) {
+            std::vector<std::vector<u32>> v_y;
+            vec[i].push_back(v_y);
+            for (int k = 0; k < c_x; ++k) {
+                std::vector<u32> v_x;
+                vec[i][j].push_back(v_x);
+            }      
+        }
+    }
+
+
+
     u64 debut = __rdtsc(); // Début de la mesure de perf
 
     f64 r_cut_carre = 2.5*d*2.5*d; // Le potentiel est negligable r_cut = 2.5*d. // !NOUVEAU! ajout de 3 x multiplications
