@@ -158,7 +158,8 @@ int main() {
 
     f64 r_cut_carre = 2.5*d*2.5*d; // Le potentiel est negligable r_cut = 2.5*d. // !NOUVEAU! ajout de 3 x multiplications
     for (u64 i = 1; i <= nb_iteration; i++) {
-        Verlet(particules, r_cut_carre, frontiere_type); // !NOUVEAU! économie de nb_iteration x multiplications
+        //Verlet(particules, r_cut_carre, frontiere_type); // !NOUVEAU! économie de nb_iteration x multiplications
+        VerletCellules(vec, particules, r_cut_carre, frontiere_type);
 
         std::string fichier_i = std::__cxx11::to_string(i);
         ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");

@@ -3,6 +3,7 @@
  **/
 
 #include <cmath>
+#include <vector>
 #include "../Headers/interaction.h"
 //#include "rayonverlet.cpp"
 //#include <vector>
@@ -41,6 +42,10 @@ void  Voisin(Particules & at, f64 const& r_cut) {
                 }
 }
 */           
+
+void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type) {
+
+}
 
 // Algorithme de Verlet
 void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type){
