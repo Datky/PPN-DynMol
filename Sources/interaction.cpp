@@ -88,9 +88,15 @@ void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_
                    for (int jj = 0; jj < NN[i]; ++jj){
                          const int j = NL[i * MN + jj];// Calcul de la distance entre les atomes : r_i(t+dt)
 */
-                         f64 r_x = at.pos->X[i] - at.pos->X[j];
+                         /*f64 r_x = at.pos->X[i] - at.pos->X[j];
                          f64 r_y = at.pos->Y[i] - at.pos->Y[j];
-                         f64 r_z = at.pos->Z[i] - at.pos->Z[j];
+                         f64 r_z = at.pos->Z[i] - at.pos->Z[j]; AVANT */
+
+/*!NOUVEAU!*/
+                         f64 r_x = unique_limites->calculDistance(at.pos->X[i], at.pos->X[j], b_x, r_cut_carre);
+                         f64 r_y = unique_limites->calculDistance(at.pos->Y[i], at.pos->Y[j], b_y, r_cut_carre);
+                         f64 r_z = unique_limites->calculDistance(at.pos->Z[i], at.pos->Z[j], b_z, r_cut_carre);
+
 //                         rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);
                          // f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0)); !AVANT!
                          f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU! économie de NxN sqrt

@@ -45,20 +45,38 @@ struct VersionLVC : public Version {};
 /*Frontiere******************************************************************************************************/
 struct Limites {
       virtual void creeLimites(f64 & X, f64 & Y, f64 & Z, f64 & F_x, f64 & F_y, f64 & F_z, f64 const& r_cut_carre) = 0;
+/*!NOUVEAU!*/
+      virtual f64 calculDistance(f64 const& i, f64 const& j, f64 const& b, f64 const& r_cut_carre) = 0;
       virtual ~Limites() = default;
 };
 
 struct LimitesPeriodiques : public Limites {
       void creeLimites(f64 & X, f64 & Y, f64 & Z, f64 & F_x, f64 & F_y, f64 & F_z, f64 const& r_cut_carre) override {
+/*!NOUVEAU!*/
              // Limites spatiales périodiques avec origine en (0,0,0)
-             if (X < 0) {X = b_x;}
-             else if (X > b_x) {X = 0;} 
+             while (X < 0) {X = b_x+X;}
+             while (X > b_x) {X = X-b_x;} 
 
-             if (Y < 0) {Y = b_y;}
-             else if (Y > b_y) {Y = 0;} 
+             while (Y < 0) {Y = b_y+Y;}
+             while (Y > b_y) {Y = Y-b_y;} 
              
-             if (Z < 0) {Z = b_z;}
-             else if (Z > b_z) {Z = 0;} 
+             while (Z < 0) {Z = b_z+Z;}
+             while (Z > b_z) {Z = Z-b_z;} 
+      }
+
+/*!NOUVEAU!*/
+      f64 calculDistance(f64 const& i, f64 const& j, f64 const& b, f64 const& r_cut_carre) override {
+            f64 r1 = i-j;
+            f64 r1_carre = r1*r1;
+
+            if ( r1_carre > r_cut_carre) {
+                  f64 r2;
+                  if(r1>0) { r2 = r1-b; }
+                  else { r2 = r1+b; }
+
+                  return r2;
+            }
+            return r1;
       }
 };
 
@@ -69,22 +87,22 @@ struct LimitesMurs : public Limites {
                   f64 r_x = X+1;
                   f64 r_y = std::min(Y,b_x-Y);
                   f64 r_z = std::min(Z,b_x-Z);
-                  f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global;
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
                   X = r_cut+1;
 
              } else if (X > b_x-r_cut) { 
                   f64 r_x = b_x-X-1;
                   f64 r_y = std::min(Y,b_y-Y);
                   f64 r_z = std::min(Z,b_z-Z);
-                  f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global;
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
                   X = b_x-r_cut-1;
              } 
 
@@ -92,22 +110,22 @@ struct LimitesMurs : public Limites {
                   f64 r_x = std::min(X,b_x-X);
                   f64 r_y = Y+1;
                   f64 r_z = std::min(Z,b_z-Z);
-                  f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global;
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
                   Y = r_cut+1;
 
              } else if (Y > b_y-r_cut) { 
                   f64 r_x = std::min(X,b_x-X);
                   f64 r_y = b_y-Y-1;
                   f64 r_z = std::min(Z,b_z-Z);
-                  f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global;
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
                   Y = b_y-r_cut-1;
              } 
              
@@ -115,24 +133,29 @@ struct LimitesMurs : public Limites {
                   f64 r_x = std::min(X,b_x-X);
                   f64 r_y = std::min(Y,b_y-Y);
                   f64 r_z = Z+1;
-                  f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global; 
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU! 
                   Z = r_cut+1;
 
              } else if (Z > b_z-r_cut) { 
                   f64 r_x = std::min(X,b_x-X);
                   f64 r_y = std::min(Y,b_y-Y);
                   f64 r_z = b_z-Z-1;
-                  f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0));
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
 
-                  F_x += F_Lennard_Jones(r_global)*r_x/r_global;
-                  F_y += F_Lennard_Jones(r_global)*r_y/r_global;
-                  F_z += F_Lennard_Jones(r_global)*r_z/r_global;
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
                   Z = b_z-r_cut-1;
              }
+      }
+
+/*!NOUVEAU!*/
+      f64 calculDistance(f64 const& i, f64 const& j, f64 const& b, f64 const& r_cut_carre) override {
+            return i - j;
       }
 };
 
