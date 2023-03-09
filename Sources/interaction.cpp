@@ -45,6 +45,124 @@ void  Voisin(Particules & at, f64 const& r_cut) {
 
 void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type) {
 
+      f64 F_x, F_y, F_z ;
+      // Mise en place d'une frontière : création du pointeur
+      auto unique_limites = LimitesFabric::create(frontiere_type);
+
+
+      // Cellule courante
+      std::vector<u32> cellule;
+      // Pour stocker les cellules voisines
+      std::vector<u32> voisins;
+
+      // Boucle dans les cellules en évitant les ghost cell
+      for (int i = 1; i < c_z+1; ++i) {
+            for (int j = 1; j < c_y+1; ++j) {
+                  for (int k = 1; k < c_x+1; ++k) {
+
+                        cellule.insert(cellule.end(),  vec[i][j][k].begin(), vec[i][j][k].end());
+
+                        // Calcul des particules voisines
+                        // Peut être optimisé d'une cellule à l'autre
+                        voisins.insert(voisins.end(), vec[i-1][j-1][k-1].begin(), vec[i-1][j-1][k-1].end());
+                        voisins.insert(voisins.end(), vec[i-1][j-1][k].begin(), vec[i-1][j-1][k].end());
+                        voisins.insert(voisins.end(), vec[i-1][j-1][k+1].begin(), vec[i-1][j-1][k+1].end());
+                        voisins.insert(voisins.end(), vec[i-1][j][k-1].begin(), vec[i-1][j][k-1].end());
+                        voisins.insert(voisins.end(), vec[i-1][j][k].begin(), vec[i-1][j][k].end());
+                        voisins.insert(voisins.end(), vec[i-1][j][k+1].begin(), vec[i-1][j][k+1].end());
+                        voisins.insert(voisins.end(), vec[i-1][j+1][k-1].begin(), vec[i-1][j+1][k-1].end());
+                        voisins.insert(voisins.end(), vec[i-1][j+1][k].begin(), vec[i-1][j+1][k].end());
+                        voisins.insert(voisins.end(), vec[i-1][j+1][k+1].begin(), vec[i-1][j+1][k+1].end());
+
+                        voisins.insert(voisins.end(), vec[i][j-1][k-1].begin(), vec[i][j-1][k-1].end());
+                        voisins.insert(voisins.end(), vec[i][j-1][k].begin(), vec[i][j-1][k].end());
+                        voisins.insert(voisins.end(), vec[i][j-1][k+1].begin(), vec[i][j-1][k+1].end());
+                        voisins.insert(voisins.end(), vec[i][j][k-1].begin(), vec[i][j][k-1].end());
+                        voisins.insert(voisins.end(), vec[i][j][k].begin(), vec[i][j][k].end());
+                        voisins.insert(voisins.end(), vec[i][j][k+1].begin(), vec[i][j][k+1].end());
+                        voisins.insert(voisins.end(), vec[i][j+1][k-1].begin(), vec[i][j+1][k-1].end());
+                        voisins.insert(voisins.end(), vec[i][j+1][k].begin(), vec[i][j+1][k].end());
+                        voisins.insert(voisins.end(), vec[i][j+1][k+1].begin(), vec[i][j+1][k+1].end());
+
+                        voisins.insert(voisins.end(), vec[i+1][j-1][k-1].begin(), vec[i+1][j-1][k-1].end());
+                        voisins.insert(voisins.end(), vec[i+1][j-1][k].begin(), vec[i+1][j-1][k].end());
+                        voisins.insert(voisins.end(), vec[i+1][j-1][k+1].begin(), vec[i+1][j-1][k+1].end());
+                        voisins.insert(voisins.end(), vec[i+1][j][k-1].begin(), vec[i+1][j][k-1].end());
+                        voisins.insert(voisins.end(), vec[i+1][j][k].begin(), vec[i+1][j][k].end());
+                        voisins.insert(voisins.end(), vec[i+1][j][k+1].begin(), vec[i+1][j][k+1].end());
+                        voisins.insert(voisins.end(), vec[i+1][j+1][k-1].begin(), vec[i+1][j+1][k-1].end());
+                        voisins.insert(voisins.end(), vec[i+1][j+1][k].begin(), vec[i+1][j+1][k].end());
+                        voisins.insert(voisins.end(), vec[i+1][j+1][k+1].begin(), vec[i+1][j+1][k+1].end());
+
+
+
+                        // Verlet
+                        for (u32 ind = 0; ind < cellule.size(); ++ind) {
+                              // Mise à zéro de la force
+                              F_x = F_y = F_z = 0; 
+
+                              int particule = cellule[ind];
+
+                              // Calcul des positions : p_i(t+dt)
+                              at.pos->X[particule] += at.vit->X[particule]*dt + 0.5*at.acc->X[particule]*pow(dt,2.0);
+                              at.pos->Y[particule] += at.vit->Y[particule]*dt + 0.5*at.acc->Y[particule]*pow(dt,2.0);
+                              at.pos->Z[particule] += at.vit->Z[particule]*dt + 0.5*at.acc->Z[particule]*pow(dt,2.0);
+
+                              // Mise en place d'une frontière
+                              unique_limites->creeLimites(at.pos->X[particule], at.pos->Y[particule], at.pos->Z[particule], F_x, F_y, F_z, r_cut_carre);
+
+
+                              // 1er calcul des vitesses : v_i(t+dt/2)
+                              at.vit->X[particule] += 0.5*at.acc->X[particule]*dt;
+                              at.vit->Y[particule] += 0.5*at.acc->Y[particule]*dt;
+                              at.vit->Z[particule] += 0.5*at.acc->Z[particule]*dt;
+
+                              // Calcul de la force : F_i(t+dt) et a_i(t+dt)
+                              for (u32 vois = 0; vois < voisins.size(); ++vois) {
+                                    f64 r_x = at.pos->X[particule] - at.pos->X[voisins[vois]];
+                                    f64 r_y = at.pos->Y[particule] - at.pos->Y[voisins[vois]];
+                                    f64 r_z = at.pos->Z[particule] - at.pos->Z[voisins[vois]];
+
+                                    f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU! économie de NxN sqrt
+
+
+                                    if (r_global_carre<r_cut_carre && r_global_carre!=0) { //!NOUVEAU!
+                                          F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU! économie de NxNx3 divisions
+                                          F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
+                                          F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+
+                                    }
+
+                              }
+
+                              // Calcul des accélérations : a_i(t+dt)
+                              at.acc->X[particule] = F_x/m;
+                              at.acc->Y[particule] = F_y/m;
+                              at.acc->Z[particule] = F_z/m;
+
+                              // 2ième calcul des vitesses : v_i(t+dt)
+                              at.vit->X[particule] += 0.5*at.acc->X[particule]*dt;
+                              at.vit->Y[particule] += 0.5*at.acc->Y[particule]*dt;
+                              at.vit->Z[particule] += 0.5*at.acc->Z[particule]*dt;
+
+
+
+                              // Calcul de la nouvelle cellule de la particule
+                              int new_z = at.pos->Z[particule] / (b_z / c_z);
+                              int new_y = at.pos->Y[particule] / (b_y / c_y);
+                              int new_x = at.pos->X[particule] / (b_x / c_x);
+
+                              if (k != new_x || j != new_y || i != new_z) { // La particule change de cellule
+
+                              }
+
+                        }
+
+                        voisins.clear(); // Remise à vide de la liste des cellules voisines
+                        cellule.clear(); // Remise à zéro de la liste des particules de la cellule courante
+                  }
+            }
+      }
 }
 
 // Algorithme de Verlet
@@ -98,6 +216,13 @@ void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_
                          f64 r_z = at.pos->Z[i] - at.pos->Z[j];
 //                         rayonverlet(b_x, b_y, b_z, r_x, r_y, r_z);
                          // f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0)); !AVANT!
+
+
+                         f64 r_x = unique_limites->calculDistance(at.pos->X[i], at.pos->X[j], b_x, r_cut_carre);
+                         f64 r_y = unique_limites->calculDistance(at.pos->Y[i], at.pos->Y[j], b_y, r_cut_carre);
+                         f64 r_z = unique_limites->calculDistance(at.pos->Z[i], at.pos->Z[j], b_z, r_cut_carre);
+
+                         
                          f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU! économie de NxN sqrt
                          // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
 

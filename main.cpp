@@ -140,6 +140,7 @@ int main() {
         }
     }
 
+
     // Stockage des particules dans les cellules
     for (u32 i = 0; i < N; ++i) {
         int ind_z = positions->Z[i] / tc_z;
