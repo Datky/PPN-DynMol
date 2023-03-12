@@ -50,8 +50,6 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
       auto unique_limites = LimitesFabric::create(frontiere_type);
 
 
-      // Cellule courante
-      std::vector<u32> cellule;
       // Pour stocker les cellules voisines
       std::vector<u32> voisins;
 
@@ -59,8 +57,6 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
       for (int i = 1; i < c_z+1; ++i) {
             for (int j = 1; j < c_y+1; ++j) {
                   for (int k = 1; k < c_x+1; ++k) {
-
-                        cellule.insert(cellule.end(),  vec[i][j][k].begin(), vec[i][j][k].end());
 
                         // Calcul des particules voisines
                         // Peut être optimisé d'une cellule à l'autre
@@ -97,11 +93,11 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
 
 
                         // Verlet
-                        for (u32 ind = 0; ind < cellule.size(); ++ind) {
+                        for (u32 ind = 0; ind < vec[i][j][k].size(); ++ind) {
                               // Mise à zéro de la force
                               F_x = F_y = F_z = 0; 
 
-                              int particule = cellule[ind];
+                              int particule = vec[i][j][k][ind];
 
                               // Calcul des positions : p_i(t+dt)
                               at.pos->X[particule] += at.vit->X[particule]*dt + 0.5*at.acc->X[particule]*pow(dt,2.0);
@@ -159,7 +155,6 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
                         }
 
                         voisins.clear(); // Remise à vide de la liste des cellules voisines
-                        cellule.clear(); // Remise à zéro de la liste des particules de la cellule courante
                   }
             }
       }
@@ -218,9 +213,9 @@ void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_
                          // f64 r_global = sqrt(pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0)); !AVANT!
 
 
-                         f64 r_x = unique_limites->calculDistance(at.pos->X[i], at.pos->X[j], b_x, r_cut_carre);
-                         f64 r_y = unique_limites->calculDistance(at.pos->Y[i], at.pos->Y[j], b_y, r_cut_carre);
-                         f64 r_z = unique_limites->calculDistance(at.pos->Z[i], at.pos->Z[j], b_z, r_cut_carre);
+                         //f64 r_x = unique_limites->calculDistance(at.pos->X[i], at.pos->X[j], b_x, r_cut_carre);
+                         //f64 r_y = unique_limites->calculDistance(at.pos->Y[i], at.pos->Y[j], b_y, r_cut_carre);
+                         //f64 r_z = unique_limites->calculDistance(at.pos->Z[i], at.pos->Z[j], b_z, r_cut_carre);
 
                          
                          f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU! économie de NxN sqrt
