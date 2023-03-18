@@ -97,9 +97,9 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
                               int particule = vec[i][j][k][ind];
 
                               // Calcul des positions : p_i(t+dt)
-                              at.pos->X[particule] += at.vit->X[particule]*dt + 0.5*at.acc->X[particule]*pow(dt,2.0);
-                              at.pos->Y[particule] += at.vit->Y[particule]*dt + 0.5*at.acc->Y[particule]*pow(dt,2.0);
-                              at.pos->Z[particule] += at.vit->Z[particule]*dt + 0.5*at.acc->Z[particule]*pow(dt,2.0);
+                              //at.pos->X[particule] += at.vit->X[particule]*dt + 0.5*at.acc->X[particule]*pow(dt,2.0);
+                              //at.pos->Y[particule] += at.vit->Y[particule]*dt + 0.5*at.acc->Y[particule]*pow(dt,2.0);
+                              //at.pos->Z[particule] += at.vit->Z[particule]*dt + 0.5*at.acc->Z[particule]*pow(dt,2.0);
 
                               // Mise en place d'une frontière
                               unique_limites->creeLimites(at.pos->X[particule], at.pos->Y[particule], at.pos->Z[particule], F_x, F_y, F_z, r_cut_carre);
@@ -111,25 +111,6 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
                               at.vit->Z[particule] += 0.5*at.acc->Z[particule]*dt;
 
 
-                              /*
-                              // Calcul de la force : F_i(t+dt) et a_i(t+dt)
-                              for (u32 vois = 0; vois < voisins.size(); ++vois) {
-                                    f64 r_x = at.pos->X[particule] - at.pos->X[voisins[vois]];
-                                    f64 r_y = at.pos->Y[particule] - at.pos->Y[voisins[vois]];
-                                    f64 r_z = at.pos->Z[particule] - at.pos->Z[voisins[vois]];
-
-                                    f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU! économie de NxN sqrt
-
-
-                                    if (r_global_carre<r_cut_carre && r_global_carre!=0) { //!NOUVEAU!
-                                          F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU! économie de NxNx3 divisions
-                                          F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
-                                          F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
-
-                                    }
-
-                              }
-                              */
 
                               // Calcul de la force : F_i(t+dt) et a_i(t+dt)
                               for (int ii = i-1; ii <= i+1; ++ii) {
@@ -162,18 +143,6 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
                               at.vit->X[particule] += 0.5*at.acc->X[particule]*dt;
                               at.vit->Y[particule] += 0.5*at.acc->Y[particule]*dt;
                               at.vit->Z[particule] += 0.5*at.acc->Z[particule]*dt;
-
-
-
-                              // Calcul de la nouvelle cellule de la particule
-                              int new_z = at.pos->Z[particule] / (b_z / c_z);
-                              int new_y = at.pos->Y[particule] / (b_y / c_y);
-                              int new_x = at.pos->X[particule] / (b_x / c_x);
-
-                              if (k != new_x || j != new_y || i != new_z) { // La particule change de cellule
-
-                              }
-
                         }
                   }
             }

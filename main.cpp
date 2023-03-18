@@ -151,16 +151,20 @@ int main() {
         vec[ind_z+1][ind_y+1][ind_x+1].push_back(i);
     }
 
+    majPositionsetCellules(vec, particules);
+
     std::cout << "Positions de base bien enregistrées dans les cellules.\n" << std::endl;
 
 
     f64 r_cut_carre = 2.5*d*2.5*d; // Le potentiel est negligable r_cut = 2.5*d. // !NOUVEAU! ajout de 3 x multiplications
+
     u64 debut = __rdtsc(); // Début de la mesure de perf
 
     
     for (u64 i = 1; i <= nb_iteration; i++) {
         //Verlet(particules, r_cut_carre, frontiere_type); // !NOUVEAU! économie de nb_iteration x multiplications
         VerletCellules(vec, particules, r_cut_carre, frontiere_type);
+        majPositionsetCellules(vec, particules);
 
         std::string fichier_i = std::__cxx11::to_string(i);
         ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");
