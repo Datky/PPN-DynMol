@@ -154,10 +154,10 @@ int main() {
     std::cout << "Positions de base bien enregistrées dans les cellules.\n" << std::endl;
 
 
-
+    f64 r_cut_carre = 2.5*d*2.5*d; // Le potentiel est negligable r_cut = 2.5*d. // !NOUVEAU! ajout de 3 x multiplications
     u64 debut = __rdtsc(); // Début de la mesure de perf
 
-    f64 r_cut_carre = 2.5*d*2.5*d; // Le potentiel est negligable r_cut = 2.5*d. // !NOUVEAU! ajout de 3 x multiplications
+    
     for (u64 i = 1; i <= nb_iteration; i++) {
         //Verlet(particules, r_cut_carre, frontiere_type); // !NOUVEAU! économie de nb_iteration x multiplications
         VerletCellules(vec, particules, r_cut_carre, frontiere_type);
