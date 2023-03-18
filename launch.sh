@@ -47,7 +47,7 @@ mkdir Bin
 
 make
 ./Bin/simulation
-
+#valgrind ./Bin/simulation
 #### Nettoyage ####
 
 #rm -rf Entree
