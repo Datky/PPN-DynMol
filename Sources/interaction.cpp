@@ -43,6 +43,38 @@ void  Voisin(Particules & at, f64 const& r_cut) {
 }
 */           
 
+void majPositionsetCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at) {
+      for (u32 i = 0; i < N; ++i) {
+
+            int old_z = at.pos->Z[i] / (b_z / c_z);
+            int old_y = at.pos->Y[i] / (b_y / c_y);
+            int old_x = at.pos->X[i] / (b_x / c_x);
+
+            // Calcul des positions
+            at.pos->X[i] += at.vit->X[i]*dt + 0.5*at.acc->X[i]*pow(dt,2.0);
+            at.pos->Y[i] += at.vit->Y[i]*dt + 0.5*at.acc->Y[i]*pow(dt,2.0);
+            at.pos->Z[i] += at.vit->Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
+
+            // Calcul de la nouvelle cellule de la particule
+            int new_z = at.pos->Z[i] / (b_z / c_z);
+            int new_y = at.pos->Y[i] / (b_y / c_y);
+            int new_x = at.pos->X[i] / (b_x / c_x);
+
+            if (old_x != new_x || old_y != new_y || old_z != new_z) { // La particule change de cellule
+
+                  // Cherche la position de l'élément pour le supprimer
+                  for (u32 id = 0; id < vec[old_z][old_y][old_x].size(); ++id) {
+                        if (vec[old_z][old_y][old_x][id] == i) {
+                              vec[old_z][old_y][old_x].erase(vec[old_z][old_y][old_x].begin()+id, vec[old_z][old_y][old_x].begin()+(id+1));
+                              break;
+                        }
+                  }
+                  // Réinsertion dans la bonne cellule
+                  vec[new_z][new_y][new_x].push_back(i);
+            }
+      }
+}
+
 void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type) {
 
       f64 F_x, F_y, F_z ;
@@ -50,46 +82,11 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
       auto unique_limites = LimitesFabric::create(frontiere_type);
 
 
-      // Pour stocker les cellules voisines
-      std::vector<u32> voisins;
 
       // Boucle dans les cellules en évitant les ghost cell
       for (int i = 1; i < c_z+1; ++i) {
             for (int j = 1; j < c_y+1; ++j) {
                   for (int k = 1; k < c_x+1; ++k) {
-
-                        // Calcul des particules voisines
-                        // Peut être optimisé d'une cellule à l'autre
-                        voisins.insert(voisins.end(), vec[i-1][j-1][k-1].begin(), vec[i-1][j-1][k-1].end());
-                        voisins.insert(voisins.end(), vec[i-1][j-1][k].begin(), vec[i-1][j-1][k].end());
-                        voisins.insert(voisins.end(), vec[i-1][j-1][k+1].begin(), vec[i-1][j-1][k+1].end());
-                        voisins.insert(voisins.end(), vec[i-1][j][k-1].begin(), vec[i-1][j][k-1].end());
-                        voisins.insert(voisins.end(), vec[i-1][j][k].begin(), vec[i-1][j][k].end());
-                        voisins.insert(voisins.end(), vec[i-1][j][k+1].begin(), vec[i-1][j][k+1].end());
-                        voisins.insert(voisins.end(), vec[i-1][j+1][k-1].begin(), vec[i-1][j+1][k-1].end());
-                        voisins.insert(voisins.end(), vec[i-1][j+1][k].begin(), vec[i-1][j+1][k].end());
-                        voisins.insert(voisins.end(), vec[i-1][j+1][k+1].begin(), vec[i-1][j+1][k+1].end());
-
-                        voisins.insert(voisins.end(), vec[i][j-1][k-1].begin(), vec[i][j-1][k-1].end());
-                        voisins.insert(voisins.end(), vec[i][j-1][k].begin(), vec[i][j-1][k].end());
-                        voisins.insert(voisins.end(), vec[i][j-1][k+1].begin(), vec[i][j-1][k+1].end());
-                        voisins.insert(voisins.end(), vec[i][j][k-1].begin(), vec[i][j][k-1].end());
-                        voisins.insert(voisins.end(), vec[i][j][k].begin(), vec[i][j][k].end());
-                        voisins.insert(voisins.end(), vec[i][j][k+1].begin(), vec[i][j][k+1].end());
-                        voisins.insert(voisins.end(), vec[i][j+1][k-1].begin(), vec[i][j+1][k-1].end());
-                        voisins.insert(voisins.end(), vec[i][j+1][k].begin(), vec[i][j+1][k].end());
-                        voisins.insert(voisins.end(), vec[i][j+1][k+1].begin(), vec[i][j+1][k+1].end());
-
-                        voisins.insert(voisins.end(), vec[i+1][j-1][k-1].begin(), vec[i+1][j-1][k-1].end());
-                        voisins.insert(voisins.end(), vec[i+1][j-1][k].begin(), vec[i+1][j-1][k].end());
-                        voisins.insert(voisins.end(), vec[i+1][j-1][k+1].begin(), vec[i+1][j-1][k+1].end());
-                        voisins.insert(voisins.end(), vec[i+1][j][k-1].begin(), vec[i+1][j][k-1].end());
-                        voisins.insert(voisins.end(), vec[i+1][j][k].begin(), vec[i+1][j][k].end());
-                        voisins.insert(voisins.end(), vec[i+1][j][k+1].begin(), vec[i+1][j][k+1].end());
-                        voisins.insert(voisins.end(), vec[i+1][j+1][k-1].begin(), vec[i+1][j+1][k-1].end());
-                        voisins.insert(voisins.end(), vec[i+1][j+1][k].begin(), vec[i+1][j+1][k].end());
-                        voisins.insert(voisins.end(), vec[i+1][j+1][k+1].begin(), vec[i+1][j+1][k+1].end());
-
 
 
                         // Verlet
@@ -113,6 +110,8 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
                               at.vit->Y[particule] += 0.5*at.acc->Y[particule]*dt;
                               at.vit->Z[particule] += 0.5*at.acc->Z[particule]*dt;
 
+
+                              /*
                               // Calcul de la force : F_i(t+dt) et a_i(t+dt)
                               for (u32 vois = 0; vois < voisins.size(); ++vois) {
                                     f64 r_x = at.pos->X[particule] - at.pos->X[voisins[vois]];
@@ -129,6 +128,29 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
 
                                     }
 
+                              }
+                              */
+
+                              // Calcul de la force : F_i(t+dt) et a_i(t+dt)
+                              for (int ii = i-1; ii <= i+1; ++ii) {
+                                    for (int jj = j-1; jj <= j+1; ++jj) {
+                                          for (int kk = k-1; kk <= k+1; ++kk) {
+                                                for (u32 vois = 0; vois < vec[ii][jj][kk].size(); ++vois) {
+                                                      f64 r_x = at.pos->X[particule] - at.pos->X[vec[ii][jj][kk][vois]];
+                                                      f64 r_y = at.pos->Y[particule] - at.pos->Y[vec[ii][jj][kk][vois]];
+                                                      f64 r_z = at.pos->Z[particule] - at.pos->Z[vec[ii][jj][kk][vois]];
+
+                                                      f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU! économie de NxN sqrt
+
+                                                      if (r_global_carre<r_cut_carre && r_global_carre!=0) { //!NOUVEAU!
+                                                      F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU! économie de NxNx3 divisions
+                                                      F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
+                                                      F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+
+                                                      }
+                                                }
+                                          }
+                                    }
                               }
 
                               // Calcul des accélérations : a_i(t+dt)
@@ -153,8 +175,6 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
                               }
 
                         }
-
-                        voisins.clear(); // Remise à vide de la liste des cellules voisines
                   }
             }
       }
