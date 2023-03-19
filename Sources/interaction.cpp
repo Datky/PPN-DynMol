@@ -43,34 +43,39 @@ void  Voisin(Particules & at, f64 const& r_cut) {
 }
 */           
 
-void majPositionsetCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at) {
+void majPositionsetCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules &at) {
+      f64 diviseur = b_z / c_z;
       for (u32 i = 0; i < N; ++i) {
 
-            int old_z = at.pos->Z[i] / (b_z / c_z);
-            int old_y = at.pos->Y[i] / (b_y / c_y);
-            int old_x = at.pos->X[i] / (b_x / c_x);
+            int old_z = at.pos->Z[i] / diviseur;
+            int old_y = at.pos->Y[i] / diviseur;
+            int old_x = at.pos->X[i] / diviseur;
+
 
             // Calcul des positions
             at.pos->X[i] += at.vit->X[i]*dt + 0.5*at.acc->X[i]*pow(dt,2.0);
             at.pos->Y[i] += at.vit->Y[i]*dt + 0.5*at.acc->Y[i]*pow(dt,2.0);
             at.pos->Z[i] += at.vit->Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
 
+
             // Calcul de la nouvelle cellule de la particule
-            int new_z = at.pos->Z[i] / (b_z / c_z);
-            int new_y = at.pos->Y[i] / (b_y / c_y);
-            int new_x = at.pos->X[i] / (b_x / c_x);
+            int new_z = at.pos->Z[i] / diviseur;
+            int new_y = at.pos->Y[i] / diviseur;
+            int new_x = at.pos->X[i] / diviseur;
+
+
 
             if (old_x != new_x || old_y != new_y || old_z != new_z) { // La particule change de cellule
 
                   // Cherche la position de l'élément pour le supprimer
-                  for (u32 id = 0; id < vec[old_z][old_y][old_x].size(); ++id) {
-                        if (vec[old_z][old_y][old_x][id] == i) {
-                              vec[old_z][old_y][old_x].erase(vec[old_z][old_y][old_x].begin()+id, vec[old_z][old_y][old_x].begin()+(id+1));
+                  for (u32 id = 0; id < vec[old_z+1][old_y+1][old_x+1].size(); ++id) {
+                        if (vec[old_z+1][old_y+1][old_x+1][id] == i) {
+                              vec[old_z+1][old_y+1][old_x+1].erase(vec[old_z+1][old_y+1][old_x+1].begin()+id, vec[old_z+1][old_y+1][old_x+1].begin()+(id+1));
                               break;
                         }
                   }
                   // Réinsertion dans la bonne cellule
-                  vec[new_z][new_y][new_x].push_back(i);
+                  vec[new_z+1][new_y+1][new_x+1].push_back(i);
             }
       }
 }

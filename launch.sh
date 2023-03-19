@@ -32,7 +32,7 @@ mkdir Entree
 echo -n "Merci d'entrer le nombre de particules N (5000 ou 10000 recommandés ou 15000): "
 read num
 
-# 15000 atomes :
+
 atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial$num.cfg
 atomsk Entree/initial$num.cfg -add-atom Ar random $num Entree/source$num.cfg
 atomsk Entree/source$num.cfg xyz
@@ -46,8 +46,8 @@ mkdir Sortie
 mkdir Bin
 
 make
-./Bin/simulation
-#valgrind ./Bin/simulation
+#./Bin/simulation
+valgrind ./Bin/simulation -s
 #### Nettoyage ####
 
 #rm -rf Entree
