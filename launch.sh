@@ -27,7 +27,9 @@
 # -cell <add|rm|set> <d> <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz>
 # set <d> <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz> : change the length of <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz> to <d> Å
 
-mkdir Entree 
+mkdir Entree
+mkdir Sortie
+mkdir Bin
 
 echo -n "Merci d'entrer le nombre de particules N (5000 ou 10000 recommandés ou 15000): "
 read num
@@ -41,16 +43,12 @@ atomsk Entree/source$num.cfg xyz
 
 #### Exécution du makefile, exécution du programme ####
 
-mkdir Sortie
-
-mkdir Bin
-
 make
-#./Bin/simulation
-valgrind ./Bin/simulation -s
+./Bin/simulation
+#valgrind ./Bin/simulation -s
 #### Nettoyage ####
 
-#rm -rf Entree
+rm -rf Entree
 
-make clean_o # Suppression automatique des fichiers objet (.o)
+make clean_o # Suppression automatique des fichiers objet (.o) 
 

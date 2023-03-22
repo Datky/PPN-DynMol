@@ -151,7 +151,6 @@ int main() {
         vec[ind_z+1][ind_y+1][ind_x+1].push_back(i);
     }
 
-    majPositionsetCellules(vec, particules);
 
     std::cout << "Positions de base bien enregistrées dans les cellules.\n" << std::endl;
 
@@ -160,12 +159,14 @@ int main() {
 
     u64 debut = __rdtsc(); // Début de la mesure de perf
 
-    
+    std::cout << "DEBUT ---------------" << std::endl;
     for (u64 i = 1; i <= nb_iteration; i++) {
+
         //Verlet(particules, r_cut_carre, frontiere_type); // !NOUVEAU! économie de nb_iteration x multiplications
         VerletCellules(vec, particules, r_cut_carre, frontiere_type);
-        majPositionsetCellules(vec, particules);
+        majPositionsetCellules(vec, particules, r_cut_carre, frontiere_type);
 
+        
         std::string fichier_i = std::__cxx11::to_string(i);
         ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");
         std::cout << "Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;

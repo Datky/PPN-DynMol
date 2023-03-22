@@ -43,13 +43,26 @@ void  Voisin(Particules & at, f64 const& r_cut) {
 }
 */           
 
-void majPositionsetCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules &at) {
-      f64 diviseur = b_z / c_z;
+void majPositionsetCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules &at, f64 const& r_cut_carre, Frontiere const& frontiere_type) {
+
+      f64 F_x, F_y, F_z ;
+      F_x = F_y = F_z = 0; // ????
+
+      
+      // Mise en place d'une frontière : création du pointeur
+      auto unique_limites = LimitesFabric::create(frontiere_type);
+
+          // Taille des cellules
+          f64 tc_x = b_x / c_x;
+          f64 tc_y = b_y / c_y;
+          f64 tc_z = b_z / c_z;
+
       for (u32 i = 0; i < N; ++i) {
 
-            int old_z = at.pos->Z[i] / diviseur;
-            int old_y = at.pos->Y[i] / diviseur;
-            int old_x = at.pos->X[i] / diviseur;
+
+            int old_z = at.pos->Z[i] / tc_x;
+            int old_y = at.pos->Y[i] / tc_y;
+            int old_x = at.pos->X[i] / tc_z;
 
 
             // Calcul des positions
@@ -57,20 +70,22 @@ void majPositionsetCellules(std::vector<std::vector<std::vector<std::vector<u32>
             at.pos->Y[i] += at.vit->Y[i]*dt + 0.5*at.acc->Y[i]*pow(dt,2.0);
             at.pos->Z[i] += at.vit->Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
 
+            // Mise en place d'une frontière
+            unique_limites->creeLimites(at.pos->X[i], at.pos->Y[i], at.pos->Z[i], F_x, F_y, F_z, r_cut_carre);
+
 
             // Calcul de la nouvelle cellule de la particule
-            int new_z = at.pos->Z[i] / diviseur;
-            int new_y = at.pos->Y[i] / diviseur;
-            int new_x = at.pos->X[i] / diviseur;
+            int new_z = at.pos->Z[i] / tc_z;
+            int new_y = at.pos->Y[i] / tc_y;
+            int new_x = at.pos->X[i] / tc_x;
 
 
 
             if (old_x != new_x || old_y != new_y || old_z != new_z) { // La particule change de cellule
-
                   // Cherche la position de l'élément pour le supprimer
                   for (u32 id = 0; id < vec[old_z+1][old_y+1][old_x+1].size(); ++id) {
                         if (vec[old_z+1][old_y+1][old_x+1][id] == i) {
-                              vec[old_z+1][old_y+1][old_x+1].erase(vec[old_z+1][old_y+1][old_x+1].begin()+id, vec[old_z+1][old_y+1][old_x+1].begin()+(id+1));
+                              vec[old_z+1][old_y+1][old_x+1].erase(vec[old_z+1][old_y+1][old_x+1].begin()+id, vec[old_z+1][old_y+1][old_x+1].begin()+id+1);
                               break;
                         }
                   }
@@ -107,7 +122,9 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
                               //at.pos->Z[particule] += at.vit->Z[particule]*dt + 0.5*at.acc->Z[particule]*pow(dt,2.0);
 
                               // Mise en place d'une frontière
-                              unique_limites->creeLimites(at.pos->X[particule], at.pos->Y[particule], at.pos->Z[particule], F_x, F_y, F_z, r_cut_carre);
+
+                              //!!!!!!!! F_x F_y F_z toujours à 0 ???----------------------------------------------------------------------------------
+                              unique_limites->creeLimites(at.pos->X[particule], at.pos->Y[particule], at.pos->Z[particule], F_x, F_y, F_z, r_cut_carre); 
 
 
                               // 1er calcul des vitesses : v_i(t+dt/2)
