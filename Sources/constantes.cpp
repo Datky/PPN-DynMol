@@ -1,6 +1,7 @@
 #include "../Headers/constantes.h"
 #include <iostream>
 
+/* NEW :
 u32 parametres_N::parametres() {
     std::cout << std::endl << "Merci d'entrer le nombre de particules N (5000 ou 10000 recommandés ou 15000): ";
     std::cin >> N;
@@ -25,8 +26,8 @@ u32 parametres_dt::parametres() {
 }
 parametres_dt objet_dt {};
 
-const u32 N = objet_N.parametres();
+const u32 N = objet_N.parametres(); // NEW
 const u32 nb_iteration = objet_nb_iteration.parametres();
 const u32 dt = objet_dt.parametres();
-
+*/
 

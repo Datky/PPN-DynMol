@@ -9,6 +9,10 @@
 //#include <vector>
 
 //std::vector<int> NN, NL;
+extern u32 N; // NEW
+extern u32 nb_iteration; // NEW
+extern u32 dt; // NEW
+
 const int MN = 10000;
 /*
 void  Voisin(Particules & at, f64 const& r_cut) {

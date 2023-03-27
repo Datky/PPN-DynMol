@@ -9,6 +9,9 @@
 #include "../Headers/XYZ.h"
 #include "../Headers/constantes.h"
 
+extern u32 N; // NEW
+extern u32 nb_iteration; // NEW
+extern u32 dt; // NEW
 
 //
 void lireXYZ(std::string source, struct Vecteur_3D* pos){

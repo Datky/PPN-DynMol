@@ -31,20 +31,23 @@ mkdir Entree
 mkdir Sortie
 mkdir Bin
 
-echo -n "Merci d'entrer le nombre de particules N (5000 ou 10000 recommandés ou 15000): "
-read num
+echo -n "Merci d'entrer le nombre d'atomes d'argon 'N' (exemple : 10000): "
+read N
 
+echo -n "Merci d'entrer le nombre d'itérations 'nb_itérations', i.e. autant d'applications de l'algorithme de Verlet-vitesses (exemple : 20): "
+read nb_iteration
 
-atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial$num.cfg
-atomsk Entree/initial$num.cfg -add-atom Ar random $num Entree/source$num.cfg
-atomsk Entree/source$num.cfg xyz
+echo -n "Merci d'entrer le pas de temps 'dt' en fs (exemple : 10 fs): "
+read dt
 
-
+atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial$N.cfg
+atomsk Entree/initial$N.cfg -add-atom Ar random $N Entree/source$N.cfg
+atomsk Entree/source$N.cfg xyz
 
 #### Exécution du makefile, exécution du programme ####
 
 make
-./Bin/simulation
+./Bin/simulation $N $nb_iteration $dt
 #valgrind ./Bin/simulation -s
 #### Nettoyage ####
 

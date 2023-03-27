@@ -11,6 +11,10 @@
 #include "../Headers/XYZ.h"
 #include "../Headers/remplissage_vecteurs.h"
 
+extern u32 N; // NEW
+extern u32 nb_iteration; // NEW
+extern u32 dt; // NEW
+
 void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct Vecteur_3D* acc) { // Remplit les vecteurs de données
     // Peut être optimisé avec une seule boucle au lieu de 3
 

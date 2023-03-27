@@ -2,9 +2,9 @@
 
 #include "types.h"
 #define proches 1 // Si la distance est < 1 Å, les particules sont considérées trop proches et le potentiel négligé
-/*
+/* NEW :
 #define N 10000
-#define nb_iteration 5 //NEW
+#define nb_iteration 5
 #define dt 1000   //en fs (= 10^(-15) s)
 */
 
@@ -26,9 +26,11 @@
 #define c_y 5
 #define c_z 5
 
+/* NEW :
 extern const u32 N;
 extern const u32 nb_iteration;
 extern const u32 dt;
+*/
 
 struct parametres_N {
     u32 N;

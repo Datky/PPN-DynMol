@@ -39,6 +39,7 @@
 #include <cstdio>
 #include <random>
 #include <x86intrin.h>
+#include <cstdlib> // NEW
 #include "Headers/types.h"
 #include "Headers/constantes.h"
 #include "SoA/particule.h"
@@ -48,7 +49,15 @@
 #include "Headers/potentiel.h"
 #include "Headers/cellules.h"
 
-int main() {
+u32 N = 0; // NEW
+u32 nb_iteration = 0; // NEW
+u32 dt = 0; // NEW
+
+int main(int argc, char **argv) {
+    N = atoi(argv[1]); // NEW
+    nb_iteration = atoi(argv[2]); // NEW
+    dt = atoi(argv[3]); // NEW
+
     std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;
     std::cout << "Ci-après un exemple de valeur de force attractive : " << F_Lennard_Jones(1000) << std::endl;
 
