@@ -11,7 +11,7 @@
 # Conditions de densité
 ## volume_boite = b_x x b_y x b_z (Å^3)
 ## masse_volumique_argon = 1,7837 g/L = 1,7837 × 10^−3 kg/L = 1,7837 × 10^−30 kg/A à T = 0°C et p = 1 atm = 10^5 Pa = 1 bar
-## masse_atomique_argon = 39,949 u = 39,949 x 1,660 538 921 × 10−27 kg = 6,6337 × 10−26 kg
+## masse_atomique_argon = 39,949 u = 39,949 x 1,660 538 921 × 10−27 kg = 6,6337 × 10−26 kg
 ## N x masse_atomique_argon / (b_x x b_y x b_z) = masse_volumique_argon
 ## b_x x b_y x b_z = N x masse_atomique_argon / masse_volumique_argon
 
@@ -25,50 +25,30 @@
 # <sp1> ==> Ar : argon
 
 # -cell <add|rm|set> <d> <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz>
-# set <d> <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz> : change the length of <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz> to <d> Å
+# set <d> <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz> : change the length of <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz> to <d> Å
 
-mkdir Entree 
+mkdir Entree
+mkdir Sortie
+mkdir Bin
 
-# 10 atomes :
-atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial10.cfg
-atomsk Entree/initial10.cfg -add-atom Ar random 10 Entree/source10.cfg
-atomsk Entree/source10.cfg xyz
+echo -n "Merci d'entrer le nombre de particules N (5000 ou 10000 recommandés ou 15000): "
+read num
 
-# 100 atomes :
-atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial100.cfg
-atomsk Entree/initial100.cfg -add-atom Ar random 100 Entree/source100.cfg
-atomsk Entree/source100.cfg xyz
 
-# 1000 atomes :
-atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial1000.cfg
-atomsk Entree/initial1000.cfg -add-atom Ar random 1000 Entree/source1000.cfg
-atomsk Entree/source1000.cfg xyz
+atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial$num.cfg
+atomsk Entree/initial$num.cfg -add-atom Ar random $num Entree/source$num.cfg
+atomsk Entree/source$num.cfg xyz
 
-# 5000 atomes :
-atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial5000.cfg
-atomsk Entree/initial5000.cfg -add-atom Ar random 5000 Entree/source5000.cfg
-atomsk Entree/source5000.cfg xyz
 
-# 10000 atomes (version proche des standards) :
-atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial10000.cfg
-atomsk Entree/initial10000.cfg -add-atom Ar random 10000 Entree/source10000.cfg
-atomsk Entree/source10000.cfg xyz
-
-# 15000 atomes :
-atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial15000.cfg
-atomsk Entree/initial15000.cfg -add-atom Ar random 15000 Entree/source15000.cfg
-atomsk Entree/source15000.cfg xyz
 
 #### Exécution du makefile, exécution du programme ####
 
-mkdir Sortie
-
-mkdir Bin
-
 make
 ./Bin/simulation
-
+#valgrind ./Bin/simulation -s
 #### Nettoyage ####
 
-make clean_o # Suppression automatique des fichiers objet (.o)
+rm -rf Entree
+
+make clean_o # Suppression automatique des fichiers objet (.o) 
 

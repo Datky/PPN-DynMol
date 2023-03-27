@@ -46,6 +46,7 @@
 #include "Headers/XYZ.h"
 #include "Headers/remplissage_vecteurs.h"
 #include "Headers/potentiel.h"
+#include "Headers/cellules.h"
 
 int main() {
     std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;
@@ -89,32 +90,88 @@ int main() {
     ecrireXYZ(positions, "Sortie/simulation"+str_N+".xyz");
 
     auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
-    // ? f64 r_max = 0;
-    // ? f64 sum_r_max = 0;
-    // fair la 1er liste des liste de voisin//
 
-/*      
-    for (u64 i = 0; i < nb_iteration; i++){
-        Verlet(particules, 2.5*d, frontiere_type);          // Le potentiel est négligable r_cut = 2.5*d.
-        //sum_r_max += _r_max;
-        //if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
-        ecrireXYZ(positions, "Simulation/simulation"+str_N+".xyz");
+
+
+
+    /*
+    // Cellules
+    Cellules cellules;
+    std::vector vec = cellules.vec;
+
+
+    // Calcul du nombre total de cellules + ghost cell
+    int nombre_cellules_total = ((c_x+2) * (c_y+2) * (c_z+2));
+    // Création des vecteurs
+    for (int i = 0; i < nombre_cellules_total; ++i) {
+        std::vector<u32> v;
+        vec.push_back(v);
     }
-*/
-    u64 debut = __rdtsc(); // Début de la mesure de perf
+
+    // Insertion des particules dans les cellules
+    int min = (c_x+2) * (c_y+2); // À cause des ghost cell
+    for (int i = 0; i < N; ++i) {
+        f64 z = positions->Z[i];
+    }
+    */
+
+
+    // Cellules
+    Cellules cellules;
+    std::vector vec = cellules.vec;
+
+    // Taille des cellules
+    f64 tc_x = b_x / c_x;
+    f64 tc_y = b_y / c_y;
+    f64 tc_z = b_z / c_z;
+
+
+    // Création des vecteurs
+    for (int i = 0; i < c_z+2; ++i) {
+        std::vector<std::vector<std::vector<u32>>> v_z;
+        vec.push_back(v_z); 
+        for (int j = 0; j < c_y+2; ++j) {
+            std::vector<std::vector<u32>> v_y;
+            vec[i].push_back(v_y);
+            for (int k = 0; k < c_x+2; ++k) {
+                std::vector<u32> v_x;
+                vec[i][j].push_back(v_x);
+            }      
+        }
+    }
+
+
+    // Stockage des particules dans les cellules
+    for (u32 i = 0; i < N; ++i) {
+        int ind_z = positions->Z[i] / tc_z;
+        int ind_y = positions->Y[i] / tc_y;
+        int ind_x = positions->X[i] / tc_x;
+
+        // Attention aux ghost cells
+        vec[ind_z+1][ind_y+1][ind_x+1].push_back(i);
+    }
+
+
+    std::cout << "Positions de base bien enregistrées dans les cellules.\n" << std::endl;
+
 
     f64 r_cut_carre = 2.5*d*2.5*d; // Le potentiel est negligable r_cut = 2.5*d. // !NOUVEAU! ajout de 3 x multiplications
+
+    u64 debut = __rdtsc(); // Début de la mesure de perf
+
+    std::cout << "DEBUT ---------------" << std::endl;
     for (u64 i = 1; i <= nb_iteration; i++) {
-        // Verlet(particules, 2.5*d, frontiere_type); // Le potentiel est negligable r_cut = 2.5*d. // !AVANT! 
-        Verlet(particules, r_cut_carre, frontiere_type); // !NOUVEAU! économie de nb_iteration x multiplications
-        // ? sum_r_max += _r_max;
-        // ? if( sum_r_max > delta_r){ //Redéfinire la liste de voisin// }
+
+        //Verlet(particules, r_cut_carre, frontiere_type); // !NOUVEAU! économie de nb_iteration x multiplications
+        VerletCellules(vec, particules, r_cut_carre, frontiere_type);
+        majPositionsetCellules(vec, particules, r_cut_carre, frontiere_type);
+
+        
         std::string fichier_i = std::__cxx11::to_string(i);
         ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");
         std::cout << "Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;
         std::cout << "[" << i << "/" << nb_iteration << "] : Bonne écriture sur fichier des positions." << std::endl;
 
-//        std::cout << particules.pos->X[222] << std::endl; //NEW
     }
 
     u64 fin = __rdtsc(); // Fin de la mesure de perf
