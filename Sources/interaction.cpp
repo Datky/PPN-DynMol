@@ -116,15 +116,6 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
 
                               int particule = vec[i][j][k][ind];
 
-                              // Calcul des positions : p_i(t+dt)
-                              //at.pos->X[particule] += at.vit->X[particule]*dt + 0.5*at.acc->X[particule]*pow(dt,2.0);
-                              //at.pos->Y[particule] += at.vit->Y[particule]*dt + 0.5*at.acc->Y[particule]*pow(dt,2.0);
-                              //at.pos->Z[particule] += at.vit->Z[particule]*dt + 0.5*at.acc->Z[particule]*pow(dt,2.0);
-
-                              // Mise en place d'une frontière
-
-                              //!!!!!!!! F_x F_y F_z toujours à 0 ???----------------------------------------------------------------------------------
-                              unique_limites->creeLimites(at.pos->X[particule], at.pos->Y[particule], at.pos->Z[particule], F_x, F_y, F_z, r_cut_carre); 
 
 
                               // 1er calcul des vitesses : v_i(t+dt/2)
