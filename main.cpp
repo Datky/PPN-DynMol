@@ -39,6 +39,8 @@
 #include <cstdio>
 #include <random>
 #include <x86intrin.h>
+#include <time.h>
+#include <iomanip>
 #include <cstdlib> // NEW
 #include "Headers/types.h"
 #include "Headers/constantes.h"
@@ -102,29 +104,6 @@ int main(int argc, char **argv) {
 
 
 
-
-    /*
-    // Cellules
-    Cellules cellules;
-    std::vector vec = cellules.vec;
-
-
-    // Calcul du nombre total de cellules + ghost cell
-    int nombre_cellules_total = ((c_x+2) * (c_y+2) * (c_z+2));
-    // Création des vecteurs
-    for (int i = 0; i < nombre_cellules_total; ++i) {
-        std::vector<u32> v;
-        vec.push_back(v);
-    }
-
-    // Insertion des particules dans les cellules
-    int min = (c_x+2) * (c_y+2); // À cause des ghost cell
-    for (int i = 0; i < N; ++i) {
-        f64 z = positions->Z[i];
-    }
-    */
-
-
     // Cellules
     Cellules cellules;
     std::vector vec = cellules.vec;
@@ -166,9 +145,19 @@ int main(int argc, char **argv) {
 
     f64 r_cut_carre = 2.5*d*2.5*d; // Le potentiel est negligable r_cut = 2.5*d. // !NOUVEAU! ajout de 3 x multiplications
 
-    u64 debut = __rdtsc(); // Début de la mesure de perf
+
+
+
 
     std::cout << "DEBUT ---------------" << std::endl;
+
+
+    struct timespec start, end;
+    u64 debut = __rdtsc(); // Début de la mesure de perf
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+
+
+
     for (u64 i = 1; i <= nb_iteration; i++) {
 
         //Verlet(particules, r_cut_carre, frontiere_type); // !NOUVEAU! économie de nb_iteration x multiplications
@@ -183,9 +172,17 @@ int main(int argc, char **argv) {
 
     }
 
+
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
     u64 fin = __rdtsc(); // Fin de la mesure de perf
     u64 total = fin-debut;
     std::cout << "\nLa simulation s'est exécutée en " << total << " cycles CPU (Moyenne : " << total/nb_iteration << ")." << std::endl;
+
+
+    f64 temps_s =  ((end.tv_sec - start.tv_sec) + ((f64)(end.tv_nsec - start.tv_nsec)/1000000000));
+    f64 capacite = (N*nb_iteration)/temps_s;
+
+    printf("Capacité : %.9f atome(s)/s\n", capacite);
       
     return 0;
 }
