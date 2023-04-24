@@ -134,10 +134,14 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
                                     for (int jj = j-1; jj <= j+1; ++jj) {
                                           for (int kk = k-1; kk <= k+1; ++kk) {
                                                 for (u32 vois = 0; vois < vec[ii][jj][kk].size(); ++vois) {
-                                                      f64 r_x = at.pos->X[particule] - at.pos->X[vec[ii][jj][kk][vois]];
-                                                      f64 r_y = at.pos->Y[particule] - at.pos->Y[vec[ii][jj][kk][vois]];
-                                                      f64 r_z = at.pos->Z[particule] - at.pos->Z[vec[ii][jj][kk][vois]];
-
+                                                      //f64 r_x = at.pos->X[particule] - at.pos->X[vec[ii][jj][kk][vois]];
+                                                      //f64 r_y = at.pos->Y[particule] - at.pos->Y[vec[ii][jj][kk][vois]];
+                                                      //f64 r_z = at.pos->Z[particule] - at.pos->Z[vec[ii][jj][kk][vois]];
+//!NOUVEAU!
+                                                      f64 r_x = unique_limites->calculDistance(at.pos->X[particule], at.pos->X[vec[ii][jj][kk][vois]], b_x, r_cut_carre);
+                                                      f64 r_y = unique_limites->calculDistance(at.pos->Y[particule], at.pos->Y[vec[ii][jj][kk][vois]], b_y, r_cut_carre);
+                                                      f64 r_z = unique_limites->calculDistance(at.pos->Z[particule], at.pos->Z[vec[ii][jj][kk][vois]], b_z, r_cut_carre);
+//!NOUVEAU!
                                                       f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU! économie de NxN sqrt
 
                                                       if (r_global_carre<r_cut_carre && r_global_carre!=0) { //!NOUVEAU!

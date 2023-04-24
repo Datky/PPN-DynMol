@@ -82,11 +82,10 @@ void Test_creeLimites(){
     f64 r_cut_carre = 1;
 
     //Periodiques
-    X = 2+719.14;
-    Y = 155.5-1438.28;
-    Z = 200.5+719.14;
+    X = 2+b_x;
+    Y = 155.5-2*b_y;
+    Z = 200.5+2*b_z;
 
-    // b_x = b_y = b_z = 719.14
     auto frontiere_P = Frontiere::Periodiques; 
     auto P_limites = LimitesFabric::create(frontiere_P);
     P_limites->creeLimites(X, Y, Z, F_x, F_y, F_z, r_cut_carre);
@@ -97,17 +96,17 @@ void Test_creeLimites(){
 
     //Murs
     F_x = F_y = F_z = 0;
-    X = 719.14-0.55;
-    Y = 719.14-0.90;
-    Z = 719.14-0.2;
+    X = b_x-0.55;
+    Y = b_y-0.90;
+    Z = b_z-0.2;
 
     auto frontiere_M = Frontiere::Murs;
     auto M_limites = LimitesFabric::create(frontiere_M);
     M_limites->creeLimites(X,Y, Z, F_x, F_y, F_z, r_cut_carre);
 
-    ASSERT_TRUE(X<719.14 && X>0);
-    ASSERT_TRUE(Y<719.14 && Y>0);
-    ASSERT_TRUE(Z<719.14 && Z>0);
+    ASSERT_TRUE(X<b_x && X>0);
+    ASSERT_TRUE(Y<b_y && Y>0);
+    ASSERT_TRUE(Z<b_z && Z>0);
 
     ASSERT_TRUE(F_x!=0);
     ASSERT_TRUE(F_y!=0);

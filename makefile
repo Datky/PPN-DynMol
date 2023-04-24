@@ -33,12 +33,14 @@ Bin/Test.o: Test.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 
 # Règle pour suppression de tous les fichiers créés.
 clean:
-	@rm -Rf Bin/*.o Bin/simulation Entree Sortie Bin/TEST
+	@rm -Rf Bin/*.o Bin/simulation Entree Sortie 
 .PHONY: clean
 
 # Règle pour suppression uniquement des ".o" et de l'exécutable.
 clean_o:
-	@rm -Rf Bin/*.o Bin/simulation Bin/TEST
+	@rm -Rf Bin/*.o Bin/simulation 
+clean_test:
+	@rm -Rf Bin/*.o Bin/TEST Test/Data_force_Lennard_Jones.dat Test/TEST_cible.xyz
 .PHONY: clean_o
 
 .PHONY: clean_Sortie
