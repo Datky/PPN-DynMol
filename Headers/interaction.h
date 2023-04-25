@@ -24,28 +24,6 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
 
 void majPositionsetCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type);
 
-/*Structure*****************************************************************************************************/
-struct Structure {
-      virtual ~Structure() = default;
-};
-
-struct Structure_SoA : public Structure {};
-
-struct Structure_AoS : public Structure {};
-
-/*Optimisation**************************************************************************************************/
-struct Version { 
-      virtual ~Version() = default;
-};
-
-struct Version0 : public Version {};
-
-struct VersionLV : public Version {};
-
-struct VersionC : public Version {};
-
-struct VersionLVC : public Version {};
-
 /*Frontiere******************************************************************************************************/
 struct Limites {
       virtual void creeLimites(f64 & X, f64 & Y, f64 & Z, f64 & F_x, f64 & F_y, f64 & F_z, f64 const& r_cut_carre) = 0;
@@ -129,6 +107,7 @@ struct LimitesMurs : public Limites {
                   F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
                   F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
                   F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+                  Y = b_y-r_cut-1;
              } 
              
              if (Z < r_cut) {
@@ -162,14 +141,6 @@ struct LimitesMurs : public Limites {
 };
 
 /*Fabrication****************************************************************************************************/
-
-namespace StructureFabric {
-      std::unique_ptr<Structure> create(Class const& structure_type);
-};
-
-namespace VersionFabric {
-      std::unique_ptr<Version> create(Optimisation const& version_type);
-};
 
 namespace LimitesFabric {
       std::unique_ptr<Limites> create(Frontiere const& frontiere_type);

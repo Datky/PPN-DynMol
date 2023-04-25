@@ -182,18 +182,6 @@ void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_
 
             // Mise à zéro de la force
             F_x = F_y = F_z = 0;  
-            
-  
-
-            /*
-            // Déplacement dans ce pas de temps.
-            f64 deplac_x = at.vit->X[i]*dt + 0.5*at.acc->X[i]*pow(dt,2.0);
-            f64 deplac_y = at.vit->Y[i]*dt + 0.5*at.acc->Y[i]*pow(dt,2.0);
-            f64 deplac_z = at.vit-Z[i]*dt + 0.5*at.acc->Z[i]*pow(dt,2.0);
-            f64 deplac_global = sqrt(pow(deplac_x,2.0) + pow(deplac_y,2.0) + pow(deplac_z,2.0));
-
-            // Stocker plus grand déplacement dans ce pas de temps. f64 r_max  
-            if( r_max < deplac_global ) r_max = deplac_global; */
 
              // Calcul des positions : p_i(t+dt)
              at.pos->X[i] += at.vit->X[i]*dt + 0.5*at.acc->X[i]*pow(dt,2.0);
@@ -262,44 +250,6 @@ void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_
 }
 
 /*Fabrication****************************************************************************************************/
-std::unique_ptr<Structure> StructureFabric::create(Class const& structure_type) {
-      std::unique_ptr<Structure> unique_structure;
-
-      switch (structure_type) {
-            case Class::SoA:
-                  unique_structure = std::make_unique<Structure_SoA>();
-                  break;
-
-            case Class::AoS:
-                  unique_structure = std::make_unique<Structure_AoS>();
-                  break;
-      }
-      return unique_structure;
-}
-
-std::unique_ptr<Version> VersionFabric::create(Optimisation const& version_type) {
-      std::unique_ptr<Version> unique_version;
-
-      switch (version_type) {
-            case Optimisation::v0:
-                  unique_version = std::make_unique<Version0>();
-                  break;
-
-            case Optimisation::Liste_voisins:
-                  unique_version = std::make_unique<VersionLV>();
-                  break;
-
-            case Optimisation::Cellule:
-                  unique_version = std::make_unique<VersionC>();
-                  break;
-
-            case Optimisation::Liste_voisins_et_Cellule:
-                  unique_version = std::make_unique<VersionLVC>();
-                  break;
-      }
-      return unique_version;
-}
-
 std::unique_ptr<Limites> LimitesFabric::create(Frontiere const& frontiere_type) {
       std::unique_ptr<Limites> unique_limites;
 

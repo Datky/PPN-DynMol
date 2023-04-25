@@ -44,7 +44,7 @@ void lireXYZ(std::string source, struct Vecteur_3D* pos){
 //
 void  ecrireXYZ(struct Vecteur_3D* pos, std::string cible){
       std::ofstream fichier;
-      fichier.open(cible, std::ofstream::app);
+      fichier.open(cible);
 
       fichier << N << std::endl;                              //Ecriture du <Nombre d'atomes> 
  
