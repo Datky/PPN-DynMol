@@ -52,7 +52,7 @@ void  ecrireXYZ(struct Vecteur_3D* pos, std::string cible){
       fichier << "Commentaire : " << std::endl;                        //Ecriture de la ligne de commentaire
  
       
-      std::string s = "Élément";
+      std::string s = "Ar"; // NEW
 
       for (u32 i = 0; i < N; ++i) {
             fichier << std::setprecision(11)<< s <<' '<< pos->X[i] <<' '<<' '<< pos->Y[i] <<' '<< pos->Z[i];     //Ecriture des <Élément i> <x(i)> <y(i)> <z(i)>
@@ -60,7 +60,6 @@ void  ecrireXYZ(struct Vecteur_3D* pos, std::string cible){
       }
       
       fichier.close();
-//NEW      std::cout << "Bonne écriture sur le fichier." <<  << std::endl;
 }
 
 
