@@ -14,6 +14,9 @@
 u32 N = 20; 
 u32 nb_iteration = 1; 
 u32 dt = 1; 
+u32 b_x = 700; 
+u32 b_y = 700; 
+u32 b_z = 700;
 
 void Test_XYZ(){
     
