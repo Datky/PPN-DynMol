@@ -10,6 +10,10 @@
 #include <vector>
 #include "potentiel.h"
 
+extern u32 b_x; // NEW
+extern u32 b_y; // NEW
+extern u32 b_z; // NEW
+
 enum class Class {SoA, AoS};
 enum class Optimisation {v0, Liste_voisins, Cellule,  Liste_voisins_et_Cellule};
 enum class Frontiere {Periodiques, Murs};
@@ -66,24 +70,24 @@ struct LimitesMurs : public Limites {
              // Murs au frontière de la boîte
              if (X < r_cut) { 
                   f64 r_x = X+1;
-                  f64 r_y = std::min(Y,b_x-Y);
-                  f64 r_z = std::min(Z,b_x-Z);
-                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
+                  f64 r_y = std::min(Y,b_y-Y);
+                  f64 r_z = std::min(Z,b_z-Z);
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
 
-                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
-                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
-                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x;
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y;
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z;
                   X = r_cut+1;
 
              } else if (X > b_x-r_cut) { 
                   f64 r_x = b_x-X-1;
                   f64 r_y = std::min(Y,b_y-Y);
                   f64 r_z = std::min(Z,b_z-Z);
-                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
 
-                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
-                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
-                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x;
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y;
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z;
                   X = b_x-r_cut-1;
              } 
 
@@ -91,22 +95,22 @@ struct LimitesMurs : public Limites {
                   f64 r_x = std::min(X,b_x-X);
                   f64 r_y = Y+1;
                   f64 r_z = std::min(Z,b_z-Z);
-                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
 
-                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
-                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
-                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x;
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y;
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z;
                   Y = r_cut+1;
 
              } else if (Y > b_y-r_cut) { 
                   f64 r_x = std::min(X,b_x-X);
                   f64 r_y = b_y-Y-1;
                   f64 r_z = std::min(Z,b_z-Z);
-                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
 
-                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
-                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
-                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x;
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y;
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z;
                   Y = b_y-r_cut-1;
              } 
              
@@ -114,22 +118,22 @@ struct LimitesMurs : public Limites {
                   f64 r_x = std::min(X,b_x-X);
                   f64 r_y = std::min(Y,b_y-Y);
                   f64 r_z = Z+1;
-                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
 
-                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
-                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
-                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x;
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y;
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z;
                   Z = r_cut+1;
 
              } else if (Z > b_z-r_cut) { 
                   f64 r_x = std::min(X,b_x-X);
                   f64 r_y = std::min(Y,b_y-Y);
                   f64 r_z = b_z-Z-1;
-                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU!
+                  f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
 
-                  F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU!
-                  F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
-                  F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+                  F_x += F_Lennard_Jones(r_global_carre)*r_x; 
+                  F_y += F_Lennard_Jones(r_global_carre)*r_y;
+                  F_z += F_Lennard_Jones(r_global_carre)*r_z;
                   Z = b_z-r_cut-1;
              }
       }

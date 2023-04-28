@@ -9,9 +9,12 @@
 //#include <vector>
 
 //std::vector<int> NN, NL;
-extern u32 N; // NEW
-extern u32 nb_iteration; // NEW
-extern u32 dt; // NEW
+extern u32 N;
+extern u32 nb_iteration;
+extern u32 dt;
+extern u32 b_x; // NEW
+extern u32 b_y; // NEW
+extern u32 b_z; // NEW
 
 const int MN = 10000;
 /*
@@ -137,17 +140,15 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
                                                       //f64 r_x = at.pos->X[particule] - at.pos->X[vec[ii][jj][kk][vois]];
                                                       //f64 r_y = at.pos->Y[particule] - at.pos->Y[vec[ii][jj][kk][vois]];
                                                       //f64 r_z = at.pos->Z[particule] - at.pos->Z[vec[ii][jj][kk][vois]];
-//!NOUVEAU!
                                                       f64 r_x = unique_limites->calculDistance(at.pos->X[particule], at.pos->X[vec[ii][jj][kk][vois]], b_x, r_cut_carre);
                                                       f64 r_y = unique_limites->calculDistance(at.pos->Y[particule], at.pos->Y[vec[ii][jj][kk][vois]], b_y, r_cut_carre);
                                                       f64 r_z = unique_limites->calculDistance(at.pos->Z[particule], at.pos->Z[vec[ii][jj][kk][vois]], b_z, r_cut_carre);
-//!NOUVEAU!
-                                                      f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU! économie de NxN sqrt
+                                                      f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
 
-                                                      if (r_global_carre<r_cut_carre && r_global_carre!=0) { //!NOUVEAU!
-                                                      F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU! économie de NxNx3 divisions
-                                                      F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
-                                                      F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+                                                      if (r_global_carre<r_cut_carre && r_global_carre!=0) {
+                                                      F_x += F_Lennard_Jones(r_global_carre)*r_x;
+                                                      F_y += F_Lennard_Jones(r_global_carre)*r_y;
+                                                      F_z += F_Lennard_Jones(r_global_carre)*r_z;
 
                                                       }
                                                 }
@@ -217,17 +218,14 @@ void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_
                          f64 r_z = unique_limites->calculDistance(at.pos->Z[i], at.pos->Z[j], b_z, r_cut_carre);
 
                          
-                         f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0); //!NOUVEAU! économie de NxN sqrt
+                         f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
                          // Calcul de la force si la distance inter-atomique globale est inférieure au rayon de coupure :
 
                          // if (r_global<r_cut && r_global!=0) { !AVANT!                 
-                         if (r_global_carre<r_cut_carre && r_global_carre!=0) { //!NOUVEAU!
-                               // F_x += F_Lennard_Jones(r_global)*r_x/r_global; !AVANT!
-                               // F_y += F_Lennard_Jones(r_global)*r_y/r_global; !AVANT!
-                               // F_z += F_Lennard_Jones(r_global)*r_z/r_global; !AVANT!
-                               F_x += F_Lennard_Jones(r_global_carre)*r_x; //!NOUVEAU! économie de NxNx3 divisions
-                               F_y += F_Lennard_Jones(r_global_carre)*r_y; //!NOUVEAU!
-                               F_z += F_Lennard_Jones(r_global_carre)*r_z; //!NOUVEAU!
+                         if (r_global_carre<r_cut_carre && r_global_carre!=0) {
+                               F_x += F_Lennard_Jones(r_global_carre)*r_x;
+                               F_y += F_Lennard_Jones(r_global_carre)*r_y;
+                               F_z += F_Lennard_Jones(r_global_carre)*r_z;
 
                                 // Peut être pas nécessaire
                         // Stocker dans la liste de voisin

@@ -2,11 +2,6 @@
 
 #include "types.h"
 #define proches 1 // Si la distance est < 1 Å, les particules sont considérées trop proches et le potentiel négligé
-/* NEW :
-#define N 10000
-#define nb_iteration 5
-#define dt 1000   //en fs (= 10^(-15) s)
-*/
 
 //Pour l'argon
 #define E_0 9.960719*pow(10,-5)  //en u.Å²/fs² (= 119.8*1.380649*10^(-23) en kg.m²/s² )
@@ -17,16 +12,18 @@
 #define k_b 8.314456*pow(10,-7) //en u.Å²/(fs².K) ( constante de Boltzman : k = 1,380649 × 10−23 kg.m²/(s².K) )
 #define temperature_cible 300  // en K
 
+/* NEW :
 #define b_x 719.14  //en Å
 #define b_y 719.14  //en Å
 #define b_z 719.14  //en Å
+*/
 
 // Nombre de cellules dans la boîte
 #define c_x 5
 #define c_y 5
 #define c_z 5
 
-/* NEW :
+/* !!! Discuter : faire cela ou mieux les struct ? :
 extern const u32 N;
 extern const u32 nb_iteration;
 extern const u32 dt;
