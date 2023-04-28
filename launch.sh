@@ -14,7 +14,6 @@
 ## masse_atomique_argon = 39,949 u = 39,949 x 1,660 538 921 × 10−27 kg = 6,6337 × 10−26 kg
 ## N x masse_atomique_argon / (b_x x b_y x b_z) = masse_volumique_argon
 ## b_x x b_y x b_z = N x masse_atomique_argon / masse_volumique_argon
-
 # Proches des standards ? si N=10000 et b_x = b_y = b_z :
 ## b_x = (N x masse_atomique_argon / masse_volumique_argon)^(1/3) = (10000 x 6,6337 × 10−26 / (1,7837 × 10^−30))^(1/3) = 719,14 Å
 
@@ -31,23 +30,35 @@ mkdir Entree
 mkdir Sortie
 mkdir Bin
 
+# Saisie des arguments du main() en ligne de commande :
 echo -n "Merci d'entrer le nombre d'atomes d'argon 'N' (exemple : 10000): "
 read N
-
 echo -n "Merci d'entrer le nombre d'itérations 'nb_itérations', i.e. autant d'applications de l'algorithme de Verlet-vitesses (exemple : 20): "
 read nb_iteration
-
 echo -n "Merci d'entrer le pas de temps 'dt' en fs (exemple : 10 fs): "
 read dt
 
-atomsk --create sc 3.405 Ar orient 100 010 001 -cell set 719,14 H1 -cell set 719,14 H2 -cell set 719,14 H3 Entree/initial$N.cfg
-atomsk Entree/initial$N.cfg -add-atom Ar random $N Entree/source$N.cfg
-atomsk Entree/source$N.cfg xyz
+# Dimensions de la boîte de simulation :
+taille_10000=719
+b_x=$(echo "$taille_10000*$N/10000" | bc)
+b_y=$(echo "$taille_10000*$N/10000" | bc)
+b_z=$(echo "$taille_10000*$N/10000" | bc)
+echo -n "Dimensions de la boîte de simulation ajustées en fonction du nombre de particules selon les densités standard (en ångströms): "
+echo "$b_x x $b_y x $b_z"
+
+# Création d'une structure cristalline cubique simple d'atomes d'argon avec une maille de 3,405 Å, orientée selon les vecteurs (100), (010) et (001), définition des dimensions de la boîte, coordonnées initiales des atomes dans "Entree/initial$N.cfg" :
+atomsk --create sc 3.405 Ar orient 100 010 001 -cell set $b_x H1 -cell set $b_y H2 -cell set $b_z H3 Entree/initial$N.cfg 
+
+# Ajout de $N atomes d'argon aux positions aléatoires dans "Entree/source$N.cfg" :
+atomsk Entree/initial$N.cfg -add-atom Ar random $N Entree/source$N.cfg 
+
+# Dans un fichier .xyz pour future visualisation par Ovito (par exemple) :
+atomsk Entree/source$N.cfg xyz 
 
 #### Exécution du makefile, exécution du programme ####
 
 make
-./Bin/simulation $N $nb_iteration $dt
+./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z
 #valgrind ./Bin/simulation -s
 #### Nettoyage ####
 
