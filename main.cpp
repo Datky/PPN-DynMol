@@ -38,6 +38,7 @@
 #include <iostream>
 #include <cstdio>
 #include <random>
+#include <mpi.h>
 #include <x86intrin.h>
 #include <time.h>
 #include <iomanip>
@@ -59,12 +60,20 @@ u32 b_y = 0; // NEW
 u32 b_z = 0; // NEW
 
 int main(int argc, char **argv) {
+
+    MPI_Init(&argc, &argv);
+
     N = atoi(argv[1]);
     nb_iteration = atoi(argv[2]);
     dt = atoi(argv[3]);
     b_x = atoi(argv[4]); // NEW
     b_y = atoi(argv[5]); // NEW
     b_z = atoi(argv[6]); // NEW
+
+
+    int rang, P;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rang);
+    MPI_Comm_size(MPI_COMM_WORLD, &P);
 
     std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;
     std::cout << "Ci-après un exemple de valeur de force attractive : " << F_Lennard_Jones(1000) << std::endl;
@@ -189,6 +198,8 @@ int main(int argc, char **argv) {
     f64 capacite = (N*nb_iteration)/temps_s;
 
     printf("Capacité : %.9f atome(s)/s\n", capacite);
-      
+    
+
+    MPI_Finalize();
     return 0;
 }

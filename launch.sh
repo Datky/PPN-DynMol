@@ -58,7 +58,7 @@ atomsk Entree/source$N.cfg xyz
 #### Exécution du makefile, exécution du programme ####
 
 make
-./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z
+mpiexec -np 1 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z
 #valgrind ./Bin/simulation -s
 #### Nettoyage ####
 
