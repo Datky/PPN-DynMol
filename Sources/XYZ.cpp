@@ -31,9 +31,9 @@ int lire_XYZ_Para(int b_z, int rang, int P, std::string source, struct Vecteur_P
       if (rang == P-1) {cellules_locales_P += c_z % P;}
 
 
-      double taille_cellule = (double)b_z/c_z;
-      double frontiere_locale_deb = (taille_cellule*cellules_locales)*rang;
-      double frontiere_locale_fin = frontiere_locale_deb+(taille_cellule*cellules_locales_P);
+      f64 taille_cellule = (f64)b_z/c_z;
+      f64 frontiere_locale_deb = (taille_cellule*cellules_locales)*rang;
+      f64 frontiere_locale_fin = frontiere_locale_deb+(taille_cellule*cellules_locales_P);
 
 
       int i = 0;

@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
         std::cout << "     - " << dt << " fs : pas de temps ('dt') entre chaque itération."<< std::endl;
         std::cout << "Nous considérons les constantes physiques relatives au potentiel de Lennard-Jones :" << std::endl;
         std::cout << "     - " << E_0 << " u.Å²/fs² " << ": profondeur du puit de potentiel" << std::endl;
-        std::cout << "     - " << d << " Å " << ": distance d'annulation du potentiel" << std::endl;
+        std::cout << "     - " << d << " Å " << ": distance d'annulation du potentiel\n" << std::endl;
     }
 
 
@@ -127,52 +127,62 @@ int main(int argc, char **argv) {
     auto frontiere_type = Frontiere::Murs; //Frontiere::Periodiques
 
 
-    /*
+    
     // Cellules
     Cellules cellules;
     std::vector vec = cellules.vec;
 
     // Taille des cellules
-    f64 tc_x = b_x / c_x;
-    f64 tc_y = b_y / c_y;
-    f64 tc_z = b_z / c_z;
+    f64 tc_x = (f64)b_x / c_x;
+    f64 tc_y = (f64)b_y / c_y;
+    f64 tc_z = (f64)b_z / c_z;
 
 
     // Création des vecteurs
-    for (int i = 0; i < c_z+2; ++i) {
-        std::vector<std::vector<std::vector<u32>>> v_z;
-        vec.push_back(v_z); 
+    for (int i = 0; i < cellules_locales+2; ++i) {
+        std::vector<std::vector<std::vector<Particule_Cellule>>> v_z;
+        vec.push_back(v_z);
         for (int j = 0; j < c_y+2; ++j) {
-            std::vector<std::vector<u32>> v_y;
+            std::vector<std::vector<Particule_Cellule>> v_y;
             vec[i].push_back(v_y);
             for (int k = 0; k < c_x+2; ++k) {
-                std::vector<u32> v_x;
+                std::vector<Particule_Cellule> v_x;
                 vec[i][j].push_back(v_x);
             }      
         }
     }
+    
 
-
+    Particule_Cellule curr;
+    
     // Stockage des particules dans les cellules
-    for (u32 i = 0; i < N; ++i) {
-        int ind_z = positions->Z[i] / tc_z;
-        int ind_y = positions->Y[i] / tc_y;
-        int ind_x = positions->X[i] / tc_x;
+    for (int i = 0; i < n_local; ++i) {
+        int ind_z = (part.pos.Z[i] / tc_z) - (cellules_locales*rang);
+        int ind_y = (part.pos.Y[i] / tc_y);
+        int ind_x = (part.pos.X[i] / tc_x);
+        
+        curr.id = part.ids[i];
+        curr.X = part.pos.X[i];
+        curr.Y = part.pos.Y[i];
+        curr.Z = part.pos.Z[i];
+        
 
-        // Attention aux ghost cells
-        vec[ind_z+1][ind_y+1][ind_x+1].push_back(i);
+        // Attention aux ghost cells   
+        vec[ind_z+1][ind_y+1][ind_x+1].push_back(curr);
     }
 
 
-    std::cout << "Positions de base bien enregistrées dans les cellules.\n" << std::endl;
+    
+    printf("Le rang %d a fini d'initialiser ses cellules locales.\n", rang);
 
 
+    
     f64 r_cut_carre = 2.5*d*2.5*d; // Le potentiel est negligable r_cut = 2.5*d. // !NOUVEAU! ajout de 3 x multiplications
 
 
 
 
-
+    /*
     std::cout << "DEBUT ---------------" << std::endl;
 
 

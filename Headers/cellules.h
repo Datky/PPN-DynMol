@@ -16,8 +16,16 @@ struct Cellules {
       std::vector<std::vector<u32>> vec;
 };
 */
+
+struct Particule_Cellule {
+      int id;
+      f64 X;
+      f64 Y;
+      f64 Z;
+};
+
 struct Cellules {
-      std::vector<std::vector<std::vector<std::vector<u32>>>> vec;
+      std::vector<std::vector<std::vector<std::vector<Particule_Cellule>>>> vec;
 };
 
 
