@@ -27,14 +27,6 @@
 
 // CHOISIR CONDITIONS AUX LIMITES : périodiques OU murs aux frontières.
 
-// VERSIONS :
-// Version 1 : pas de cellule
-// Version 2 : décomposition du domaine en cellules
-// Version 3 : cellules + rayon de Verlet pour ne pas avoir à construire une liste de voisin à chaque itération
-
-// ENTREE ET SORTIE
-// lecture et écriture de fichier type XYZ généré avec le logiciel atomsk
-
 #include <iostream>
 #include <cstdio>
 #include <random>
@@ -54,20 +46,23 @@
 u32 N = 0;
 u32 nb_iteration = 0;
 u32 dt = 0;
-u32 b_x = 0; // NEW
-u32 b_y = 0; // NEW
-u32 b_z = 0; // NEW
+u32 b_x = 0;
+u32 b_y = 0;
+u32 b_z = 0;
+int c_x = 0;
+int c_y = 0;
+int c_z = 0;
 
 int main(int argc, char **argv) {
     N = atoi(argv[1]);
     nb_iteration = atoi(argv[2]);
     dt = atoi(argv[3]);
-    b_x = atoi(argv[4]); // NEW
-    b_y = atoi(argv[5]); // NEW
-    b_z = atoi(argv[6]); // NEW
-
-    std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;
-    std::cout << "Ci-après un exemple de valeur de force attractive : " << F_Lennard_Jones(1000) << std::endl;
+    b_x = atoi(argv[4]);
+    b_y = atoi(argv[5]);
+    b_z = atoi(argv[6]);
+    c_x = atoi(argv[7]);
+    c_y = atoi(argv[8]);
+    c_z = atoi(argv[9]);
 
     std::cout << std::endl << "Bienvenue dans l'exécution du programme développé par l'équipe 1 du M1 CHPS." << std::endl;
     std::cout << "Nous considérons comme paramètres :" << std::endl;
@@ -77,6 +72,8 @@ int main(int argc, char **argv) {
     std::cout << "Nous considérons les constantes physiques relatives au potentiel de Lennard-Jones :" << std::endl;
     std::cout << "     - " << E_0 << " u.Å²/fs² " << ": profondeur du puit de potentiel" << std::endl;
     std::cout << "     - " << d << " Å " << ": distance d'annulation du potentiel" << std::endl;
+    std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;
+    std::cout << "Ci-après un exemple de valeur de force attractive : " << F_Lennard_Jones(1000) << std::endl;
 
     // Création et allocation des particules
     struct Particules particules;
@@ -108,8 +105,6 @@ int main(int argc, char **argv) {
 
     auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
 
-
-
     // Cellules
     Cellules cellules;
     std::vector vec = cellules.vec;
@@ -118,7 +113,6 @@ int main(int argc, char **argv) {
     f64 tc_x = b_x / c_x;
     f64 tc_y = b_y / c_y;
     f64 tc_z = b_z / c_z;
-
 
     // Création des vecteurs
     for (int i = 0; i < c_z+2; ++i) {
@@ -134,7 +128,6 @@ int main(int argc, char **argv) {
         }
     }
 
-
     // Stockage des particules dans les cellules
     for (u32 i = 0; i < N; ++i) {
         int ind_z = positions->Z[i] / tc_z;
@@ -145,45 +138,38 @@ int main(int argc, char **argv) {
         vec[ind_z+1][ind_y+1][ind_x+1].push_back(i);
     }
 
-
     std::cout << "Positions de base bien enregistrées dans les cellules.\n" << std::endl;
-
 
     f64 r_cut_carre = 2.5*d*2.5*d; // Le potentiel est negligable r_cut = 2.5*d. // !NOUVEAU! ajout de 3 x multiplications
 
-
-
-
-
     std::cout << "DEBUT ---------------" << std::endl;
-
 
     struct timespec start, end;
     u64 debut = __rdtsc(); // Début de la mesure de perf
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
-
-
     for (u64 i = 1; i <= nb_iteration; i++) {
 
-        //Verlet(particules, r_cut_carre, frontiere_type); // !NOUVEAU! économie de nb_iteration x multiplications
+        //Verlet(particules, r_cut_carre, frontiere_type);
         VerletCellules(vec, particules, r_cut_carre, frontiere_type);
         majPositionsetCellules(vec, particules, r_cut_carre, frontiere_type);
-
-        
+     
         std::string fichier_i = std::__cxx11::to_string(i);
-        ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");
-        std::cout << "Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;
-        std::cout << "[" << i << "/" << nb_iteration << "] : Bonne écriture sur fichier des positions." << std::endl;
-
+        
+        if (i<10)
+        {
+            ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration0"+fichier_i+".xyz");
+            std::cout << "[0" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la 0" << i << "-ème itération et écriture des positions (version de base)." << std::endl;
+        } else {
+            ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");
+            std::cout << "[" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la " << i << "-ème itération et écriture des positions (version de base)." << std::endl;
+        }
     }
-
 
     clock_gettime(CLOCK_MONOTONIC_RAW, &end);
     u64 fin = __rdtsc(); // Fin de la mesure de perf
     u64 total = fin-debut;
     std::cout << "\nLa simulation s'est exécutée en " << total << " cycles CPU (Moyenne : " << total/nb_iteration << ")." << std::endl;
-
 
     f64 temps_s =  ((end.tv_sec - start.tv_sec) + ((f64)(end.tv_nsec - start.tv_nsec)/1000000000));
     f64 capacite = (N*nb_iteration)/temps_s;
