@@ -20,15 +20,19 @@ void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct
 
     std::string str_N = std::__cxx11::to_string(N);
     lireXYZ("Entree/source"+str_N+".xyz", pos);
-    std::cout << "\nBonne lecture du fichier des positions générées aléatoirement par le logiciel Atomsk.\n" << std::endl;
+    std::cout << "\nBonne lecture du fichier des positions générées aléatoirement par le logiciel Atomsk.\n";
 
-    generation_gaussienne_des_vitesses(vit);
-    std::cout << "\nBonne affectation vitesses selon une fonction gaussienne.\n" << std::endl;
+///    generation_gaussienne_des_vitesses(vit);
+///    std::cout << "\nBonne affectation vitesses selon une fonction gaussienne.\n" << std::endl;
+
+    vitesses_initiales_nulles(vit);
+    std::cout << "\nBonne affectation des vitesses avec des valeurs nulles.\n";
 
     accelerations_initiales_nulles(acc);
     std::cout << "\nBonne affectation des accélérations avec des valeurs nulles.\n" << std::endl;
 }
 
+/*
 void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit){
 
     std::random_device rd; // Génération d'une graine.
@@ -99,6 +103,14 @@ void generation_gaussienne_des_vitesses(struct Vecteur_3D* vit){
 //        std::cout << &vit->Y[i] << ": vit_Gauss_après_ajustement_Tcible_Y = " <<vit->Y[i] << std::endl;
         vit->Z[i] = (vit->Z[i])*sqrt_temperature_cible_sur_temperature;
 //        std::cout << &vit->Z[i] << ": vit_Gauss_après_ajustement_Tcible_Z = " <<vit->Z[i] << std::endl;
+    }
+}*/
+
+void vitesses_initiales_nulles(struct Vecteur_3D* vit){
+    for(u64 i = 0; i < N; i++){
+        vit->X[i] = 0.0;
+        vit->Y[i] = 0.0;
+        vit->Z[i] = 0.0;
     }
 }
 
