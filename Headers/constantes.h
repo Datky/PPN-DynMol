@@ -19,9 +19,9 @@
 */
 
 // Nombre de cellules dans la boîte
-#define c_x 5
-#define c_y 5
-#define c_z 5
+#define c_x 4
+#define c_y 4
+#define c_z 4
 
 /* !!! Discuter : faire cela ou mieux les struct ? :
 extern const u32 N;

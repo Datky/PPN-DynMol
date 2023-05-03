@@ -33,6 +33,7 @@ mkdir Bin
 # Saisie des arguments du main() en ligne de commande :
 echo -n "Merci d'entrer le nombre d'atomes d'argon 'N' (exemple : 10000): "
 read N
+echo $N
 echo -n "Merci d'entrer le nombre d'itérations 'nb_itérations', i.e. autant d'applications de l'algorithme de Verlet-vitesses (exemple : 20): "
 read nb_iteration
 echo -n "Merci d'entrer le pas de temps 'dt' en fs (exemple : 10 fs): "
@@ -58,7 +59,7 @@ atomsk Entree/source$N.cfg xyz
 #### Exécution du makefile, exécution du programme ####
 
 make
-mpiexec -np 1 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z
+mpiexec -np 4 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z
 #valgrind ./Bin/simulation -s
 #### Nettoyage ####
 

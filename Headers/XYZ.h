@@ -30,10 +30,12 @@
  * @return position des atomes
  **/
 void lireXYZ(std::string source, struct Vecteur_3D* pos);
+int lire_XYZ_Para(int b_z, int rang, int P, std::string source, struct Vecteur_Para &pos);
 
 /**  Écrit un fichier au format .xyz
  * @param p position des atomes, cible le nom d'un fichier .xyz
  **/
 void  ecrireXYZ(struct Vecteur_3D* pos, std::string cible);
+void ecrire_XYZ_Para_local(std::string cible, std::vector<u64> &ids, struct Vecteur_Para &pos, int n_local);
 
 //#endif //XYZ_H

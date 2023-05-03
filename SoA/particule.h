@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <vector>
 #include "../Headers/types.h"
 
 /** @fichier
@@ -24,5 +25,18 @@ struct Particules {
       Vecteur_3D *__restrict acc;
 };
 
+
+struct Vecteur_Para {
+      std::vector<f64> X;
+      std::vector<f64> Y;
+      std::vector<f64> Z;
+};
+
+struct Particules_Para {
+      Vecteur_Para pos;
+      Vecteur_Para vit;
+      Vecteur_Para acc;
+      std::vector<u64> ids;
+};
 
 //#endif //STRUCT_P

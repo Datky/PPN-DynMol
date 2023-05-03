@@ -43,6 +43,7 @@
 #include <time.h>
 #include <iomanip>
 #include <cstdlib>
+#include <vector>
 #include "Headers/types.h"
 #include "Headers/constantes.h"
 #include "SoA/particule.h"
@@ -75,50 +76,58 @@ int main(int argc, char **argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rang);
     MPI_Comm_size(MPI_COMM_WORLD, &P);
 
-    std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;
-    std::cout << "Ci-après un exemple de valeur de force attractive : " << F_Lennard_Jones(1000) << std::endl;
 
-    std::cout << std::endl << "Bienvenue dans l'exécution du programme développé par l'équipe 1 du M1 CHPS." << std::endl;
-    std::cout << "Nous considérons comme paramètres :" << std::endl;
-    std::cout << "     - " << N << " : nombre d'atomes('N')" << std::endl;
-    std::cout << "     - " << nb_iteration << " : nombre d'itérations('nb_itérations'), i.e. autant d'applications de l'algorithme de Verlet-vitesses." << std::endl;
-    std::cout << "     - " << dt << " fs : pas de temps ('dt') entre chaque itération."<< std::endl;
-    std::cout << "Nous considérons les constantes physiques relatives au potentiel de Lennard-Jones :" << std::endl;
-    std::cout << "     - " << E_0 << " u.Å²/fs² " << ": profondeur du puit de potentiel" << std::endl;
-    std::cout << "     - " << d << " Å " << ": distance d'annulation du potentiel" << std::endl;
+    if (c_z < P) {
+        std::cout << "Erreur : trop peu de processus disponibles. Arrêt du programme." << std::endl;
+        return 1;
+    }
 
-    // Création et allocation des particules
-    struct Particules particules;
+    // Valeurs locales au processus
+    //int n_local = N / P;
+    int cellules_locales = c_z / P;
 
-    particules.pos = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-    particules.vit = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-    particules.acc = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
+    if (rang == P-1) {
+        //n_local += N % P;
+        cellules_locales += c_z % P;
+    }
 
-    particules.pos->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.pos->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.pos->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
 
-    particules.vit->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.vit->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.vit->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
 
-    particules.acc->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.acc->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.acc->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    if (rang == 0) {
+        std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;
+        std::cout << "Ci-après un exemple de valeur de force attractive : " << F_Lennard_Jones(1000) << std::endl;
 
-    struct Vecteur_3D *__restrict positions = particules.pos;
-    struct Vecteur_3D *__restrict vitesses = particules.vit;
-    struct Vecteur_3D *__restrict accelerations = particules.acc;
+        std::cout << std::endl << "Bienvenue dans l'exécution du programme développé par l'équipe 1 du M1 CHPS." << std::endl;
+        std::cout << "Nous considérons comme paramètres :" << std::endl;
+        std::cout << "     - " << N << " : nombre d'atomes('N')" << std::endl;
+        std::cout << "     - " << nb_iteration << " : nombre d'itérations('nb_itérations'), i.e. autant d'applications de l'algorithme de Verlet-vitesses." << std::endl;
+        std::cout << "     - " << dt << " fs : pas de temps ('dt') entre chaque itération."<< std::endl;
+        std::cout << "Nous considérons les constantes physiques relatives au potentiel de Lennard-Jones :" << std::endl;
+        std::cout << "     - " << E_0 << " u.Å²/fs² " << ": profondeur du puit de potentiel" << std::endl;
+        std::cout << "     - " << d << " Å " << ": distance d'annulation du potentiel" << std::endl;
+    }
 
-    remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.      
 
+    // Création des particules
+    struct Particules_Para part;
+
+
+
+    // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.
+    int n_local = remplissage_vecteurs_para(b_z, rang, P, part.ids, part.pos, part.vit, part.acc);
+
+
+
+     
+    
     std::string str_N = std::__cxx11::to_string(N);
-    ecrireXYZ(positions, "Sortie/simulation"+str_N+".xyz");
+    std::string str_rang = std::__cxx11::to_string(rang);
+    ecrire_XYZ_Para_local("Sortie/simulation"+str_N+"_rang"+str_rang+".xyz", part.ids, part.pos, n_local);
+    
+    auto frontiere_type = Frontiere::Murs; //Frontiere::Periodiques
 
-    auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
 
-
-
+    /*
     // Cellules
     Cellules cellules;
     std::vector vec = cellules.vec;
@@ -199,7 +208,7 @@ int main(int argc, char **argv) {
 
     printf("Capacité : %.9f atome(s)/s\n", capacite);
     
-
+    */
     MPI_Finalize();
     return 0;
 }
