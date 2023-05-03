@@ -31,7 +31,7 @@
 
 echo ""; echo -n "BONJOUR ET BIENVENUE DANS L'EXECUTION DU PROGRAMME DE DYNAMIQUE MOLECULAIRE !" ; echo "";
 
-### echo ""; echo -n "FREQUENCE DU PROCESSEUR EN MODE PERFORMANCE (désactiver dans launch.sh si non souhaité) !" ; echo "";
+# Performance :
 echo ""; echo -n "FREQUENCE DU PROCESSEUR EN MODE PERFORMANCE ?" ; echo "";
 read -p "Souhaitez-vous exécuter la commande 'sudo cpupower -c all frequency-set -g performance' ? (y/n)" answer
 if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
@@ -41,8 +41,7 @@ else
     echo "Mode super-utilisateur désactivé."
 fi
 
-### sudo cpupower -c all frequency-set -g performance
-
+# Répertoires :
 mkdir Entree
 mkdir Sortie Sortie_omp Sortie_mpi
 mkdir Bin
@@ -108,6 +107,7 @@ else
 fi
 
 #### PROFILAGE ET DEBUGAGE ####
+
 # valgrind ./Bin/simulation -s $N $nb_iteration $dt $b_x $b_y $b_z
 
 # Profilage de l'utilisation du processeur dans le fichier de sortie callgrind.out :
@@ -119,6 +119,16 @@ fi
 
 # Profilage GDB :
 # gdb ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z
+
+#### AFFICHAGES OVITO ####
+echo ""; echo -n "AFFICHAGE OVITO ?" ; echo "";
+read -p "Souhaitez-vous lancer Ovito (supposé installé ; supposé sourcé dans votre répertoire actuel) ? (réponse recommandée : n) (y/n)" answer
+if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
+    echo "Lancement de Ovito."
+    ovito
+else
+    echo "Ovito n'a pas été lancé." ; echo "";
+fi
 
 #### NETTOYAGE ####
 
