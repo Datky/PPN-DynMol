@@ -12,9 +12,12 @@
 extern u32 N;
 extern u32 nb_iteration;
 extern u32 dt;
-extern u32 b_x; // NEW
-extern u32 b_y; // NEW
-extern u32 b_z; // NEW
+extern u32 b_x;
+extern u32 b_y;
+extern u32 b_z;
+extern int c_x;
+extern int c_y;
+extern int c_z;
 
 const int MN = 10000;
 /*
