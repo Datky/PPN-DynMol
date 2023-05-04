@@ -42,6 +42,7 @@
 #include "Headers/remplissage_vecteurs.h"
 #include "Headers/potentiel.h"
 #include "Headers/cellules.h"
+#include <fstream>
 
 u32 N = 0;
 u32 nb_iteration = 0;
@@ -175,6 +176,10 @@ int main(int argc, char **argv) {
     f64 capacite = (N*nb_iteration)/temps_s;
 
     printf("Capacité : %.9f atome(s)/s\n", capacite);
-      
+
+    std::ofstream file("Resultats/resultats.txt");
+    file << total/nb_iteration << std::endl;
+    file << capacite << std::endl;
+
     return 0;
 }

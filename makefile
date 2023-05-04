@@ -47,7 +47,7 @@ Bin/Test.o: Test.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 
 # Règle pour suppression de tous les fichiers créés.
 clean:
-	@rm -Rf Bin/*.o Bin/simulation Entree Sortie Sortie_omp Sortie_mpi Bin valgrind* callgrind*
+	@rm -Rf Bin/*.o Bin/simulation Entree Sortie Sortie_omp Sortie_mpi Bin Terminal Resultats valgrind* callgrind*
 .PHONY: clean
 
 # Règle pour suppression uniquement des ".o" et de l'exécutable.

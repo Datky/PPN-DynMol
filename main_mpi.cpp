@@ -42,6 +42,7 @@
 #include "Headers/remplissage_vecteurs.h"
 #include "Headers/potentiel.h"
 #include "Headers/cellules.h"
+#include <fstream>
 
 u32 N = 0;
 u32 nb_iteration = 0;
@@ -101,7 +102,7 @@ int main(int argc, char **argv) {
     remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.      
 
     std::string str_N = std::__cxx11::to_string(N);
-    ecrireXYZ(positions, "Sortie/simulation"+str_N+".xyz");
+    ecrireXYZ(positions, "Sortie_mpi/simulation"+str_N+".xyz");
 
     auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
 
@@ -159,10 +160,10 @@ int main(int argc, char **argv) {
         if (i<10)
         {
             ecrireXYZ(positions, "Sortie_mpi/simulation"+str_N+"_iteration0"+fichier_i+".xyz");
-            std::cout << "[0" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la 0" << i << "-ème itération et écriture des positions (version MPI)." << std::endl;
+            std::cout << "[0" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la 0" << i << "-ème itération et écriture des positions (version de base)." << std::endl;
         } else {
             ecrireXYZ(positions, "Sortie_mpi/simulation"+str_N+"_iteration"+fichier_i+".xyz");
-            std::cout << "[" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la " << i << "-ème itération et écriture des positions (version MPI)." << std::endl;
+            std::cout << "[" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la " << i << "-ème itération et écriture des positions (version de base)." << std::endl;
         }
     }
 
@@ -175,6 +176,10 @@ int main(int argc, char **argv) {
     f64 capacite = (N*nb_iteration)/temps_s;
 
     printf("Capacité : %.9f atome(s)/s\n", capacite);
-      
+
+    std::ofstream file("Resultats/resultats_mpi.txt");
+    file << total/nb_iteration << std::endl;
+    file << capacite << std::endl;
+
     return 0;
 }

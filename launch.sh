@@ -43,7 +43,7 @@ fi
 
 # Répertoires :
 mkdir Entree
-mkdir Sortie Sortie_omp Sortie_mpi
+mkdir Sortie Sortie_omp Sortie_mpi Terminal Resultats
 mkdir Bin
 
 # Saisie des arguments du main() en ligne de commande :
@@ -87,23 +87,25 @@ echo ""; read -p "Souhaitez-vous exécuter la commande taskset -c 2 ...' pour li
 if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
     echo ""; echo "Exécution sur le coeur N°2." ; echo "";
     echo ""; echo -n "EXECUTION DE LA VERSION DE BASE !" ; echo "";
-    taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z
+    # taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z
+    # taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal.txt > /dev/null
+    taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal.txt
     sleep 1
     echo ""; echo -n "EXECUTION DE LA VERSION MPI !" ; echo "";
-    taskset -c 2 ./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z
+   taskset -c 2 ./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_mpi.txt
     sleep 1
     echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP !" ; echo "";
-    taskset -c 2 ./Bin/simulation_omp $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z
+    taskset -c 2 ./Bin/simulation_omp $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_omp.txt
 else
     echo ""; echo "Exécution sans affectation de coeur spécifique." ; echo "";
     echo ""; echo -n "EXECUTION DE LA VERSION DE BASE !" ; echo "";
-    ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z
+    ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal.txt
     sleep 1
     echo ""; echo -n "EXECUTION DE LA VERSION MPI !" ; echo "";
-    ./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z
+    ./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_mpi.txt
     sleep 1
     echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP !" ; echo "";
-    ./Bin/simulation_omp $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z
+    ./Bin/simulation_omp $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_omp.txt
 fi
 
 #### PROFILAGE ET DEBUGAGE ####
@@ -130,9 +132,12 @@ else
     echo "Ovito n'a pas été lancé." ; echo "";
 fi
 
+#### EXPLOITATION DES RESULTATS ####
+awk '{print $1}' Resultats/resultats.txt | tr '\n' ',' >> Resultats/resultats.csv
+awk '{print $1}' Resultats/resultats_mpi.txt | tr '\n' ',' >> Resultats/resultats_mpi.csv
+awk '{print $1}' Resultats/resultats_omp.txt | tr '\n' ',' >> Resultats/resultats_omp.csv
+
 #### NETTOYAGE ####
-
 rm -rf Entree Bin
-
 make clean_o # Suppression automatique des fichiers objet (.o) 
 
