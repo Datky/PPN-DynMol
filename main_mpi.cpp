@@ -27,159 +27,232 @@
 
 // CHOISIR CONDITIONS AUX LIMITES : périodiques OU murs aux frontières.
 
+// VERSIONS :
+// Version 1 : pas de cellule
+// Version 2 : décomposition du domaine en cellules
+// Version 3 : cellules + rayon de Verlet pour ne pas avoir à construire une liste de voisin à chaque itération
+
+// ENTREE ET SORTIE
+// lecture et écriture de fichier type XYZ généré avec le logiciel atomsk
+
 #include <iostream>
+#include <cstddef>
 #include <cstdio>
 #include <random>
+#include <mpi.h>
 #include <x86intrin.h>
 #include <time.h>
 #include <iomanip>
 #include <cstdlib>
+#include <vector>
 #include "Headers/types.h"
 #include "Headers/constantes.h"
-#include "SoA/particule.h"
-#include "Headers/interaction.h"
-#include "Headers/XYZ.h"
-#include "Headers/remplissage_vecteurs.h"
+#include "SoA/particule_mpi.h"
+#include "Headers/interaction_mpi.h"
+#include "Headers/XYZ_mpi.h"
+#include "Headers/remplissage_vecteurs_mpi.h"
 #include "Headers/potentiel.h"
-#include "Headers/cellules.h"
-#include <fstream>
+#include "Headers/cellules_mpi.h"
 
 u32 N = 0;
 u32 nb_iteration = 0;
 u32 dt = 0;
-u32 b_x = 0;
-u32 b_y = 0;
-u32 b_z = 0;
-int c_x = 0;
-int c_y = 0;
-int c_z = 0;
+u32 b_x = 0; // NEW
+u32 b_y = 0; // NEW
+u32 b_z = 0; // NEW
 
 int main(int argc, char **argv) {
+
+    MPI_Init(&argc, &argv);
+
     N = atoi(argv[1]);
     nb_iteration = atoi(argv[2]);
     dt = atoi(argv[3]);
-    b_x = atoi(argv[4]);
-    b_y = atoi(argv[5]);
-    b_z = atoi(argv[6]);
-    c_x = atoi(argv[7]);
-    c_y = atoi(argv[8]);
-    c_z = atoi(argv[9]);
+    b_x = atoi(argv[4]); // NEW
+    b_y = atoi(argv[5]); // NEW
+    b_z = atoi(argv[6]); // NEW
 
-    std::cout << std::endl << "Bienvenue dans l'exécution du programme développé par l'équipe 1 du M1 CHPS." << std::endl;
-    std::cout << "Nous considérons comme paramètres :" << std::endl;
-    std::cout << "     - " << N << " : nombre d'atomes('N')" << std::endl;
-    std::cout << "     - " << nb_iteration << " : nombre d'itérations('nb_itérations'), i.e. autant d'applications de l'algorithme de Verlet-vitesses." << std::endl;
-    std::cout << "     - " << dt << " fs : pas de temps ('dt') entre chaque itération."<< std::endl;
-    std::cout << "Nous considérons les constantes physiques relatives au potentiel de Lennard-Jones :" << std::endl;
-    std::cout << "     - " << E_0 << " u.Å²/fs² " << ": profondeur du puit de potentiel" << std::endl;
-    std::cout << "     - " << d << " Å " << ": distance d'annulation du potentiel" << std::endl;
-    std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;
-    std::cout << "Ci-après un exemple de valeur de force attractive : " << F_Lennard_Jones(1000) << std::endl;
 
-    // Création et allocation des particules
-    struct Particules particules;
+    int rang, P;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rang);
+    MPI_Comm_size(MPI_COMM_WORLD, &P);
 
-    particules.pos = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-    particules.vit = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
-    particules.acc = static_cast<Vecteur_3D*>(std::aligned_alloc(sizeof(Vecteur_3D), sizeof(Vecteur_3D)));
 
-    particules.pos->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.pos->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.pos->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    if (c_z < P) {
+        std::cout << "Erreur : trop peu de processus disponibles. Arrêt du programme." << std::endl;
+        return 1;
+    }
 
-    particules.vit->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.vit->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.vit->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    
+    // Valeurs locales au processus
+    int cellules_locales = c_z / P;
 
-    particules.acc->X = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.acc->Y = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
-    particules.acc->Z = static_cast<f64*>(std::aligned_alloc(sizeof(f64), sizeof(f64)*N));
+    if (rang == P-1) {
+        cellules_locales += c_z % P;
+    }
+    
 
-    struct Vecteur_3D *__restrict positions = particules.pos;
-    struct Vecteur_3D *__restrict vitesses = particules.vit;
-    struct Vecteur_3D *__restrict accelerations = particules.acc;
 
-    remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.      
 
+    if (rang == 0) {
+        std::cout << "Ci-après un exemple de valeur de force répulsive : " << F_Lennard_Jones(0.1) << std::endl;
+        std::cout << "Ci-après un exemple de valeur de force attractive : " << F_Lennard_Jones(1000) << std::endl;
+
+        std::cout << std::endl << "Bienvenue dans l'exécution du programme développé par l'équipe 1 du M1 CHPS." << std::endl;
+        std::cout << "Nous considérons comme paramètres :" << std::endl;
+        std::cout << "     - " << N << " : nombre d'atomes('N')" << std::endl;
+        std::cout << "     - " << nb_iteration << " : nombre d'itérations('nb_itérations'), i.e. autant d'applications de l'algorithme de Verlet-vitesses." << std::endl;
+        std::cout << "     - " << dt << " fs : pas de temps ('dt') entre chaque itération."<< std::endl;
+        std::cout << "Nous considérons les constantes physiques relatives au potentiel de Lennard-Jones :" << std::endl;
+        std::cout << "     - " << E_0 << " u.Å²/fs² " << ": profondeur du puit de potentiel" << std::endl;
+        std::cout << "     - " << d << " Å " << ": distance d'annulation du potentiel\n" << std::endl;
+    }
+
+
+    // Création des particules
+    struct Particules_Para part;
+
+
+
+    // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.
+    int n_local = remplissage_vecteurs_para(b_z, rang, P, part.ids, part.pos, part.vit, part.acc);
+
+
+
+     
+    
     std::string str_N = std::__cxx11::to_string(N);
-    ecrireXYZ(positions, "Sortie_mpi/simulation"+str_N+".xyz");
-
+    std::string str_rang = std::__cxx11::to_string(rang);
+    ecrire_XYZ_Para_local("Sortie_mpi/simulation"+str_N+"_rang"+str_rang+".xyz", part.ids, part.pos, n_local);
+    
     auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
 
+
+    
     // Cellules
     Cellules cellules;
     std::vector vec = cellules.vec;
 
     // Taille des cellules
-    f64 tc_x = b_x / c_x;
-    f64 tc_y = b_y / c_y;
-    f64 tc_z = b_z / c_z;
+    f64 tc_x = (f64)b_x / c_x;
+    f64 tc_y = (f64)b_y / c_y;
+    f64 tc_z = (f64)b_z / c_z;
+
 
     // Création des vecteurs
-    for (int i = 0; i < c_z+2; ++i) {
-        std::vector<std::vector<std::vector<u32>>> v_z;
-        vec.push_back(v_z); 
+    for (int i = 0; i < cellules_locales+2; ++i) {
+        std::vector<std::vector<std::vector<Particule_Cellule>>> v_z;
+        vec.push_back(v_z);
         for (int j = 0; j < c_y+2; ++j) {
-            std::vector<std::vector<u32>> v_y;
+            std::vector<std::vector<Particule_Cellule>> v_y;
             vec[i].push_back(v_y);
             for (int k = 0; k < c_x+2; ++k) {
-                std::vector<u32> v_x;
+                std::vector<Particule_Cellule> v_x;
                 vec[i][j].push_back(v_x);
             }      
         }
     }
+    
 
+    Particule_Cellule curr;
+    int locales = c_z / P;
+    
     // Stockage des particules dans les cellules
-    for (u32 i = 0; i < N; ++i) {
-        int ind_z = positions->Z[i] / tc_z;
-        int ind_y = positions->Y[i] / tc_y;
-        int ind_x = positions->X[i] / tc_x;
+    for (int i = 0; i < n_local; ++i) {
 
-        // Attention aux ghost cells
-        vec[ind_z+1][ind_y+1][ind_x+1].push_back(i);
+        int ind_z = (part.pos.Z[i] / tc_z) - (locales*rang);
+        int ind_y = (part.pos.Y[i] / tc_y);
+        int ind_x = (part.pos.X[i] / tc_x);
+        
+        curr.id = part.ids[i];
+        curr.X = part.pos.X[i];
+        curr.Y = part.pos.Y[i];
+        curr.Z = part.pos.Z[i];
+        
+
+        // Attention aux ghost cells   
+        vec[ind_z+1][ind_y+1][ind_x+1].push_back(curr);
     }
 
-    std::cout << "Positions de base bien enregistrées dans les cellules.\n" << std::endl;
 
+    // Pour préparer les envois des cellules fantômes
+    u32** comms = (u32**)malloc(sizeof(u32*)*4);
+    for (int i = 0; i < 4; ++i) { // up_send - down_send - up_recv - down_recv
+        comms[i] = (u32*)malloc(sizeof(u32) * ((c_y*c_x) +1));
+        comms[i][0] = 0; // Index 0 = count
+    }
+
+
+
+
+    printf("Le rang %d a fini d'initialiser ses cellules locales.\n", rang);
+
+    
+    // Nouveaux types MPI pour les communications
+
+        // Particule_Cellule
+    
+    MPI_Datatype particule_cellule_type;
+    int blocs[2] = {3, 1};
+    MPI_Datatype struct_types[2] = {MPI_DOUBLE, MPI_INT};
+    MPI_Aint offset[4] = {offsetof(Particule_Cellule, X), 
+                            offsetof(Particule_Cellule, Y), 
+                            offsetof(Particule_Cellule, Z), 
+                            offsetof(Particule_Cellule, id)};
+
+    MPI_Type_create_struct(2, blocs, offset, struct_types, &particule_cellule_type);
+    MPI_Type_commit(&particule_cellule_type);
+
+    /*
+    MPI_Datatype particule_cellule_type;
+    MPI_Type_contiguous(3, MPI_DOUBLE, &particule_cellule_type);
+    MPI_Type_commit(&particule_cellule_type);
+    */
+
+
+
+
+    
     f64 r_cut_carre = 2.5*d*2.5*d; // Le potentiel est negligable r_cut = 2.5*d. // !NOUVEAU! ajout de 3 x multiplications
 
+
+
+
+    MPI_Barrier(MPI_COMM_WORLD);
     std::cout << "DEBUT ---------------" << std::endl;
 
-    struct timespec start, end;
-    u64 debut = __rdtsc(); // Début de la mesure de perf
+
+    struct timespec start, end; // Début de la mesure de perf
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
+
+
+    
     for (u64 i = 1; i <= nb_iteration; i++) {
 
-        //Verlet(particules, r_cut_carre, frontiere_type);
-        VerletCellules(vec, particules, r_cut_carre, frontiere_type);
-        majPositionsetCellules(vec, particules, r_cut_carre, frontiere_type);
-     
-        std::string fichier_i = std::__cxx11::to_string(i);
+        VerletCellulesPara(rang, P, n_local, cellules_locales, vec, part, r_cut_carre, frontiere_type, particule_cellule_type, comms);
+        n_local = part.ids.size();
+
         
-        if (i<10)
-        {
-            ecrireXYZ(positions, "Sortie_mpi/simulation"+str_N+"_iteration0"+fichier_i+".xyz");
-            std::cout << "[0" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la 0" << i << "-ème itération et écriture des positions (version de base)." << std::endl;
-        } else {
-            ecrireXYZ(positions, "Sortie_mpi/simulation"+str_N+"_iteration"+fichier_i+".xyz");
-            std::cout << "[" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la " << i << "-ème itération et écriture des positions (version de base)." << std::endl;
-        }
+        std::string fichier_i = std::__cxx11::to_string(i);
+        ecrire_XYZ_Para_local("Sortie_mpi/simulation"+str_N+"_iteration"+fichier_i+"_rang"+str_rang+".xyz", part.ids, part.pos, n_local);
+        //std::cout << "Rang " << rang << " : Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;
+        //std::cout << "[" << i << "/" << nb_iteration << "] : Bonne écriture sur fichier des positions." << std::endl;
     }
+    
 
-    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
-    u64 fin = __rdtsc(); // Fin de la mesure de perf
-    u64 total = fin-debut;
-    std::cout << "\nLa simulation s'est exécutée en " << total << " cycles CPU (Moyenne : " << total/nb_iteration << ")." << std::endl;
+    
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end); // Fin de la mesure de perf
 
-    f64 temps_s =  ((end.tv_sec - start.tv_sec) + ((f64)(end.tv_nsec - start.tv_nsec)/1000000000));
+
+    f64 temps_s =  ((end.tv_sec - start.tv_sec) + ((f64)(end.tv_nsec - start.tv_nsec)/1e9));
     f64 capacite = (N*nb_iteration)/temps_s;
 
-    printf("Capacité : %.9f atome(s)/s\n", capacite);
+    MPI_Barrier(MPI_COMM_WORLD);
 
-    std::ofstream file("Resultats/resultats_mpi.txt");
-    file << total/nb_iteration << std::endl;
-    file << capacite << std::endl;
-
+    printf("Rang %d Capacité : %.9f atome(s)/s\n", rang, capacite);
+    
+    
+    MPI_Finalize();
     return 0;
 }

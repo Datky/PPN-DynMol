@@ -13,7 +13,7 @@ Bin/simulation_omp: Bin/main_omp.o Bin/interaction.o Bin/potentiel.o Bin/XYZ.o B
 	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
 
 Bin/simulation_mpi: Bin/main_mpi.o Bin/interaction.o Bin/potentiel.o Bin/XYZ.o Bin/remplissage_vecteurs.o Bin/constantes.o
-	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
+	mpic++ $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
 
 Bin/main.o: main.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
