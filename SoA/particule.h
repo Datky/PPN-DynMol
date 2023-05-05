@@ -36,7 +36,7 @@ struct Particules_Para {
       Vecteur_Para pos;
       Vecteur_Para vit;
       Vecteur_Para acc;
-      std::vector<u64> ids;
+      std::vector<u32> ids;
 };
 
 //#endif //STRUCT_P

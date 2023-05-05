@@ -36,6 +36,6 @@ int lire_XYZ_Para(int b_z, int rang, int P, std::string source, struct Vecteur_P
  * @param p position des atomes, cible le nom d'un fichier .xyz
  **/
 void  ecrireXYZ(struct Vecteur_3D* pos, std::string cible);
-void ecrire_XYZ_Para_local(std::string cible, std::vector<u64> &ids, struct Vecteur_Para &pos, int n_local);
+void ecrire_XYZ_Para_local(std::string cible, std::vector<u32> &ids, struct Vecteur_Para &pos, int n_local);
 
 //#endif //XYZ_H

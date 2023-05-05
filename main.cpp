@@ -36,6 +36,7 @@
 // lecture et écriture de fichier type XYZ généré avec le logiciel atomsk
 
 #include <iostream>
+#include <cstddef>
 #include <cstdio>
 #include <random>
 #include <mpi.h>
@@ -82,14 +83,14 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    
     // Valeurs locales au processus
-    //int n_local = N / P;
     int cellules_locales = c_z / P;
 
     if (rang == P-1) {
-        //n_local += N % P;
         cellules_locales += c_z % P;
     }
+    
 
 
 
@@ -154,10 +155,12 @@ int main(int argc, char **argv) {
     
 
     Particule_Cellule curr;
+    int locales = c_z / P;
     
     // Stockage des particules dans les cellules
     for (int i = 0; i < n_local; ++i) {
-        int ind_z = (part.pos.Z[i] / tc_z) - (cellules_locales*rang);
+
+        int ind_z = (part.pos.Z[i] / tc_z) - (locales*rang);
         int ind_y = (part.pos.Y[i] / tc_y);
         int ind_x = (part.pos.X[i] / tc_x);
         
@@ -172,8 +175,41 @@ int main(int argc, char **argv) {
     }
 
 
-    
+    // Pour préparer les envois des cellules fantômes
+    u32** comms = (u32**)malloc(sizeof(u32*)*4);
+    for (int i = 0; i < 4; ++i) { // up_send - down_send - up_recv - down_recv
+        comms[i] = (u32*)malloc(sizeof(u32) * ((c_y*c_x) +1));
+        comms[i][0] = 0; // Index 0 = count
+    }
+
+
+
+
     printf("Le rang %d a fini d'initialiser ses cellules locales.\n", rang);
+
+    
+    // Nouveaux types MPI pour les communications
+
+        // Particule_Cellule
+    
+    MPI_Datatype particule_cellule_type;
+    int blocs[2] = {3, 1};
+    MPI_Datatype struct_types[2] = {MPI_DOUBLE, MPI_INT};
+    MPI_Aint offset[4] = {offsetof(Particule_Cellule, X), 
+                            offsetof(Particule_Cellule, Y), 
+                            offsetof(Particule_Cellule, Z), 
+                            offsetof(Particule_Cellule, id)};
+
+    MPI_Type_create_struct(2, blocs, offset, struct_types, &particule_cellule_type);
+    MPI_Type_commit(&particule_cellule_type);
+
+    /*
+    MPI_Datatype particule_cellule_type;
+    MPI_Type_contiguous(3, MPI_DOUBLE, &particule_cellule_type);
+    MPI_Type_commit(&particule_cellule_type);
+    */
+
+
 
 
     
@@ -182,43 +218,41 @@ int main(int argc, char **argv) {
 
 
 
-    /*
+    MPI_Barrier(MPI_COMM_WORLD);
     std::cout << "DEBUT ---------------" << std::endl;
 
 
-    struct timespec start, end;
-    u64 debut = __rdtsc(); // Début de la mesure de perf
+    struct timespec start, end; // Début de la mesure de perf
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
 
 
+    
     for (u64 i = 1; i <= nb_iteration; i++) {
 
-        //Verlet(particules, r_cut_carre, frontiere_type); // !NOUVEAU! économie de nb_iteration x multiplications
-        VerletCellules(vec, particules, r_cut_carre, frontiere_type);
-        majPositionsetCellules(vec, particules, r_cut_carre, frontiere_type);
+        VerletCellulesPara(rang, P, n_local, cellules_locales, vec, part, r_cut_carre, frontiere_type, particule_cellule_type, comms);
+        n_local = part.ids.size();
 
         
         std::string fichier_i = std::__cxx11::to_string(i);
-        ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");
-        std::cout << "Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;
-        std::cout << "[" << i << "/" << nb_iteration << "] : Bonne écriture sur fichier des positions." << std::endl;
-
+        ecrire_XYZ_Para_local("Sortie/simulation"+str_N+"_iteration"+fichier_i+"_rang"+str_rang+".xyz", part.ids, part.pos, n_local);
+        //std::cout << "Rang " << rang << " : Bonne création du fichier .xyz de la " << i << "-ème itération." << std::endl;
+        //std::cout << "[" << i << "/" << nb_iteration << "] : Bonne écriture sur fichier des positions." << std::endl;
     }
+    
+
+    
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end); // Fin de la mesure de perf
 
 
-    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
-    u64 fin = __rdtsc(); // Fin de la mesure de perf
-    u64 total = fin-debut;
-    std::cout << "\nLa simulation s'est exécutée en " << total << " cycles CPU (Moyenne : " << total/nb_iteration << ")." << std::endl;
-
-
-    f64 temps_s =  ((end.tv_sec - start.tv_sec) + ((f64)(end.tv_nsec - start.tv_nsec)/1000000000));
+    f64 temps_s =  ((end.tv_sec - start.tv_sec) + ((f64)(end.tv_nsec - start.tv_nsec)/1e9));
     f64 capacite = (N*nb_iteration)/temps_s;
 
-    printf("Capacité : %.9f atome(s)/s\n", capacite);
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    printf("Rang %d Capacité : %.9f atome(s)/s\n", rang, capacite);
     
-    */
+    
     MPI_Finalize();
     return 0;
 }

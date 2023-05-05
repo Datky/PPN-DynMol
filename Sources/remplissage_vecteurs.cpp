@@ -36,7 +36,7 @@ void remplissage_vecteurs(struct Vecteur_3D* pos, struct Vecteur_3D* vit, struct
 
 
 
-int remplissage_vecteurs_para(int b_z, int rang, int P, std::vector<u64> &ids, struct Vecteur_Para &pos, struct Vecteur_Para &vit, struct Vecteur_Para &acc) {
+int remplissage_vecteurs_para(int b_z, int rang, int P, std::vector<u32> &ids, struct Vecteur_Para &pos, struct Vecteur_Para &vit, struct Vecteur_Para &acc) {
     int n_local = generation_positions(b_z, rang, P, pos);
     int somme_prev = 0;
     int somme_prev_envoi = 0;
@@ -60,7 +60,7 @@ int remplissage_vecteurs_para(int b_z, int rang, int P, std::vector<u64> &ids, s
     return n_local;
 }
 
-void remplissage_ids(int somme_prev, int n_local, std::vector<u64> &ids) {
+void remplissage_ids(int somme_prev, int n_local, std::vector<u32> &ids) {
     for (int i = somme_prev; i < somme_prev+n_local; ++i) {
         ids.push_back(i);
     }
