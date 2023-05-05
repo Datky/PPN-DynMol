@@ -46,6 +46,13 @@ mkdir Entree
 mkdir Sortie Sortie_omp Sortie_mpi Terminal Resultats
 mkdir Bin
 
+#### TESTS ####
+echo ""; echo -n "! TESTS !" ; echo "";
+make Bin/TEST
+./Bin/TEST
+make clean_test
+echo ""; echo -n "! FIN TESTS !" ; echo "";
+
 # Saisie des arguments du main() en ligne de commande :
 echo ""; echo -n "SAISIE DES PARAMETRES !" ; echo "";
 echo -n "Merci d'entrer le nombre d'atomes d'argon 'N' (exemple : 10000): "
@@ -121,6 +128,33 @@ fi
 
 # Profilage GDB :
 # gdb ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z
+
+#### TEST DES FICHIER DE SORTIE ####
+echo ""; echo -n "! TEST DES FICHIER DE SORTIE !" ; echo "";
+if [ -f "Sortie/simulation"$N"_iteration01.xyz" ]; then
+    if [ -f "Sortie_omp/simulation"$N"_iteration01.xyz" ]; then
+        for (( i=1; i <= $nb_iteration; i++ ))
+        do
+            if [ $i -lt 10 ]; then
+                diff "Sortie/simulation"$N"_iteration0"$i".xyz" "Sortie_omp/simulation"$N"_iteration0"$i".xyz"
+            else
+                diff "Sortie/simulation"$N"_iteration"$i".xyz" "Sortie_omp/simulation"$N"_iteration"$i".xyz"
+            fi
+        done
+    fi
+
+    if [ -f "Sortie_mpi/simulation"$N"_iteration01.xyz" ]; then
+        for i in 'seq 1 $nb_iteration'
+        do
+            if [ $i -lt 10 ]; then
+                diff "Sortie/simulation"$N"_iteration0"$i".xyz" "Sortie_mpi/simulation"$N"_iteration0"$i".xyz"
+            else
+                diff "Sortie/simulation"$N"_iteration"$i".xyz" "Sortie_mpi/simulation"$N"_iteration"$i".xyz"
+            fi
+        done
+    fi
+fi
+echo ""; echo -n "! FIN TEST !" ; echo "";
 
 #### AFFICHAGES OVITO ####
 echo ""; echo -n "AFFICHAGE OVITO ?" ; echo "";
