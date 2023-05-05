@@ -43,6 +43,7 @@
 #include "Headers/potentiel.h"
 #include "Headers/cellules.h"
 #include <fstream>
+#include <omp.h>
 
 u32 N = 0;
 u32 nb_iteration = 0;
@@ -64,6 +65,11 @@ int main(int argc, char **argv) {
     c_x = atoi(argv[7]);
     c_y = atoi(argv[8]);
     c_z = atoi(argv[9]);
+
+    int max_threads = omp_get_max_threads();
+    printf("Le nombre maximal de threads activables est : %d\n", max_threads);
+    std::ofstream file_max_threads("Resultats/omp_max_threads.dat", std::ios::app);
+    file_max_threads << max_threads << std::endl;
 
     std::cout << std::endl << "Bienvenue dans l'exécution du programme développé par l'équipe 1 du M1 CHPS." << std::endl;
     std::cout << "Nous considérons comme paramètres :" << std::endl;
@@ -160,10 +166,10 @@ int main(int argc, char **argv) {
         if (i<10)
         {
             ecrireXYZ(positions, "Sortie_omp/simulation"+str_N+"_iteration0"+fichier_i+".xyz");
-            std::cout << "[0" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la 0" << i << "-ème itération et écriture des positions (version de base)." << std::endl;
+            std::cout << "[0" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la 0" << i << "-ème itération et écriture des positions (version Open MP selon " << max_threads << " threads)." << std::endl;
         } else {
             ecrireXYZ(positions, "Sortie_omp/simulation"+str_N+"_iteration"+fichier_i+".xyz");
-            std::cout << "[" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la " << i << "-ème itération et écriture des positions (version de base)." << std::endl;
+            std::cout << "[" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la " << i << "-ème itération et écriture des positions (version Open MP selon " << max_threads << " threads)." << std::endl;
         }
     }
 
@@ -173,13 +179,14 @@ int main(int argc, char **argv) {
     std::cout << "\nLa simulation s'est exécutée en " << total << " cycles CPU (Moyenne : " << total/nb_iteration << ")." << std::endl;
 
     f64 temps_s =  ((end.tv_sec - start.tv_sec) + ((f64)(end.tv_nsec - start.tv_nsec)/1000000000));
+
     f64 capacite = (N*nb_iteration)/temps_s;
-
     printf("Capacité : %.9f atome(s)/s\n", capacite);
+    std::ofstream file_omp_capacite("Resultats/omp_capacite.dat", std::ios::app);
+    file_omp_capacite << capacite << std::endl;
 
-    std::ofstream file("Resultats/resultats_omp.txt");
-    file << total/nb_iteration << std::endl;
-    file << capacite << std::endl;
+    std::ofstream file_omp_capacite_par_thread("Resultats/omp_capacite_par_thread.dat", std::ios::app);
+    file_omp_capacite_par_thread << capacite/max_threads << std::endl;
 
     return 0;
 }

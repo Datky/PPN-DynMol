@@ -10,8 +10,8 @@ all: Bin/simulation Bin/simulation_omp
 Bin/simulation: Bin/main.o Bin/interaction.o Bin/potentiel.o Bin/XYZ.o Bin/remplissage_vecteurs.o Bin/constantes.o
 	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
 
-Bin/simulation_omp: Bin/main_omp.o Bin/interaction.o Bin/potentiel.o Bin/XYZ.o Bin/remplissage_vecteurs.o Bin/constantes.o
-	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
+Bin/simulation_omp: Bin/main_omp.o Bin/interaction_omp.o Bin/potentiel.o Bin/XYZ.o Bin/remplissage_vecteurs.o Bin/constantes.o
+	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS) -fopenmp
 
 #Bin/simulation_mpi: Bin/main_mpi.o Bin/interaction_mpi.o Bin/potentiel.o Bin/XYZ_mpi.o Bin/remplissage_vecteurs_mpi.o Bin/constantes.o
 #	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
@@ -30,6 +30,9 @@ Bin/interaction.o: Sources/interaction.cpp Headers/types.h Headers/constantes.h 
 
 #Bin/interaction_mpi.o: Sources/interaction_mpi.cpp Headers/types.h Headers/constantes.h SoA/particule_mpi.h
 #	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
+
+Bin/interaction_omp.o: Sources/interaction_omp.cpp Headers/types.h Headers/constantes.h SoA/particule.h
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<  -fopenmp
 
 Bin/potentiel.o: Sources/potentiel.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
@@ -57,7 +60,7 @@ Bin/Test.o: Test.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 
 # Règle pour suppression de tous les fichiers créés.
 clean:
-	@rm -Rf Bin/*.o Bin/simulation Entree Sortie Sortie_omp Sortie_mpi Bin Terminal Resultats valgrind* callgrind*
+	@rm -Rf Bin/*.o Bin/simulation Entree Sortie Sortie_omp Sortie_mpi Bin Terminal Resultats Courbes valgrind* callgrind* Test/diff*
 .PHONY: clean
 
 # Règle pour suppression uniquement des ".o" et de l'exécutable.

@@ -18,7 +18,6 @@
 ## b_x = (N x masse_atomique_argon / masse_volumique_argon)^(1/3) = (10000 x 6,6337 × 10−26 / (1,7837 × 10^−30))^(1/3) = 719,14 Å
 
 #### INFORMATIONS ATOMSK ####
-
 # atomsk --create <lattice> <a> [<c>] <sp1> [<sp2> <sp3>...] [orient (hkl)X (hkl)Y (hkl)Z] [options] <outputfile> [<formats>]
 # -add-atom <species> random <N>
 # <lattice> ==> sc : simple cubic
@@ -28,7 +27,6 @@
 # set <d> <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz> : change the length of <H1|H2|H3|x|y|z|xy|xz|yx|yz|zx|zy|xyz> to <d> Å
 
 #### DEBUT ####
-
 echo ""; echo -n "BONJOUR ET BIENVENUE DANS L'EXECUTION DU PROGRAMME DE DYNAMIQUE MOLECULAIRE !" ; echo "";
 
 # Performance :
@@ -43,12 +41,14 @@ fi
 
 # Répertoires :
 mkdir Entree
-mkdir Sortie Sortie_omp Sortie_mpi Terminal Resultats
+mkdir Sortie Sortie_omp Sortie_mpi Terminal Resultats Courbes
 mkdir Bin
 
 #### TESTS ####
 echo ""; echo -n "! TESTS !" ; echo "";
+echo -n "Compilations" ; echo "";
 make Bin/TEST
+echo -n "Exécution des tests :" ; echo "";
 ./Bin/TEST
 make clean_test
 echo ""; echo -n "! FIN TESTS !" ; echo "";
@@ -90,18 +90,18 @@ make
 
 #### EXECUTIONS ####
 echo ""; echo -n "EXECUTIONS !" ;
-echo ""; read -p "Souhaitez-vous exécuter la commande taskset -c 2 ...' pour limiter l'exécution au coeur N°2 (par défaut) ? (y/n)" answer ; echo "";
+echo ""; read -p "Souhaitez-vous exécuter la commande taskset -c 2 ...' pour limiter l'exécution au coeur N°2 (recommandé si parallélisme recherche : non) ? (y/n)" answer ; echo "";
 if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
     echo ""; echo "Exécution sur le coeur N°2." ; echo "";
-    echo ""; echo -n "EXECUTION DE LA VERSION DE BASE !" ; echo "";
+    echo ""; echo -n "EXECUTION DE LA VERSION DE BASE SUR 1 COEUR !" ; echo "";
     # taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z
     # taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal.txt > /dev/null
     taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal.txt
     sleep 1
-    echo ""; echo -n "EXECUTION DE LA VERSION MPI EN SUSPENS !" ; echo "";
+    echo ""; echo -n "EXECUTION DE LA VERSION MPI SUR 1 COEUR EN SUSPENS !" ; echo "";
     #taskset -c 2 ./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_mpi.txt
     sleep 1
-    echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP !" ; echo "";
+    echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP SUR 1 COEUR !" ; echo "";
     taskset -c 2 ./Bin/simulation_omp $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_omp.txt
 else
     echo ""; echo "Exécution sans affectation de coeur spécifique." ; echo "";
@@ -111,12 +111,15 @@ else
     echo ""; echo -n "EXECUTION DE LA VERSION MPI EN SUSPENS !" ; echo "";
     #./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_mpi.txt
     sleep 1
-    echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP !" ; echo "";
-    ./Bin/simulation_omp $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_omp.txt
+    for i in 1 2 4 6 8
+        do
+            echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP SUR $i MODULO 8 COEURS !" ; echo "";
+            export OMP_NUM_THREADS=$i
+            ./Bin/simulation_omp $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_omp_${i}.txt
+        done
 fi
 
 #### PROFILAGE ET DEBUGAGE ####
-
 # valgrind ./Bin/simulation -s $N $nb_iteration $dt $b_x $b_y $b_z
 
 # Profilage de l'utilisation du processeur dans le fichier de sortie callgrind.out :
@@ -131,14 +134,15 @@ fi
 
 #### TEST DES FICHIER DE SORTIE ####
 echo ""; echo -n "! TEST DES FICHIER DE SORTIE !" ; echo "";
+echo -n "Confer répertoire /Test" ; echo "";
 if [ -f "Sortie/simulation"$N"_iteration01.xyz" ]; then
     if [ -f "Sortie_omp/simulation"$N"_iteration01.xyz" ]; then
         for (( i=1; i <= $nb_iteration; i++ ))
         do
             if [ $i -lt 10 ]; then
-                diff "Sortie/simulation"$N"_iteration0"$i".xyz" "Sortie_omp/simulation"$N"_iteration0"$i".xyz"
+                diff "Sortie/simulation"$N"_iteration0"$i".xyz" "Sortie_omp/simulation"$N"_iteration0"$i".xyz" >> Test/diff_omp.txt
             else
-                diff "Sortie/simulation"$N"_iteration"$i".xyz" "Sortie_omp/simulation"$N"_iteration"$i".xyz"
+                diff "Sortie/simulation"$N"_iteration"$i".xyz" "Sortie_omp/simulation"$N"_iteration"$i".xyz" >> Test/diff_omp.txt
             fi
         done
     fi
@@ -147,9 +151,9 @@ if [ -f "Sortie/simulation"$N"_iteration01.xyz" ]; then
         for i in 'seq 1 $nb_iteration'
         do
             if [ $i -lt 10 ]; then
-                diff "Sortie/simulation"$N"_iteration0"$i".xyz" "Sortie_mpi/simulation"$N"_iteration0"$i".xyz"
+                diff "Sortie/simulation"$N"_iteration0"$i".xyz" "Sortie_mpi/simulation"$N"_iteration0"$i".xyz" >> Test/diff_mpi.txt
             else
-                diff "Sortie/simulation"$N"_iteration"$i".xyz" "Sortie_mpi/simulation"$N"_iteration"$i".xyz"
+                diff "Sortie/simulation"$N"_iteration"$i".xyz" "Sortie_mpi/simulation"$N"_iteration"$i".xyz" >> Test/diff_mpi.txt
             fi
         done
     fi
@@ -167,9 +171,31 @@ else
 fi
 
 #### EXPLOITATION DES RESULTATS ####
-awk '{print $1}' Resultats/resultats.txt | tr '\n' ',' >> Resultats/resultats.csv
-awk '{print $1}' Resultats/resultats_mpi.txt | tr '\n' ',' >> Resultats/resultats_mpi.csv
-awk '{print $1}' Resultats/resultats_omp.txt | tr '\n' ',' >> Resultats/resultats_omp.csv
+paste Resultats/omp_max_threads.dat Resultats/omp_capacite_par_thread.dat > Resultats/omp_strong_scaling.dat
+paste Resultats/omp_max_threads.dat Resultats/omp_capacite.dat > Resultats/omp_weak_scaling.dat
+
+#### COURBES GNUPLOT ####
+gnuplot -p <<- EOF
+    set term png
+    set output "Courbes/omp_strong_scaling.png"
+    set title "STRONG SCALING"
+    set xlabel "Nombre de threads"
+    set ylabel "Capacité (nombre d'atomes * nombre d'itérations) par thread"
+    set grid
+    set key left top
+    plot "Resultats/omp_strong_scaling.dat" using 1:2 with lines linestyle 1 linecolor "red" title "Capacité par threads = f(nombre de threads)"
+EOF
+
+gnuplot -p <<- EOF
+    set term png
+    set output "Courbes/omp_weak scaling.png"
+    set title "WEAK SCALING"
+    set xlabel "Nombre de threads"
+    set ylabel "Capacité totale (nombre d'atomes * nombre d'itérations)"
+    set grid
+    set key left top
+    plot "Resultats/omp_weak_scaling.dat" using 1:2 with lines linestyle 1 linecolor "red" title "Capacité = f(nombre de threads)"
+EOF
 
 #### NETTOYAGE ####
 rm -rf Entree Bin
