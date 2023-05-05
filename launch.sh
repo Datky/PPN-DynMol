@@ -91,8 +91,8 @@ if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
     # taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal.txt > /dev/null
     taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal.txt
     sleep 1
-    echo ""; echo -n "EXECUTION DE LA VERSION MPI !" ; echo "";
-   taskset -c 2 ./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_mpi.txt
+    echo ""; echo -n "EXECUTION DE LA VERSION MPI EN SUSPENS !" ; echo "";
+    #taskset -c 2 ./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_mpi.txt
     sleep 1
     echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP !" ; echo "";
     taskset -c 2 ./Bin/simulation_omp $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_omp.txt
@@ -101,8 +101,8 @@ else
     echo ""; echo -n "EXECUTION DE LA VERSION DE BASE !" ; echo "";
     ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal.txt
     sleep 1
-    echo ""; echo -n "EXECUTION DE LA VERSION MPI !" ; echo "";
-    ./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_mpi.txt
+    echo ""; echo -n "EXECUTION DE LA VERSION MPI EN SUSPENS !" ; echo "";
+    #./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_mpi.txt
     sleep 1
     echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP !" ; echo "";
     ./Bin/simulation_omp $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_omp.txt

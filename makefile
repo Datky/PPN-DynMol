@@ -1,10 +1,11 @@
-CC=g++
+CC=mpic++
 CFLAGS=-Wall #-g #: non (pour performances)
 OFLAGS=-O3
 LFLAGS=-lm
 # FILES=main.cpp
 
-all: Bin/simulation Bin/simulation_omp Bin/simulation_mpi
+#all: Bin/simulation Bin/simulation_omp Bin/simulation_mpi
+all: Bin/simulation Bin/simulation_omp
 
 Bin/simulation: Bin/main.o Bin/interaction.o Bin/potentiel.o Bin/XYZ.o Bin/remplissage_vecteurs.o Bin/constantes.o
 	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
@@ -12,8 +13,8 @@ Bin/simulation: Bin/main.o Bin/interaction.o Bin/potentiel.o Bin/XYZ.o Bin/rempl
 Bin/simulation_omp: Bin/main_omp.o Bin/interaction.o Bin/potentiel.o Bin/XYZ.o Bin/remplissage_vecteurs.o Bin/constantes.o
 	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
 
-Bin/simulation_mpi: Bin/main_mpi.o Bin/interaction.o Bin/potentiel.o Bin/XYZ.o Bin/remplissage_vecteurs.o Bin/constantes.o
-	mpic++ $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
+#Bin/simulation_mpi: Bin/main_mpi.o Bin/interaction_mpi.o Bin/potentiel.o Bin/XYZ_mpi.o Bin/remplissage_vecteurs_mpi.o Bin/constantes.o
+#	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
 
 Bin/main.o: main.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
@@ -21,11 +22,14 @@ Bin/main.o: main.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 Bin/main_omp.o: main_omp.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
-Bin/main_mpi.o: main_mpi.cpp Headers/types.h Headers/constantes.h SoA/particule.h
-	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
+#Bin/main_mpi.o: main_mpi.cpp Headers/types.h Headers/constantes.h SoA/particule_mpi.h
+#	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
 Bin/interaction.o: Sources/interaction.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
+
+#Bin/interaction_mpi.o: Sources/interaction_mpi.cpp Headers/types.h Headers/constantes.h SoA/particule_mpi.h
+#	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
 
 Bin/potentiel.o: Sources/potentiel.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
@@ -33,8 +37,14 @@ Bin/potentiel.o: Sources/potentiel.cpp Headers/types.h Headers/constantes.h SoA/
 Bin/XYZ.o: Sources/XYZ.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
 
+#Bin/XYZ_mpi.o: Sources/XYZ_mpi.cpp Headers/types.h Headers/constantes.h SoA/particule_mpi.h
+#	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
+
 Bin/remplissage_vecteurs.o: Sources/remplissage_vecteurs.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
+
+#Bin/remplissage_vecteurs_mpi.o: Sources/remplissage_vecteurs_mpi.cpp Headers/types.h Headers/constantes.h SoA/particule_mpi.h
+#	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
 
 Bin/constantes.o: Sources/constantes.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< 
