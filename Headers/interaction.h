@@ -28,7 +28,7 @@ enum class Frontiere {Periodiques, Murs};
 void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type); //f64 & r_max
 void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type); //f64 & r_max
 void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std::vector<std::vector<std::vector<std::vector<Particule_Cellule>>>> &vec, 
-      Particules_Para &part, f64 const& r_cut_carre, Frontiere const& frontiere_type, MPI_Datatype type, 
+      Particules_Para &part, f64 const& r_cut_carre, Frontiere const& frontiere_type, MPI_Datatype* types, 
       u32** comms);
 
 int trouver_ind(int valeur, std::vector<u32> &vec);

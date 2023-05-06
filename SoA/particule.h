@@ -39,4 +39,19 @@ struct Particules_Para {
       std::vector<u32> ids;
 };
 
+struct Particule_Comm {
+      f64 posX;
+      f64 posY;
+      f64 posZ;
+
+      f64 vitX;
+      f64 vitY;
+      f64 vitZ;
+
+      f64 accX;
+      f64 accY;
+      f64 accZ;
+      u32 id;
+};
+
 //#endif //STRUCT_P

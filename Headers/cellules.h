@@ -27,7 +27,7 @@ struct Particule_Cellule {
       f64 X;
       f64 Y;
       f64 Z;
-      int id;
+      u32 id;
 };
 
 struct Cellules {

@@ -125,7 +125,7 @@ int main(int argc, char **argv) {
     std::string str_rang = std::__cxx11::to_string(rang);
     ecrire_XYZ_Para_local("Sortie/simulation"+str_N+"_rang"+str_rang+".xyz", part.ids, part.pos, n_local);
     
-    auto frontiere_type = Frontiere::Murs; //Frontiere::Periodiques
+    auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
 
 
     
@@ -203,13 +203,31 @@ int main(int argc, char **argv) {
     MPI_Type_create_struct(2, blocs, offset, struct_types, &particule_cellule_type);
     MPI_Type_commit(&particule_cellule_type);
 
-    /*
-    MPI_Datatype particule_cellule_type;
-    MPI_Type_contiguous(3, MPI_DOUBLE, &particule_cellule_type);
-    MPI_Type_commit(&particule_cellule_type);
-    */
+
+    MPI_Datatype particule_comm_type;
+    int blocs_comm[2] = {9, 1};
+    MPI_Datatype struct_types_comm[2] = {MPI_DOUBLE, MPI_UNSIGNED};
+    MPI_Aint offset_comm[10] = {offsetof(Particule_Comm, posX), 
+                            offsetof(Particule_Comm, posY), 
+                            offsetof(Particule_Comm, posZ), 
+
+                            offsetof(Particule_Comm, vitX), 
+                            offsetof(Particule_Comm, vitY), 
+                            offsetof(Particule_Comm, vitZ), 
+
+                            offsetof(Particule_Comm, accX), 
+                            offsetof(Particule_Comm, accY), 
+                            offsetof(Particule_Comm, accZ), 
+
+                            offsetof(Particule_Comm, id)};
+
+    MPI_Type_create_struct(2, blocs_comm, offset_comm, struct_types_comm, &particule_comm_type);
+    MPI_Type_commit(&particule_comm_type);
 
 
+    MPI_Datatype* types = (MPI_Datatype*)malloc(sizeof(MPI_Datatype)*2);
+    types[0] = particule_cellule_type;
+    types[1] = particule_comm_type;
 
 
     
@@ -230,7 +248,7 @@ int main(int argc, char **argv) {
     
     for (u64 i = 1; i <= nb_iteration; i++) {
 
-        VerletCellulesPara(rang, P, n_local, cellules_locales, vec, part, r_cut_carre, frontiere_type, particule_cellule_type, comms);
+        VerletCellulesPara(rang, P, n_local, cellules_locales, vec, part, r_cut_carre, frontiere_type, types, comms);
         n_local = part.ids.size();
 
         
