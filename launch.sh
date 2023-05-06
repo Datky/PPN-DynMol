@@ -50,6 +50,7 @@ echo -n "Compilations" ; echo "";
 make Bin/TEST
 echo -n "Exécution des tests :" ; echo "";
 ./Bin/TEST
+diff "Test/TEST_source.xyz" "Test/TEST_cible.xyz" >> Test/diff_test.txt
 make clean_test
 echo ""; echo -n "! FIN TESTS !" ; echo "";
 

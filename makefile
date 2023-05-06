@@ -67,7 +67,7 @@ clean:
 clean_o:
 	@rm -Rf Bin/*.o Bin/simulation* 
 clean_test:
-	@rm -Rf Bin/*.o Bin/TEST Test/Data_force_Lennard_Jones.dat Test/TEST_cible.xyz
+	@rm -Rf Bin/*.o Bin/TEST Test/Data_force_Lennard_Jones.dat Test/TEST_cible.xyz Test/diff_test.txt Test/diff_omp.txt Test/diff_mpi.txt
 .PHONY: clean_o
 
 .PHONY: clean_Sortie
