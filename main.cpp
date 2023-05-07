@@ -250,7 +250,7 @@ int main(int argc, char **argv) {
 
         VerletCellulesPara(rang, P, n_local, cellules_locales, vec, part, r_cut_carre, frontiere_type, types, comms);
         n_local = part.ids.size();
-
+        
         
         std::string fichier_i = std::__cxx11::to_string(i);
         ecrire_XYZ_Para_local("Sortie/simulation"+str_N+"_iteration"+fichier_i+"_rang"+str_rang+".xyz", part.ids, part.pos, n_local);
@@ -266,7 +266,6 @@ int main(int argc, char **argv) {
     f64 temps_s =  ((end.tv_sec - start.tv_sec) + ((f64)(end.tv_nsec - start.tv_nsec)/1e9));
     f64 capacite = (N*nb_iteration)/temps_s;
 
-    MPI_Barrier(MPI_COMM_WORLD);
 
     printf("Rang %d Capacité : %.9f atome(s)/s\n", rang, capacite);
     

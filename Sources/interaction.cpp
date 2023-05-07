@@ -107,11 +107,11 @@ void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std:
             }
       }
 
-
       Particule_Cellule* up = (Particule_Cellule*)malloc(sizeof(Particule_Cellule)*comms[0][0]);
       Particule_Cellule* down = (Particule_Cellule*)malloc(sizeof(Particule_Cellule)*comms[1][0]);
       Particule_Cellule* recv_up;
       Particule_Cellule* recv_down;
+
 
       
       int index_min_up = 0;
@@ -133,7 +133,6 @@ void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std:
                   index_min_down += vec[cellules_locales][j+1][k+1].size();
             }
       }
-
 
 
 
@@ -165,6 +164,7 @@ void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std:
 
       recv_up = (Particule_Cellule*)malloc(sizeof(Particule_Cellule)*comms[2][0]);
       recv_down = (Particule_Cellule*)malloc(sizeof(Particule_Cellule)*comms[3][0]);
+
 
       // Envoi des cellules fantômes
       MPI_Isend(down, comms[1][0], types[0], voisin_bas, rang, MPI_COMM_WORLD, &req);
@@ -205,7 +205,6 @@ void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std:
                   }
             }
       }
-
 
 
 
@@ -286,19 +285,16 @@ void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std:
 
 
 
-
+      
       // Limite de recouvrement des communications
       MPI_Test(&req_recv_down, &flag_down, MPI_STATUS_IGNORE);
-      while (!flag_down) {
-            MPI_Test(&req_recv_down, &flag_down, MPI_STATUS_IGNORE);
-      }
-
       MPI_Test(&req_recv_up, &flag_up, MPI_STATUS_IGNORE);
-      while (!flag_up) {
-            MPI_Test(&req_recv_up, &flag_up, MPI_STATUS_IGNORE);
+      while (!flag_down || !flag_up) {
+            MPI_Test(&req_recv_down, &flag_down, MPI_STATUS_IGNORE);
+            MPI_Test(&req_recv_up, &flag_up, MPI_STATUS_IGNORE); // truncated
       }
 
-
+      
 
       forces_index = 0;
       // Verlet avec les cellules fantômes
@@ -403,6 +399,7 @@ void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std:
 
       Particule_Comm part_curr;
 
+      printf("RANG %d ERREUR APRES CE POINT\n", rang);
       // Mise à jour des positions
       for (int i = 0; i < cellules_locales; ++i) {
             for (int j = 0; j < c_y; ++j) {
@@ -500,15 +497,19 @@ void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std:
             }
       }
 
+      
       // Préparation des communications
       int* counts = (int*)malloc(sizeof(int)*P); // Nombre de particules à recevoir
       int* flags = (int*)malloc(sizeof(int)*P);
       int* flags_recv = (int*)malloc(sizeof(int)*P);
 
+
       MPI_Request* count_recv_reqs = (MPI_Request*)malloc(sizeof(MPI_Request)*P);
       MPI_Request* send_buffer_reqs = (MPI_Request*)malloc(sizeof(MPI_Request)*P);
       MPI_Request* recv_buffer_reqs = (MPI_Request*)malloc(sizeof(MPI_Request)*P);
       MPI_Request req_send_count;
+
+
 
       for (int i = 0; i < P; ++i) {
             if (i != rang) {
@@ -518,7 +519,7 @@ void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std:
             }
       }
 
-
+      
       // Attente de toutes les infos
       int somme_flags = 0;
       while (somme_flags != P-1) {
@@ -530,6 +531,7 @@ void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std:
                   }
             }
       }
+      
 
       // Réception des nouvelles particules dans le processus courant
       Particule_Comm** part_recv = (Particule_Comm**)malloc(sizeof(Particule_Comm*)*P);
@@ -621,7 +623,6 @@ void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std:
             }
       }
 
-      // EFFACER DU PROCESS LOCAL !!!!!!!!!!!!!!!!!!!!!!!!!
 
       
       // Attente de toutes les communications
@@ -635,6 +636,7 @@ void VerletCellulesPara(int rang, int P, int n_local, int cellules_locales, std:
                   }
             }
       }
+      
 
 
       Particule_Cellule curr;
