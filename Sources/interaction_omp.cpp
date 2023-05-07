@@ -106,81 +106,62 @@ void majPositionsetCellules(std::vector<std::vector<std::vector<std::vector<u32>
       }
 }
 
-void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type) {
-
-      f64 F_x, F_y, F_z ;
-
-      // Mise en place d'une frontière : création du pointeur
-      auto unique_limites = LimitesFabric::create(frontiere_type);
-
-
-
-
-#pragma omp parallel
+void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type)
 {
-///    rang = omp_get_thread_num();
-///    std::cout << omp_get_thread_num() << "-ième thread" << std::endl;
-
-      // Boucle dans les cellules en évitant les ghost cell
-      for (int i = 1; i < c_z+1; ++i) {
-            for (int j = 1; j < c_y+1; ++j) {
-                  for (int k = 1; k < c_x+1; ++k) {
-
-                        // Verlet
-                        for (u32 ind = 0; ind < vec[i][j][k].size(); ++ind) {
-                              // Mise à zéro de la force
-                              F_x = F_y = F_z = 0; 
-
-                              int particule = vec[i][j][k][ind]; /// la variable "particule" doit être accessible dans la portée de la directive pour que le compilateur puisse la paralléliser correctement
-
-                              // 1er calcul des vitesses : v_i(t+dt/2)
-                              at.vit->X[particule] += 0.5*at.acc->X[particule]*dt;
-                              at.vit->Y[particule] += 0.5*at.acc->Y[particule]*dt;
-                              at.vit->Z[particule] += 0.5*at.acc->Z[particule]*dt;
-
-
-
-                              // Calcul de la force : F_i(t+dt) et a_i(t+dt)
-# pragma omp for collapse (3)
-                              for (int ii = i-1; ii <= i+1; ++ii) {
-                                    for (int jj = j-1; jj <= j+1; ++jj) {
-                                          for (int kk = k-1; kk <= k+1; ++kk) {
-
-                                                for (u32 vois = 0; vois < vec[ii][jj][kk].size(); ++vois) {
-                                                      //f64 r_x = at.pos->X[particule] - at.pos->X[vec[ii][jj][kk][vois]];
-                                                      //f64 r_y = at.pos->Y[particule] - at.pos->Y[vec[ii][jj][kk][vois]];
-                                                      //f64 r_z = at.pos->Z[particule] - at.pos->Z[vec[ii][jj][kk][vois]];
-                                                      f64 r_x = unique_limites->calculDistance(at.pos->X[particule], at.pos->X[vec[ii][jj][kk][vois]], b_x, r_cut_carre);
-                                                      f64 r_y = unique_limites->calculDistance(at.pos->Y[particule], at.pos->Y[vec[ii][jj][kk][vois]], b_y, r_cut_carre);
-                                                      f64 r_z = unique_limites->calculDistance(at.pos->Z[particule], at.pos->Z[vec[ii][jj][kk][vois]], b_z, r_cut_carre);
-                                                      f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
-
-                                                      if (r_global_carre<r_cut_carre && r_global_carre!=0) {
-                                                      F_x += F_Lennard_Jones(r_global_carre)*r_x;
-                                                      F_y += F_Lennard_Jones(r_global_carre)*r_y;
-                                                      F_z += F_Lennard_Jones(r_global_carre)*r_z;
-                                                      }
-                                                }
-                                          }
+///#pragma omp parallel ///V05_20000at_5it_5fs_10c_240k_c6
+///{ 
+    f64 F_x, F_y, F_z ;
+    // Mise en place d'une frontière : création du pointeur
+    auto unique_limites = LimitesFabric::create(frontiere_type);
+    // Boucle dans les cellules en évitant les ghost cell
+///# pragma omp parallel for collapse (1)///V01_20000at_5it_5fs_10c_151k_c8
+///# pragma omp parallel for collapse (2)///V02_20000at_5it_5fs_10c_158k_c8
+///#pragma omp for collapse (3)///V03_20000at_5it_5fs_10c_161k_228k_c8 ///V05_20000at_5it_5fs_10c_240k_c6
+///# pragma omp parallel for collapse (4)///V99_20000at_5it_5fs_10c_non
+    for (int i = 1; i < c_z+1; ++i) {
+        for (int j = 1; j < c_y+1; ++j) {
+            for (int k = 1; k < c_x+1; ++k) {
+                // Verlet
+                for (u32 ind = 0; ind < vec[i][j][k].size(); ++ind) { 
+                    // Mise à zéro de la force
+                    F_x = F_y = F_z = 0; 
+                    int particule = vec[i][j][k][ind];
+                    // 1er calcul des vitesses : v_i(t+dt/2)
+                    at.vit->X[particule] += 0.5*at.acc->X[particule]*dt;
+                    at.vit->Y[particule] += 0.5*at.acc->Y[particule]*dt;
+                    at.vit->Z[particule] += 0.5*at.acc->Z[particule]*dt;
+                    // Calcul de la force : F_i(t+dt) et a_i(t+dt)
+                    for (int ii = i-1; ii <= i+1; ++ii) {
+                        for (int jj = j-1; jj <= j+1; ++jj) {
+                            for (int kk = k-1; kk <= k+1; ++kk) {
+                                for (u32 vois = 0; vois < vec[ii][jj][kk].size(); ++vois) {
+                                    f64 r_x = unique_limites->calculDistance(at.pos->X[particule], at.pos->X[vec[ii][jj][kk][vois]], b_x, r_cut_carre);
+                                    f64 r_y = unique_limites->calculDistance(at.pos->Y[particule], at.pos->Y[vec[ii][jj][kk][vois]], b_y, r_cut_carre);
+                                    f64 r_z = unique_limites->calculDistance(at.pos->Z[particule], at.pos->Z[vec[ii][jj][kk][vois]], b_z, r_cut_carre);
+                                    f64 r_global_carre = pow(r_x,2.0) + pow(r_y,2.0) + pow(r_z,2.0);
+                                    if (r_global_carre<r_cut_carre && r_global_carre!=0) {
+                                        F_x += F_Lennard_Jones(r_global_carre)*r_x;
+                                        F_y += F_Lennard_Jones(r_global_carre)*r_y;
+                                        F_z += F_Lennard_Jones(r_global_carre)*r_z;
                                     }
-                              }
-
-                              // Calcul des accélérations : a_i(t+dt)
-                              at.acc->X[particule] = F_x/m;
-                              at.acc->Y[particule] = F_y/m;
-                              at.acc->Z[particule] = F_z/m;
-
-                              // 2ième calcul des vitesses : v_i(t+dt)
-                              at.vit->X[particule] += 0.5*at.acc->X[particule]*dt;
-                              at.vit->Y[particule] += 0.5*at.acc->Y[particule]*dt;
-                              at.vit->Z[particule] += 0.5*at.acc->Z[particule]*dt;
+                                }
+                            }
                         }
-                  }
+                    }
+                    // Calcul des accélérations : a_i(t+dt)
+                    at.acc->X[particule] = F_x/m;
+                    at.acc->Y[particule] = F_y/m;
+                    at.acc->Z[particule] = F_z/m;
+                    // 2ième calcul des vitesses : v_i(t+dt)
+                    at.vit->X[particule] += 0.5*at.acc->X[particule]*dt;
+                    at.vit->Y[particule] += 0.5*at.acc->Y[particule]*dt;
+                    at.vit->Z[particule] += 0.5*at.acc->Z[particule]*dt;
+                }
             }
-      }
-}
-}
-
+        }
+    }
+///}///
+} 
 // Algorithme de Verlet
 void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type){
 

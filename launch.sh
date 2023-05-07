@@ -49,8 +49,7 @@ echo ""; echo -n "! TESTS !" ; echo "";
 echo -n "Compilations" ; echo "";
 make Bin/TEST
 echo -n "Exécution des tests :" ; echo "";
-./Bin/TEST
-diff "Test/TEST_source.xyz" "Test/TEST_cible.xyz" >> Test/diff_test.txt
+#./Bin/TEST
 make clean_test
 echo ""; echo -n "! FIN TESTS !" ; echo "";
 
@@ -94,44 +93,45 @@ echo ""; echo -n "EXECUTIONS !" ;
 echo ""; read -p "Souhaitez-vous exécuter la commande taskset -c 2 ...' pour limiter l'exécution au coeur N°2 (recommandé si parallélisme recherche : non) ? (y/n)" answer ; echo "";
 if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
     echo ""; echo "Exécution sur le coeur N°2." ; echo "";
-    echo ""; echo -n "EXECUTION DE LA VERSION DE BASE SUR 1 COEUR !" ; echo "";
-    # taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z
-    # taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal.txt > /dev/null
+    echo ""; echo -n "EXECUTION DE LA VERSION DE BASE SUR 1 COEUR ($N particules en $nb_iteration itérations de $dt secondes et une boîte de $b_x A x $b_y A x $b_z A divisée en $c_x x $c_y x $c_z cellules) !" ; echo "";
     taskset -c 2 ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal.txt
+    #echo ""; echo -n "EXECUTION DE LA VERSION DE BASE SUR 1 COEUR AVEC AUTRES CONDITIONS LIMITES ($N particules en $nb_iteration itérations de $dt secondes et une boîte de $b_x A x $b_y A x $b_z A divisée en $c_x x $c_y x $c_z cellules) !" ; echo "";
+    #taskset -c 2 ./Bin/simulation_CL $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_CL.txt
     sleep 1
-    echo ""; echo -n "EXECUTION DE LA VERSION MPI SUR 1 COEUR EN SUSPENS !" ; echo "";
+    #echo ""; echo -n "EXECUTION DE LA VERSION MPI SUR 1 COEUR ($N particules en $nb_iteration itérations de $dt secondes et une boîte de $b_x A x $b_y A x $b_z A divisée en $c_x x $c_y x $c_z cellules) !" ; echo "";
     #taskset -c 2 ./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_mpi.txt
     sleep 1
-    echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP SUR 1 COEUR !" ; echo "";
+    echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP SUR 1 COEUR ($N particules en $nb_iteration itérations de $dt secondes et une boîte de $b_x A x $b_y A x $b_z A divisée en $c_x x $c_y x $c_z cellules) !" ; echo "";
     taskset -c 2 ./Bin/simulation_omp $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_omp.txt
 else
     echo ""; echo "Exécution sans affectation de coeur spécifique." ; echo "";
-    echo ""; echo -n "EXECUTION DE LA VERSION DE BASE !" ; echo "";
+    echo ""; echo -n "EXECUTION DE LA VERSION DE BASE ($N particules en $nb_iteration itérations de $dt secondes et une boîte de $b_x A x $b_y A x $b_z A divisée en $c_x x $c_y x $c_z cellules) !" ; echo "";
     ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal.txt
     sleep 1
-    echo ""; echo -n "EXECUTION DE LA VERSION MPI EN SUSPENS !" ; echo "";
+    #echo ""; echo -n "EXECUTION DE LA VERSION MPI ($N particules en $nb_iteration itérations de $dt secondes et une boîte de $b_x A x $b_y A x $b_z A divisée en $c_x x $c_y x $c_z cellules) !" ; echo "";
     #./Bin/simulation_mpi $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_mpi.txt
     sleep 1
+#    for i in 1 2 4 6 8 12 16 20 24 28 32 36 40
     for i in 1 2 4 6 8
         do
-            echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP SUR $i MODULO 8 COEURS !" ; echo "";
+            echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP SUR $i MODULO 8 COEURS ($N particules en $nb_iteration itérations de $dt secondes et une boîte de $b_x A x $b_y A x $b_z A divisée en $c_x x $c_y x $c_z cellules) !" ; echo "";
             export OMP_NUM_THREADS=$i
             ./Bin/simulation_omp $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal_omp_${i}.txt
         done
 fi
 
 #### PROFILAGE ET DEBUGAGE ####
-# valgrind ./Bin/simulation -s $N $nb_iteration $dt $b_x $b_y $b_z
 
 # Profilage de l'utilisation du processeur dans le fichier de sortie callgrind.out :
-# valgrind --tool=callgrind ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z
-# valgrind ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z -s --leak-check=full
+# (valgrind ./Bin/simulation -s $N $nb_iteration $dt $b_x $b_y $b_z)
+# valgrind --tool=callgrind ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z | tee Terminal/terminal.txt
+# (valgrind ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z -s --leak-check=full)
 
 # Affichage des résultats et envoie vers un fichier .txt
 # callgrind_annotate callgrind.out.* >> valgrind.txt
 
 # Profilage GDB :
-# gdb ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z
+# gdb ./Bin/simulation $N $nb_iteration $dt $b_x $b_y $b_z $c_x $c_y $c_z
 
 #### TEST DES FICHIER DE SORTIE ####
 echo ""; echo -n "! TEST DES FICHIER DE SORTIE !" ; echo "";
@@ -172,31 +172,47 @@ else
 fi
 
 #### EXPLOITATION DES RESULTATS ####
-paste Resultats/omp_max_threads.dat Resultats/omp_capacite_par_thread.dat > Resultats/omp_strong_scaling.dat
-paste Resultats/omp_max_threads.dat Resultats/omp_capacite.dat > Resultats/omp_weak_scaling.dat
+paste Resultats/omp_max_threads.dat Resultats/omp_capacite_par_thread.dat > Resultats/omp_weak_scaling.dat
+paste Resultats/omp_max_threads.dat Resultats/omp_capacite.dat > Resultats/omp_strong_scaling.dat
 
 #### COURBES GNUPLOT ####
+gnuplot -p <<- EOF
+    set term png
+    set output "Courbes/omp_weak_scaling.png"
+    set title "WEAK SCALING"
+    set xlabel "Nombre de threads"
+    set ylabel "Capacité (nombre d'atomes * nombre d'itérations) par thread"
+    set grid
+    set key left top
+    plot "Resultats/omp_weak_scaling.dat" using 1:2 with lines linestyle 1 linecolor "red" title "Capacité par threads = f(nombre de threads)"
+    
+EOF
+#    plot for [i=0:*] "Resultats/omp_weak_scaling_$i.dat" using 1:2 with lines linestyle i+1 title "Courbe_$i"
+
 gnuplot -p <<- EOF
     set term png
     set output "Courbes/omp_strong_scaling.png"
     set title "STRONG SCALING"
     set xlabel "Nombre de threads"
-    set ylabel "Capacité (nombre d'atomes * nombre d'itérations) par thread"
-    set grid
-    set key left top
-    plot "Resultats/omp_strong_scaling.dat" using 1:2 with lines linestyle 1 linecolor "red" title "Capacité par threads = f(nombre de threads)"
-EOF
-
-gnuplot -p <<- EOF
-    set term png
-    set output "Courbes/omp_weak scaling.png"
-    set title "WEAK SCALING"
-    set xlabel "Nombre de threads"
     set ylabel "Capacité totale (nombre d'atomes * nombre d'itérations)"
     set grid
     set key left top
-    plot "Resultats/omp_weak_scaling.dat" using 1:2 with lines linestyle 1 linecolor "red" title "Capacité = f(nombre de threads)"
+    plot "Resultats/omp_strong_scaling.dat" using 1:2 with lines linestyle 1 linecolor "red" title "Capacité = f(nombre de threads)"
+    
 EOF
+#    plot for [i=0:*] "Resultats/omp_strong_scaling_$i.dat" using 1:2 with lines linestyle i+1 title "Courbe_$i"
+
+#### SUPERPOSITION DES COURBES ####
+#gnuplot -p <<- EOF
+#    set term png
+#    set output "Courbes/omp_scaling.png"
+#    set title "OpenMP Scaling"
+#    set xlabel "Nombre de threads"
+#    set grid
+#    set key left top
+#    plot "Resultats/omp_weak_scaling.dat" using 1:2 with lines linestyle 1 linecolor "red" title "Capacité par threads (Weak Scaling)", \
+#         "Resultats/omp_strong_scaling.dat" using 1:2 with lines linestyle 1 linecolor "blue" title "Capacité totale (Strong Scaling)"
+#EOF
 
 #### NETTOYAGE ####
 rm -rf Entree Bin

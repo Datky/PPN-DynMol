@@ -43,7 +43,6 @@
 #include "Headers/potentiel.h"
 #include "Headers/cellules.h"
 #include <fstream>
-#include <omp.h>
 
 u32 N = 0;
 u32 nb_iteration = 0;
@@ -65,11 +64,6 @@ int main(int argc, char **argv) {
     c_x = atoi(argv[7]);
     c_y = atoi(argv[8]);
     c_z = atoi(argv[9]);
-
-    int max_threads = omp_get_max_threads();
-    printf("Le nombre maximal de threads activables est : %d\n", max_threads);
-    std::ofstream file_max_threads("Resultats/omp_max_threads.dat", std::ios::app);
-    file_max_threads << max_threads << std::endl;
 
     std::cout << std::endl << "Bienvenue dans l'exécution du programme développé par l'équipe 1 du M1 CHPS." << std::endl;
     std::cout << "Nous considérons comme paramètres :" << std::endl;
@@ -108,9 +102,9 @@ int main(int argc, char **argv) {
     remplissage_vecteurs(positions, vitesses, accelerations); // Remplis les vecteurs avec les données de bases correspondantes pour chaque attribut.      
 
     std::string str_N = std::__cxx11::to_string(N);
-    ecrireXYZ(positions, "Sortie_omp/simulation"+str_N+".xyz");
+    ecrireXYZ(positions, "Sortie/simulation"+str_N+".xyz");
 
-    auto frontiere_type = Frontiere::Periodiques; //Frontiere::Murs
+    auto frontiere_type = Frontiere::Murs; //Frontiere::Periodiques; 
 
     // Cellules
     Cellules cellules;
@@ -154,28 +148,23 @@ int main(int argc, char **argv) {
     struct timespec start, end;
     u64 debut = __rdtsc(); // Début de la mesure de perf
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-///# pragma omp parallel for collapse (4)///V98_non car not enough for loops to collapse
-///# pragma omp parallel for ///V04_20000at_5it_5fs_10c_240k_c6 ///V05_20000at_5it_5fs_10c_240k_c6 ///V07_10000at_200it_0fs
-///# pragma omp parallel for ordered///V08_marche pas 
-///# pragma omp parallel ///V09_marche
-///{ ///V09_marche
-///# pragma omp for ///V09_marche
+
     for (u64 i = 1; i <= nb_iteration; i++) {
-///# pragma omp ordered {///V08_marche pas 
+
         //Verlet(particules, r_cut_carre, frontiere_type);
         VerletCellules(vec, particules, r_cut_carre, frontiere_type);
-        majPositionsetCellules(vec, particules, r_cut_carre, frontiere_type);  
+        majPositionsetCellules(vec, particules, r_cut_carre, frontiere_type);
+     
         std::string fichier_i = std::__cxx11::to_string(i);
         
         if (i<10)
         {
-            ecrireXYZ(positions, "Sortie_omp/simulation"+str_N+"_iteration0"+fichier_i+".xyz");
-            std::cout << "[0" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la 0" << i << "-ème itération et écriture des positions (version Open MP selon " << max_threads << " threads)." << std::endl;
+            ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration0"+fichier_i+".xyz");
+            std::cout << "[0" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la 0" << i << "-ème itération et écriture des positions (version de base)." << std::endl;
         } else {
-            ecrireXYZ(positions, "Sortie_omp/simulation"+str_N+"_iteration"+fichier_i+".xyz");
-            std::cout << "[" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la " << i << "-ème itération et écriture des positions (version Open MP selon " << max_threads << " threads)." << std::endl;
+            ecrireXYZ(positions, "Sortie/simulation"+str_N+"_iteration"+fichier_i+".xyz");
+            std::cout << "[" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la " << i << "-ème itération et écriture des positions (version de base)." << std::endl;
         }
-///}///V08_marche pas ///V09_marche
     }
 
     clock_gettime(CLOCK_MONOTONIC_RAW, &end);
@@ -184,18 +173,13 @@ int main(int argc, char **argv) {
     std::cout << "\nLa simulation s'est exécutée en " << total << " cycles CPU (Moyenne : " << total/nb_iteration << ")." << std::endl;
 
     f64 temps_s =  ((end.tv_sec - start.tv_sec) + ((f64)(end.tv_nsec - start.tv_nsec)/1000000000));
-
     f64 capacite = (N*nb_iteration)/temps_s;
-    printf("Capacité : %.9f atome(s)/s\n", capacite);
-    ///std::ofstream file_omp_capacite_N("Resultats/omp_capacite_"+str_N+".dat", std::ios::app);
-    std::ofstream file_omp_capacite("Resultats/omp_capacite.dat", std::ios::app);
-    ///file_omp_capacite_N << capacite << std::endl;
-    file_omp_capacite << capacite << std::endl;
 
-    std::ofstream file_omp_capacite_par_thread("Resultats/omp_capacite_par_thread.dat", std::ios::app);
-    ///std::ofstream file_omp_capacite_par_thread_N("Resultats/omp_capacite_par_thread_"+str_N+".dat", std::ios::app);
-    ///file_omp_capacite_par_thread_N << capacite/max_threads << std::endl;
-    file_omp_capacite_par_thread << capacite/max_threads << std::endl;
+    printf("Capacité : %.9f atome(s)/s\n", capacite);
+
+    std::ofstream file("Resultats/resultats.txt");
+    file << total/nb_iteration << std::endl;
+    file << capacite << std::endl;
 
     return 0;
 }

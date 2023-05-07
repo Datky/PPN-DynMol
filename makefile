@@ -1,13 +1,16 @@
 CC=mpic++
 CFLAGS=-Wall #-g #: non (pour performances)
-OFLAGS=-O3
+OFLAGS=-O1 #-O3
 LFLAGS=-lm
 # FILES=main.cpp
 
-#all: Bin/simulation Bin/simulation_omp Bin/simulation_mpi
+#all: Bin/simulation Bin/simulation_omp Bin/simulation_mpi Bin/simulation_CL
 all: Bin/simulation Bin/simulation_omp
 
 Bin/simulation: Bin/main.o Bin/interaction.o Bin/potentiel.o Bin/XYZ.o Bin/remplissage_vecteurs.o Bin/constantes.o
+	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
+
+Bin/simulation_CL: Bin/main_CL.o Bin/interaction.o Bin/potentiel.o Bin/XYZ.o Bin/remplissage_vecteurs.o Bin/constantes.o
 	$(CC) $(CFLAGS) $(OFLAGS) $^ -o $@ $(LFLAGS)
 
 Bin/simulation_omp: Bin/main_omp.o Bin/interaction_omp.o Bin/potentiel.o Bin/XYZ.o Bin/remplissage_vecteurs.o Bin/constantes.o
@@ -19,8 +22,11 @@ Bin/simulation_omp: Bin/main_omp.o Bin/interaction_omp.o Bin/potentiel.o Bin/XYZ
 Bin/main.o: main.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
 
-Bin/main_omp.o: main_omp.cpp Headers/types.h Headers/constantes.h SoA/particule.h
+Bin/main_CL.o: main_CL.cpp Headers/types.h Headers/constantes.h SoA/particule.h
 	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
+
+Bin/main_omp.o: main_omp.cpp Headers/types.h Headers/constantes.h SoA/particule.h
+	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $< -fopenmp
 
 #Bin/main_mpi.o: main_mpi.cpp Headers/types.h Headers/constantes.h SoA/particule_mpi.h
 #	$(CC) $(CFLAGS) $(OFLAGS) -c -o $@ $<
@@ -67,7 +73,7 @@ clean:
 clean_o:
 	@rm -Rf Bin/*.o Bin/simulation* 
 clean_test:
-	@rm -Rf Bin/*.o Bin/TEST Test/Data_force_Lennard_Jones.dat Test/TEST_cible.xyz Test/diff_test.txt Test/diff_omp.txt Test/diff_mpi.txt
+	@rm -Rf Bin/*.o Bin/TEST Test/Data_force_Lennard_Jones.dat Test/TEST_cible.xyz
 .PHONY: clean_o
 
 .PHONY: clean_Sortie
