@@ -154,14 +154,9 @@ int main(int argc, char **argv) {
     struct timespec start, end;
     u64 debut = __rdtsc(); // Début de la mesure de perf
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-///# pragma omp parallel for collapse (4)///V98_non car not enough for loops to collapse
-///# pragma omp parallel for ///V04_20000at_5it_5fs_10c_240k_c6 ///V05_20000at_5it_5fs_10c_240k_c6 ///V07_10000at_200it_0fs
-///# pragma omp parallel for ordered///V08_marche pas 
-///# pragma omp parallel ///V09_marche
-///{ ///V09_marche
-///# pragma omp for ///V09_marche
+
     for (u64 i = 1; i <= nb_iteration; i++) {
-///# pragma omp ordered {///V08_marche pas 
+
         //Verlet(particules, r_cut_carre, frontiere_type);
         VerletCellules(vec, particules, r_cut_carre, frontiere_type);
         majPositionsetCellules(vec, particules, r_cut_carre, frontiere_type);  
@@ -175,7 +170,6 @@ int main(int argc, char **argv) {
             ecrireXYZ(positions, "Sortie_omp/simulation"+str_N+"_iteration"+fichier_i+".xyz");
             std::cout << "[" << i << "/" << nb_iteration << "] : Bonne création du fichier .xyz de la " << i << "-ème itération et écriture des positions (version Open MP selon " << max_threads << " threads)." << std::endl;
         }
-///}///V08_marche pas ///V09_marche
     }
 
     clock_gettime(CLOCK_MONOTONIC_RAW, &end);
@@ -187,14 +181,10 @@ int main(int argc, char **argv) {
 
     f64 capacite = (N*nb_iteration)/temps_s;
     printf("Capacité : %.9f atome(s)/s\n", capacite);
-    ///std::ofstream file_omp_capacite_N("Resultats/omp_capacite_"+str_N+".dat", std::ios::app);
     std::ofstream file_omp_capacite("Resultats/omp_capacite.dat", std::ios::app);
-    ///file_omp_capacite_N << capacite << std::endl;
     file_omp_capacite << capacite << std::endl;
 
     std::ofstream file_omp_capacite_par_thread("Resultats/omp_capacite_par_thread.dat", std::ios::app);
-    ///std::ofstream file_omp_capacite_par_thread_N("Resultats/omp_capacite_par_thread_"+str_N+".dat", std::ios::app);
-    ///file_omp_capacite_par_thread_N << capacite/max_threads << std::endl;
     file_omp_capacite_par_thread << capacite/max_threads << std::endl;
 
     return 0;

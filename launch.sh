@@ -113,6 +113,7 @@ else
     sleep 1
 #    for i in 1 2 4 6 8 12 16 20 24 28 32 36 40
     for i in 1 2 4 6 8
+#    for i in 4 8
         do
             echo ""; echo -n "EXECUTION DE LA VERSION OPEN MP SUR $i MODULO 8 COEURS ($N particules en $nb_iteration itérations de $dt secondes et une boîte de $b_x A x $b_y A x $b_z A divisée en $c_x x $c_y x $c_z cellules) !" ; echo "";
             export OMP_NUM_THREADS=$i

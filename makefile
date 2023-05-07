@@ -1,6 +1,6 @@
 CC=mpic++
 CFLAGS=-Wall #-g #: non (pour performances)
-OFLAGS=-O1 #-O3
+OFLAGS=-O1 #-O1 #-03 pr V10
 LFLAGS=-lm
 # FILES=main.cpp
 

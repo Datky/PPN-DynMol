@@ -108,16 +108,15 @@ void majPositionsetCellules(std::vector<std::vector<std::vector<std::vector<u32>
 
 void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type)
 {
-///#pragma omp parallel ///V05_20000at_5it_5fs_10c_240k_c6
-///{ 
+#pragma omp parallel
+{
     f64 F_x, F_y, F_z ;
     // Mise en place d'une frontière : création du pointeur
     auto unique_limites = LimitesFabric::create(frontiere_type);
     // Boucle dans les cellules en évitant les ghost cell
-///# pragma omp parallel for collapse (1)///V01_20000at_5it_5fs_10c_151k_c8
-///# pragma omp parallel for collapse (2)///V02_20000at_5it_5fs_10c_158k_c8
-///#pragma omp for collapse (3)///V03_20000at_5it_5fs_10c_161k_228k_c8 ///V05_20000at_5it_5fs_10c_240k_c6
-///# pragma omp parallel for collapse (4)///V99_20000at_5it_5fs_10c_non
+
+#pragma omp for collapse (3)
+
     for (int i = 1; i < c_z+1; ++i) {
         for (int j = 1; j < c_y+1; ++j) {
             for (int k = 1; k < c_x+1; ++k) {
@@ -160,8 +159,9 @@ void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec
             }
         }
     }
-///}///
+}/// FIN DE REGION PARALLELE ///V05_20000at_5it_5fs_10c_240k_c6 ///V05'_20000at_5it_5fs_10c_163k_c8 ///V06_20000at_5it_5fs_10c_148k_c4 ///V07_20000at_5it_5fs_25c_317k/278k_c8
 } 
+
 // Algorithme de Verlet
 void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type){
 
