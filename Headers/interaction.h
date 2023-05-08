@@ -44,7 +44,7 @@ void Voisin(Particules & p, f64 r_cut, f64 r_skin, f64 b_x, f64 b_y, f64 b_z, st
 void Verlet(Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type); //f64 & r_max
 void VerletCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type, std::vector<u32>& NN, std::vector<u32>& NL); //f64 & r_max
 
-void majPositionsetCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type, f64 max_displacement);
+void majPositionsetCellules(std::vector<std::vector<std::vector<std::vector<u32>>>> &vec, Particules & at, f64 const& r_cut_carre, Frontiere const& frontiere_type);
 
 /*Frontiere******************************************************************************************************/
 struct Limites {
